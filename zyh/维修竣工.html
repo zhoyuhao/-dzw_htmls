@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>维修竣工</title>
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<link rel="stylesheet" href="../css/bootstrap.min.css" />
+	</head>
+
+	<body style="background-color: #e6e6e6;">
+
+		<div id="juegong" style=" width: 1290px; margin: 0px auto;margin-top: 2ex; background-color: white;height: 650px;padding: 10px;">
+			<h3 style="margin-left: 16ex;">维修数据
+			<div style="float: right;margin-right: 15.5ex;">
+				
+							<template>
+  <el-radio v-model="radio" label="1">未竣工</el-radio>
+  <el-radio v-model="radio" label="2">已竣工</el-radio>
+</template>
+			</div>
+			</h3>
+
+			<template>
+
+				<el-table :data="tableData" style="width: 1000px;margin: 0px auto;">
+					<el-table-column prop="chepai" align="center" label="维修车牌号" width="180">
+
+					</el-table-column>
+
+					<el-table-column align="center" label="开始维修日期" width="180">
+						<template slot-scope="scope">
+							<i class="el-icon-time"></i>
+							<span style="margin-left: 10px">{{ scope.row.statrdate }}</span>
+						</template>
+					</el-table-column>
+
+					<el-table-column align="center" label="结束维修日期" width="180">
+						<template slot-scope="scope">
+							<i class="el-icon-time"></i>
+							<span style="margin-left: 10px">{{ scope.row.enddate }}</span>
+						</template>
+					</el-table-column>
+					<el-table-column align="center" label="维修金额" width="180">
+						<template slot-scope="scope">
+							￥{{ scope.row.money }}
+						</template>
+					</el-table-column>
+					<el-table-column label="操作" width="280" align="center">
+						<template slot-scope="scope">
+		
+							<el-button type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)">竣工检验</el-button>
+							<el-button type="success" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">维修详细</el-button>
+						</template>
+					</el-table-column>
+				</el-table>
+			</template>
+			<div class="block" style="text-align: center;margin-top: 5ex;">
+				<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10,5,3]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+				</el-pagination>
+			</div>
+
+			<el-dialog title="维修详细信息" align="center" :visible.sync="dialogVisible" width="800px" :before-close="handleClose">
+				<template>
+					<el-table :data="xiangXiData" style="width: 100%;margin: 0px auto;margin-top: -2ex;" >
+						<el-table-column label="编号" align="center" width="180">
+							<template slot-scope="scope">
+								{{scope.$index+1}}
+							</template>
+						</el-table-column>
+						<el-table-column prop="type" align="center" label="维修项目名称">
+						</el-table-column>
+						<el-table-column align="center" label="维修价格">
+							<template slot-scope="scope">
+								<label style="">￥{{scope.row.money}}</label>
+							</template>
+						</el-table-column>
+
+					</el-table>
+					<i style="float: left;margin-left: 5ex;margin-top: 3ex;">总金额：<span style="color: red;">￥{{moneySum}}</span></i>
+				</template>
+
+				<span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+  </span>
+			</el-dialog>
+
+
+<el-dialog style="text-align: center;" title="提示竣工" align="center" :visible.sync="dialogVisible2" width="400px" :before-close="handleClose">
+				<template>
+					提醒：一但确定竣工就不得修改撤销<br/>
+				<div style="margin-top: 3ex;text-align: center;">
+						<el-radio v-model="radio2" @change="radioFanGong" label="1">完工</el-radio>
+  <el-radio v-model="radio2"@change="radioFanGong"  label="2">已方返工</el-radio>
+   <el-radio v-model="radio2" @change="radioFanGong" label="3">客户返工</el-radio>
+  <p v-if="fangoufeiwuxianshi">返工费用：
+  		<el-input style="width: 150px;margin-top: 2ex;" oninput="value=value.replace(/[^\d.]/g,'')" v-model="fangongfeiyong" placeholder="请输入返工费用" clearable></el-input>
+  	</el-input></p>
+ 			<span slot="footer" class="dialog-footer" style="margin-top: 3ex;display: inline-block;">
+    <el-button type="primary" style="margin-right: 3ex;" @click="dialogVisible2Api">确 定</el-button>
+    <el-button @click="dialogVisible2 = false">取 消</el-button>
+  </span>
+				</div>
+				</template>
+
+	
+			</el-dialog>
+		</div>
+
+	</body>
+
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+	<script>
+		var zhnanei = new Vue({
+			el: "#juegong",
+			data: {
+				fangoufeiwuxianshi:false,
+				fangongfeiyong:'',
+				moneySum: 0,
+				xiangXiData: [],
+				dialogVisible: false,
+				dialogVisible2:false,
+				radio: '1',
+				radio2:"1",
+				currentPage4: 1,
+				tableData: [{
+					chepai: "A12345",
+					money: 1000,
+					statrdate: '2016-05-02',
+					enddate: '2020-03-03',
+					xiangXiData: [{
+							id: 1,
+							type: "技工(李四)",
+							money: 140
+						},
+						{
+							id: 3,
+							type: "米其林轮胎",
+							money: 200
+						}
+					]
+				}, {
+					chepai: "A12345",
+					money: 1000,
+					statrdate: '2016-05-02',
+					enddate: '2020-03-03',
+					xiangXiData: [{
+							id: 1,
+							type: "技工(李四)",
+							money: 140
+						},
+						{
+							id: 3,
+							type: "米其林轮胎",
+							money: 200
+						}
+					]
+				}, {
+					chepai: "A12345",
+					money: 1000,
+					statrdate: '2016-05-02',
+					enddate: '2020-03-03',
+					xiangXiData: [{
+							id: 1,
+							type: "技工(李四)",
+							money: 140
+						},
+						{
+							id: 3,
+							type: "米其林轮胎",
+							money: 200
+						}
+					]
+				}, {
+					chepai: "A12345",
+					money: 1000,
+					statrdate: '2016-05-02',
+					enddate: '2020-03-03',
+					xiangXiData: [{
+							id: 1,
+							type: "技工(李四)",
+							money: 140
+						},
+						{
+							id: 3,
+							type: "米其林轮胎",
+							money: 200
+						}
+					]
+				}, {
+					chepai: "A12345",
+					money: 1000,
+					statrdate: '2016-05-02',
+					enddate: '2020-03-03',
+					xiangXiData: [{
+							id: 1,
+							type: "技工(李四)",
+							money: 140
+						},
+						{
+							id: 3,
+							type: "米其林轮胎",
+							money: 200
+						}
+					]
+				}, {
+					chepai: "A12345",
+					money: 1000,
+					statrdate: '2016-05-02',
+					enddate: '2020-03-03',
+					xiangXiData: [{
+							id: 1,
+							type: "技工(李四)",
+							money: 140
+						},
+						{
+							id: 3,
+							type: "米其林轮胎",
+							money: 200
+						}
+					]
+				}, {
+					chepai: "A12345",
+					money: 1000,
+					statrdate: '2016-05-02',
+					enddate: '2020-03-03',
+					xiangXiData: []
+
+				}, {
+					chepai: "A12345",
+					money: 1000,
+					statrdate: '2016-05-02',
+					enddate: '2020-03-03',
+					xiangXiData: []
+
+				}]
+			},
+			methods: {
+				/*是否返工确定*/
+				dialogVisible2Api(){
+					let _this=this;
+					if(this.fangoufeiwuxianshi && this.fangongfeiyong==''){
+ 	this.$message({
+          showClose: true,
+          message: '请输入返工费用！',
+          type: 'error'
+        });
+        
+        
+        return
+					}
+					
+								 _this.$confirm('操作执行不能撤销, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          _this.$message({
+            type: 'success',
+            message: '操作成功!'
+          });
+          _this.dialogVisible2=false;
+            _this.fangoufeiwuxianshi=false;
+            _this.fangongfeiyong='';
+            _this.radio2='1';
+        }).catch(() => {
+          _this.$message({
+            type: 'info',
+            message: '已取消操作'
+          });          
+        });
+
+					
+					
+				},
+				/*返工选择*/
+				radioFanGong(val){
+					if(val==3){
+						this.fangoufeiwuxianshi=true;
+					}else{
+							this.fangoufeiwuxianshi=false;
+					}
+				},
+				/*分页*/
+				handleSizeChange(val) {
+					console.log(`每页 ${val} 条`);
+				},
+				handleCurrentChange(val) {
+					console.log(`当前页: ${val}`);
+				},
+				/*竣工操作*/
+				handleEdit(index, row) {
+					this.dialogVisible2=true;
+					console.log(index, row);
+				},
+				/*维修详细*/
+				handleDelete(index, row) {
+					let _this = this;
+					let money = 0;
+					this.dialogVisible = true;
+					this.xiangXiData = row.xiangXiData;
+					$.each(this.xiangXiData, function(i, obj) {
+						money += obj.money;
+					})
+					this.moneySum = money;
+					console.log(index, row);
+				},
+				/*详细信息关闭*/
+				handleClose(done) {
+					this.$confirm('确认关闭？')
+						.then(_ => {
+							done();
+						})
+						.catch(_ => {});
+				}
+
+			},
+			mounted() {
+
+			}
+		})
+	</script>
+
+</html>
