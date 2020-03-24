@@ -11,37 +11,59 @@
 	<body style="background-color: #e6e6e6;">
 
 		<div id="juegong" style=" width: 1290px; margin: 0px auto;margin-top: 2ex; background-color: white;height: 650px;padding: 10px;">
-			<h3 style="margin-left: 16ex;">维修数据
-			<div style="float: right;margin-right: 15.5ex;">
-				
-							<template>
-  <el-radio v-model="radio" label="1">未竣工</el-radio>
-  <el-radio v-model="radio" label="2">已竣工</el-radio>
-</template>
-			</div>
-			</h3>
+			<h3 style="margin: 0px auto; width: 300px;text-align: center;padding-top: 1ex;">维修数据
 
-			<template>
+			</h3>
+			
+
+<template>
+  <el-tabs style="margin-top: 0px;width: 1000px;margin:  0px auto;" v-model="activeName" @tab-click="handleClick">
+    <el-tab-pane  label="未竣工" name="first">
+    	
+ <div style="text-align: center; margin: 2ex;">
+ 	<span style="margin-right: 3ex;">车牌号查看：
+  <el-input
+  	size="mini"
+  	style="width: 150px;"
+  placeholder="请输入内容"
+  v-model="chepaiLIke"
+  clearable>
+</el-input></span>
+<span>日期查看：
+    <el-date-picker
+    	size="mini"
+      v-model="dates"
+      type="datetimerange"
+    
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期"
+      align="right">
+    </el-date-picker></span>
+    <el-button type="primary" size="mini">查看</el-button>
+</div>
+
+    			<template>
 
 				<el-table :data="tableData" style="width: 1000px;margin: 0px auto;">
 					<el-table-column prop="chepai" align="center" label="维修车牌号" width="180">
 
 					</el-table-column>
 
-					<el-table-column align="center" label="开始维修日期" width="180">
+					<el-table-column align="center" label="开始维修日期" prop="statrdate" width="180" sortable>
 						<template slot-scope="scope">
 							<i class="el-icon-time"></i>
 							<span style="margin-left: 10px">{{ scope.row.statrdate }}</span>
 						</template>
 					</el-table-column>
 
-					<el-table-column align="center" label="结束维修日期" width="180">
+					<el-table-column align="center" label="结束维修日期" prop="enddate" width="180" sortable>
 						<template slot-scope="scope">
 							<i class="el-icon-time"></i>
 							<span style="margin-left: 10px">{{ scope.row.enddate }}</span>
 						</template>
 					</el-table-column>
-					<el-table-column align="center" label="维修金额" width="180">
+					<el-table-column align="center" label="维修金额" prop="money" width="180" sortable>
 						<template slot-scope="scope">
 							￥{{ scope.row.money }}
 						</template>
@@ -55,12 +77,87 @@
 					</el-table-column>
 				</el-table>
 			</template>
-			<div class="block" style="text-align: center;margin-top: 5ex;">
-				<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10,5,3]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+			<div class="block" style="text-align: center;margin-top: 3ex;">
+				<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[6,3,1]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
 				</el-pagination>
 			</div>
 
-			<el-dialog title="维修详细信息" align="center" :visible.sync="dialogVisible" width="800px" :before-close="handleClose">
+		
+
+    	
+    </el-tab-pane>
+    <el-tab-pane label="已竣工" name="second">
+    	  	
+ <div style="text-align: center; margin: 2ex;">
+ 	<span style="margin-right: 3ex;">车牌号查看：
+  <el-input
+  	size="mini"
+  	style="width: 150px;"
+  placeholder="请输入内容"
+  v-model="chepaiLIke"
+  clearable>
+</el-input></span>
+<span>日期查看：
+    <el-date-picker
+    	size="mini"
+      v-model="dates"
+      type="datetimerange"
+    
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期"
+      align="right">
+    </el-date-picker></span>
+    <el-button type="primary" size="mini">查看</el-button>
+</div>
+
+    			<template>
+
+				<el-table :data="tableData" style="width: 1000px;margin: 0px auto;">
+					<el-table-column prop="chepai" align="center" label="维修车牌号" width="180">
+
+					</el-table-column>
+
+					<el-table-column align="center" label="开始维修日期" prop="statrdate" width="180" sortable>
+						<template slot-scope="scope">
+							<i class="el-icon-time"></i>
+							<span style="margin-left: 10px">{{ scope.row.statrdate }}</span>
+						</template>
+					</el-table-column>
+
+					<el-table-column align="center" label="结束维修日期" prop="enddate" width="180" sortable>
+						<template slot-scope="scope">
+							<i class="el-icon-time"></i>
+							<span style="margin-left: 10px">{{ scope.row.enddate }}</span>
+						</template>
+					</el-table-column>
+					<el-table-column align="center" label="维修金额" prop="money" width="180" sortable>
+						<template slot-scope="scope">
+							￥{{ scope.row.money }}
+						</template>
+					</el-table-column>
+					<el-table-column label="操作" width="280" align="center">
+						<template slot-scope="scope">
+<!--		-->
+							<el-button type="success" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)" >维修详细</el-button>
+						</template>
+					</el-table-column>
+				</el-table>
+			</template>
+			<div class="block" style="text-align: center;margin-top: 3ex;">
+				<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[6,3,1]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+				</el-pagination>
+			</div>
+
+
+    	
+    	
+    	
+    </el-tab-pane>
+   
+  </el-tabs>
+  
+  	<el-dialog title="维修详细信息" align="center" :visible.sync="dialogVisible" width="800px" :before-close="handleClose">
 				<template>
 					<el-table :data="xiangXiData" style="width: 100%;margin: 0px auto;margin-top: -2ex;" >
 						<el-table-column label="编号" align="center" width="180">
@@ -85,7 +182,8 @@
     <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
   </span>
 			</el-dialog>
-
+			
+			
 
 <el-dialog style="text-align: center;" title="提示竣工" align="center" :visible.sync="dialogVisible2" width="400px" :before-close="handleClose">
 				<template>
@@ -106,6 +204,8 @@
 
 	
 			</el-dialog>
+</template>
+	
 		</div>
 
 	</body>
@@ -119,52 +219,24 @@
 		var zhnanei = new Vue({
 			el: "#juegong",
 			data: {
+				dates:'',
+				chepaiLIke:"",
+				 activeName: 'first',
 				fangoufeiwuxianshi:false,
 				fangongfeiyong:'',
 				moneySum: 0,
 				xiangXiData: [],
 				dialogVisible: false,
+				dialogVisible_2:false,
 				dialogVisible2:false,
 				radio: '1',
 				radio2:"1",
 				currentPage4: 1,
 				tableData: [{
 					chepai: "A12345",
-					money: 1000,
-					statrdate: '2016-05-02',
-					enddate: '2020-03-03',
-					xiangXiData: [{
-							id: 1,
-							type: "技工(李四)",
-							money: 140
-						},
-						{
-							id: 3,
-							type: "米其林轮胎",
-							money: 200
-						}
-					]
-				}, {
-					chepai: "A12345",
-					money: 1000,
-					statrdate: '2016-05-02',
-					enddate: '2020-03-03',
-					xiangXiData: [{
-							id: 1,
-							type: "技工(李四)",
-							money: 140
-						},
-						{
-							id: 3,
-							type: "米其林轮胎",
-							money: 200
-						}
-					]
-				}, {
-					chepai: "A12345",
-					money: 1000,
-					statrdate: '2016-05-02',
-					enddate: '2020-03-03',
+					money: 2000,
+					statrdate: '2016-06-02',
+					enddate: '2020-08-03',
 					xiangXiData: [{
 							id: 1,
 							type: "技工(李四)",
@@ -241,6 +313,9 @@
 				}]
 			},
 			methods: {
+				 handleClick(tab, event) {
+        console.log(tab, event);
+     },
 				/*是否返工确定*/
 				dialogVisible2Api(){
 					let _this=this;
