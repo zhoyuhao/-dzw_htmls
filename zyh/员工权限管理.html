@@ -12,7 +12,7 @@
 		</style>
 	</head>
 
-	<body style="">
+	<body style="background-color: #e6e6e6;">
 
 		<div id="ygqx" style="margin: 0px auto;border: 0px solid; margin: 5px;" v-cloak>
 
@@ -37,7 +37,9 @@
 			</span>
 			</div>
 			<template>
-				<el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+				<el-table border ref="multipleTable" :data="tableData" tooltip-effect="dark" 
+					style="width: 100%;" @selection-change="handleSelectionChange">
+					<el-table-column>
 					<el-table-column type="selection" width="55">
 					</el-table-column>
 
@@ -75,7 +77,7 @@
 					<el-table-column prop="address" label="家庭地址" show-overflow-tooltip>
 					</el-table-column>
 				</el-table>
-				<div class="block" style="text-align: center;margin-top: 1ex;">
+				<div class="block" style="text-align: center;background-color: white;padding-top: 3ex;padding-bottom: 3ex;">
 					<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
 					</el-pagination>
 				</div>
@@ -181,7 +183,7 @@
 					</el-form-item>
 
 					<el-form-item label="部门" prop="bm">
-						<el-select style="width: 250px;" v-model="ruleForm.bm" placeholder="请选择岗位">
+						<el-select style="width: 250px;" v-model="ruleForm.bm" placeholder="请选择部门">
 							<el-option label="维修部门" value="shanghai"></el-option>
 							<el-option label="检验部门" value="beijing"></el-option>
 						</el-select>
@@ -189,7 +191,7 @@
 					</el-form-item>
 
 					<el-form-item label="角色" prop="js">
-						<el-select style="width: 250px;" v-model="ruleForm.js" placeholder="请选择岗位">
+						<el-select style="width: 250px;" v-model="ruleForm.js" placeholder="请选择角色">
 							<el-option label="经理" value="shanghai"></el-option>
 							<el-option label="普通员工" value="beijing"></el-option>
 						</el-select>
@@ -339,7 +341,7 @@
  		<span style="margin-left: 2ex;">角色：{{qxjs}}</span>
  	</h4>
  <div style="box-shadow: 0px 0px 5px #000000;padding-bottom: 3ex;">
- 		<template >
+ 		<!--<template >
   <el-transfer
   	
   	:titles="titles"
@@ -350,7 +352,17 @@
     }"
     :data="data">
   </el-transfer>
-</template>
+</template>-->
+<el-tree
+	ref="tree"
+  :data="data"
+  show-checkbox
+  node-key="id"
+  :getCurrentKey="w"
+   :default-expanded-keys="chekArray"
+  :default-checked-keys="chekArray"
+  :props="defaultProps">
+</el-tree>
 
     <div style="clear: both;margin: 0px auto;margin-top: 3ex;text-align: center;"> 
   	<el-button style="width: 120px;" type="primary" @click="qxxiugaiOk">确 定</el-button>
@@ -395,6 +407,46 @@
   new ygqx({
 			el: "#ygqx",
 			data: {
+				
+			chekArray:[2,4,7],
+        data: [{
+          id: 1,
+          label: '前台管理',
+          children: [{
+            id: 4,
+            label: '结算中心',
+            fid:1
+          },{
+            id: 2,
+            label: '会员卡',
+             fid:1
+          },{
+            id: 3,
+            label: '会卡重置',
+             fid:1
+          }]
+        },{
+          id: 9,
+          label: '权限管理',
+          children: [{
+            id: 6,
+            label: '角色管理',
+             fid:9
+          },{
+            id: 7,
+            label: '使用管理',
+                         fid:9
+          },{
+            id: 5,
+            label: '用户管理',
+                         fid:9
+          }]
+        }],
+        defaultProps: {
+          children: 'children',
+          label: 'label'
+        },
+				
 				dqjs:'',
 				jueseList:[
 				{id:1,name:"经理"},
@@ -564,6 +616,31 @@
 
 			},
 			methods: {
+				
+				w(){
+						let _this=this;
+					let arry=this.$refs.tree.getCheckedNodes(false, true);
+					let arr=this.$refs.tree.getCheckedNodes(false, true);
+	
+			$.each(arry,function(j,obj2){
+							$.each(_this.data,function(i,obj){
+								
+
+									if(obj.id==obj2.id){
+										console.log(`每页 ${obj.id} ||${obj2.id} ${j}条`);
+									arr = arr.filter(i => {
+    return i != obj2
+})
+						//arr.splice(j,1)
+						
+							}
+								
+							})
+						});
+						
+					console.log(` ${JSON.stringify(arr)}`);
+				
+				},
 				qxxiugaiOk(){
 					this.$confirm('权限操作请谨慎, 是否继续?', '提示', {
 						confirmButtonText: '确定',
@@ -572,6 +649,7 @@
 					}).then(() => {
 							
 					console.log(`授权数据${this.quanxians}`);
+					this.w();
 					this.dialogVisible5 = false;
 						this.$message({
 							type: 'success',
@@ -743,6 +821,7 @@
 				handleClose(done) {
 					this.$confirm('确认关闭？')
 						.then(_ => {
+							this.dialogVisible=false;
 							this.dialogVisible2=false;
 							this.dialogVisible5=false;
 							this.dialogVisible4=false;

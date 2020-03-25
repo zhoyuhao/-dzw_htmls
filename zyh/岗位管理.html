@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>岗位管理</title>
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+	</head>
+	<body style="background-color: #e6e6e6;">
+		<div style="background-color: white;padding: 1ex;padding-bottom: 5ex;">
+			
+			
+		
+		<h1 style="margin-left:5ex;">岗位管理</h1>
+		<div id="gangwei" style="text-align: center;">
+			<div>
+				
+				<span>岗位编号：<el-input style="width: 200px;"  size="mini" v-model="bh" placeholder="请输入内容"></el-input></span>
+				<span style="margin-right: 5ex;">岗位名称：<el-input style="width: 200px;" size="mini" v-model="mc" placeholder="请输入内容"></el-input></span>
+				<el-button type="text" icon="el-icon-plus" @click="add">新增</el-button>
+				<el-button type="text" icon="el-icon-delete" @click="deletes">删除</el-button>
+				
+			</div>
+			<div>
+				<template>
+  <el-table
+    ref="multipleTable"
+    :data="tableData"
+    tooltip-effect="dark"
+    style="width: 500px;margin-left: 36ex;"
+    @selection-change="handleSelectionChange">
+
+<el-table-column
+      type="selection"
+      width="55"></el-table-column>
+    <el-table-column
+      prop="bh"
+      label="岗位编号"
+      width="220">
+    </el-table-column>
+  <el-table-column
+      prop="mc"
+      label="岗位名称"
+      width="220">
+    </el-table-column>
+  </el-table>
+  
+</template>
+				
+			</div>
+			
+		</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+	<script>
+		
+		var gangwei = new Vue({
+			el: "#gangwei",
+			data: {
+				bh:"",
+				mc:"",
+				 tableData: [{
+          mc: '王小虎',
+         bh:"1233"
+        }, {
+          mc: '王小虎',
+          bh:"12323"
+        }],
+           multipleSelection: []
+			},
+			methods: {
+				/*新增*/
+				add(){
+					if(this.bh==""){
+						this.$message({
+							showClose: true,
+							message: '提示，请输入岗位编号',
+							type: 'warning'
+						});
+						return
+					}
+					if(this.mc==""){
+						this.$message({
+							showClose: true,
+							message: '提示，请输入岗位名称',
+							type: 'warning'
+						});
+						return
+					}
+				},
+				/*删除*/
+				deletes(){
+					if(this.multipleSelection.length==0){
+						this.$message({
+							showClose: true,
+							message: '提示，请勾选你要删除的岗位',
+							type: 'warning'
+						});
+						return
+					}
+				},
+				/*勾选*/
+				 handleSelectionChange(val) {
+        		this.multipleSelection = val;
+      		}
+			},
+			mounted() {
+
+			}
+		})
+	</script>
+	
+</html>

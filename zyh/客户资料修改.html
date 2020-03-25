@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="khzlxg">
+					<template>
+					<el-tabs v-model="activeName" @tab-click="handleClick">
+						<el-tab-pane label="顾客信息填写" name="first">
+
+							<el-form :model="ruleForm" :inline="true" :rules="rules" ref="ruleForm" label-width="100px" class="demo-form-inline">
+
+								<el-form-item label="顾客编号">
+
+									<el-input v-model="ruleForm.id" :disabled="true" style="width: 250px;"></el-input>
+
+								</el-form-item>
+								<el-form-item label="顾客姓名" placeholder="请输入姓名" prop="name">
+
+									<el-input v-model="ruleForm.name" style="width: 250px;"></el-input>
+
+								</el-form-item>
+
+								<el-form-item label="地址" placeholder="请输入地址">
+									<el-cascader :options="options" @change="handleChange" clearable></el-cascader>
+
+								</el-form-item>
+
+								<el-form-item label="性别" prop="xb">
+									<el-radio-group style="width: 250px;" v-model="ruleForm.xb">
+										<el-radio label="男"></el-radio>
+										<el-radio label="女"></el-radio>
+									</el-radio-group>
+								</el-form-item>
+
+								<el-form-item label="联系号码" placeholder="请输入号码" prop="hm">
+
+									<el-input v-model="ruleForm.hm" style="width: 250px;"></el-input>
+
+								</el-form-item>
+								<el-form-item label="身份证" placeholder="请输入号码" prop="sfz">
+
+									<el-input v-model="ruleForm.sfz" style="width: 250px;"></el-input>
+
+								</el-form-item>
+
+								<el-form-item label="客户类型" placeholder="请选择客户类型" prop="lx">
+
+								
+									
+							<el-select style="width: 250px;" v-model="ruleForm.lx" @change="leixiChange2" placeholder="请选择类型">
+        <el-option
+            v-for="item in huiyuanleix"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+        </el-option>
+    </el-select>
+									
+								</el-form-item>
+								<el-form-item label="会员卡号" prop="name" v-if="xleixi">
+									<el-input v-model="ruleForm.name" :disabled="true" style="width: 250px;"></el-input>
+
+								</el-form-item>
+
+								<el-form-item label="累计积分" prop="name" v-if="xleixi">
+									<el-input v-model="ruleForm.name" :disabled="true" style="width: 250px;"></el-input>
+
+								</el-form-item>
+								<el-form-item label="会员余额" v-if="xleixi">
+									<el-input maxlength="8" oninput="value=value.replace(/[^\d.]/g,'')" style="width: 250px;" v-model="ruleForm.ye" placeholder="请输入价格" clearable></el-input>
+								</el-form-item>
+
+								<el-form-item style="margin: 0px auto;width: 700px; text-align: right;">
+									<el-button type="primary" style="width: 150px;" @click="xsubmitForm('ruleForm')">数据提交</el-button>
+									<el-button style="width: 150px;" @click="xiugaiquxiao('ruleForm')">取消</el-button>
+								</el-form-item>
+							</el-form>
+
+						</el-tab-pane>
+						<el-tab-pane label="顾客车辆填写" name="second">
+
+							<template>
+								<el-table :data="ruleForm.list" border style="width: 100%">
+								
+									<el-table-column label="车牌号">
+										<template slot-scope="scope" >
+											<el-input size="mini" placeholder="请输入车牌" v-model="scope.row.cp" clearable>
+											</el-input>
+										</template>
+									</el-table-column>
+									<el-table-column label="车辆品牌">
+										<template slot-scope="scope">
+
+											<el-input size="mini" placeholder="请输入品牌" v-model="scope.row.pp" clearable>
+											</el-input>
+										</template>
+									</el-table-column>
+
+									<el-table-column label="车辆颜色">
+										<template slot-scope="scope">
+											<el-input size="mini" v-model="scope.row.ys" clearable>
+											</el-input>
+										</template>
+									</el-table-column>
+
+									<el-table-column label="配置">
+										<template slot-scope="scope">
+											<el-input size="mini" v-model="scope.row.pz" clearable>
+											</el-input>
+										</template>
+									</el-table-column>
+									<el-table-column label="产地">
+										<template slot-scope="scope">
+											<el-input size="mini" v-model="scope.row.cd" clearable>
+											</el-input>
+										</template>
+									</el-table-column>
+									<el-table-column label="车辆款式">
+										<template slot-scope="scope">
+											<el-input size="mini" v-model="scope.row.ks" clearable>
+											</el-input>
+										</template>
+									</el-table-column>
+								</el-table>
+							</template>
+
+						</el-tab-pane>
+
+					</el-tabs>
+				</template>
+			
+		</div>
+		
+	</body>
+		
+	<script>
+	var khzlxg = new Vue({
+			el: "#khzlxg",
+			data: {
+				xleixi:false,
+				dialogVisible2:false,
+				options: [{
+						value: '湖南省',
+						label: '湖南省',
+						children: [{
+							value: '长沙市',
+							label: '长沙市',
+						}, {
+							value: '株洲市',
+							label: '株洲市',
+						}]
+					},
+					{
+						value: '浙江省',
+						label: '浙江省',
+						children: [{
+							value: '温州市',
+							label: '温州市',
+						}, {
+							value: '杭州市',
+							label: '杭州市',
+						}]
+					}
+				],
+				qcxxData: [],
+				activeName: "first",
+				ruleForm: {
+					list: []
+				},
+				rules: {
+					name: [{
+							required: true,
+							message: '请输入姓名',
+							trigger: 'blur'
+						}
+					],sfz: [{
+							required: true,
+							message: '请输入姓名',
+							trigger: 'blur'
+						}
+					],
+					bm: [{
+						required: true,
+						message: '请选择部门',
+						trigger: 'change'
+					}],
+					lx: [{
+						required: true,
+						message: '请选择客户类型',
+						trigger: 'change'
+					}],
+					js: [{
+						required: true,
+						message: '请选择角色',
+						trigger: 'change'
+					}],
+					gw: [{
+						required: true,
+						message: '请选择岗位',
+						trigger: 'change'
+					}],
+					date: [{
+						required: true,
+						required: true,
+						message: '请选择日期',
+						trigger: 'change'
+					}],
+					type: [{
+						type: 'array',
+						required: true,
+						message: '请至少选择一个活动性质',
+						trigger: 'change'
+					}],
+					xb: [{
+						required: true,
+						message: '请选择性别',
+						trigger: 'change'
+					}],
+					hm: [{
+						required: true,
+						message: '请填写号码',
+						trigger: 'blur'
+					}],
+					bh: [{
+						required: true,
+						message: '请填写号码',
+						trigger: 'blur'
+					}],
+					address: [{
+						required: true,
+						message: '请填写地址',
+						trigger: 'blur'
+					}]
+				},
+				hasChildren: false,
+				huiyuanleix:[{label:"普通",value:1},{label:"会员",value:2}]
+			},
+			methods: {
+				/*类型选择*/
+				leixiChange2() {
+					this.xleixi = this.ruleForm.lx == "2" ? true : false;
+
+				},
+				xsubmitForm(formName) {
+					let _this = this;
+					this.$refs[formName].validate((valid) => {
+						if(valid) {
+							gangwei.dialogVisible2 = false;
+					gangwei.radio = '';
+							alert('submit!');
+						} else {
+							console.log('error submit!!');
+							return false;
+						}
+					});
+				},
+				xiugaiquxiao(formName) {
+					this.resetForm(formName);
+					gangwei.dialogVisible2 = false;
+					gangwei.radio = '';
+				},
+				resetForm(formName) {
+					this.$refs[formName].resetFields();
+				},
+				/*地址联动*/
+				handleChange(value) {
+
+					console.log(value);
+				},
+				/*标签页*/
+				handleClick(tab, event) {
+					console.log(tab, event);
+				},
+				/*选择*/
+				radiochange(val) {
+					this.leixi =val.lx==1?false:true;
+					console.log(this.leixi)
+					this.ruleForm=val;
+					this.byruleForm=val;
+				},
+				/*查看*/
+				queryClick(val) {
+					console.log(`客户名称是:${val}`)
+				},
+				/*关闭对话框*/
+
+				handleClose(done) {
+					this.$confirm('确认关闭？')
+						.then(_ => {
+							done();
+						})
+						.catch(_ => {});
+				}
+			},
+			mounted() {
+			
+					this.ruleForm=JSON.parse(sessionStorage.getItem("khzlxg"));
+					this.leixiChange2();
+					gangwei.fullscreenLoading = false;
+			}
+		})
+	</script>
+	
+</html>
