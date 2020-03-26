@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link href="../css/style.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="../css/index.css" />
+	</head>
+
+	<body>
+		<div id="addApp" style="width: 80%;margin: 0 auto;">
+			<h2 style="text-align: center;">车辆信息添加</h2>
+			<el-form style="width: 70%;margin: 0 auto;" :inline="true" label-position="left" label-width="100px" :model="bill" style="text-align: center;">
+				<el-form-item label="车型ID：">
+					<el-input v-model="bill.c1"></el-input>
+				</el-form-item>
+				<el-form-item label="发动机品牌:">
+					<el-input v-model="bill.c2"></el-input>
+				</el-form-item>
+				<el-form-item label="车辆品牌：">
+					<el-input v-model="bill.c3"></el-input>
+				</el-form-item>
+				<el-form-item label="车辆品牌：">
+					<el-input v-model="bill.c3"></el-input>
+				</el-form-item>
+				<el-form-item label="参考价格：">
+					<el-input v-model="bill.c3"></el-input>
+				</el-form-item>
+				
+			</el-form>
+			<div style="text-align: right;">
+				<el-button @click="addBill">保存</el-button>
+				<el-button @click="gotoHt">取消</el-button>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+		<script type="text/javascript" src="../js/vue.js"></script>
+		<script type="text/javascript" src="../js/index.js"></script>
+		<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+		<script>
+			var myDate = new Date();
+			var app = new Vue({
+				data: {
+					bill: {
+						id:'',
+						c1: '',
+						c2: '',
+						c3: '',
+						c4: '',
+						c5:'',
+					},
+					activeName: 'first'
+				},
+			
+			}).$mount("#addApp");
+		</script>
+	</body>
+
+</html>
