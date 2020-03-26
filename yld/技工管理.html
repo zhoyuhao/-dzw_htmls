@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>技工管理</title>
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<script type="text/javascript" src="../js/vue.js"></script>
+		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+		<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+		<style type="text/css">
+			* {
+				text-align: center;
+			}
+			
+			.winput {
+				width: 200px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="emp" style="padding-top: 40px;">
+			<el-table :data="fixempgroup" size="small" style="width: 45%; display: inline-block;">
+				<el-table-column label="技工组数据" align="center" height="250">
+					<el-table-column label="编号" prop="gid" align="center" show-overflow-tooltip>
+					</el-table-column>
+					<el-table-column label="组名" prop="gname" align="center" show-overflow-tooltip>
+					</el-table-column>
+					<el-table-column label="人数" prop="gcount" align="center" show-overflow-tooltip>
+					</el-table-column>
+					<el-table-column label="操作" align="center" show-overflow-tooltip>
+						<template slot-scope="temp">
+							<el-button circle size="mini" icon="el-icon-setting"></el-button>
+							<el-button circle size="mini" icon="el-icon-close"></el-button>
+						</template>
+					</el-table-column>
+				</el-table-column>
+			</el-table>
+			<el-table :data="fixemp" size="small" style="width: 45%; display: inline-block;">
+				<el-table-column label="技工数据" align="center" height="250">
+					<el-table-column label="工号" prop="eid" align="center" show-overflow-tooltip>
+					</el-table-column>
+					<el-table-column label="姓名" prop="ename" align="center" show-overflow-tooltip>
+					</el-table-column>
+					<el-table-column label="岗位" prop="post" align="center" show-overflow-tooltip>
+					</el-table-column>
+					<el-table-column label="工作组" prop="group" align="center" show-overflow-tooltip>
+					</el-table-column>
+					<el-table-column label="操作" align="center" show-overflow-tooltip>
+						<template slot-scope="temp">
+							<el-button circle size="mini" icon="el-icon-setting"></el-button>
+							<el-button circle size="mini" icon="el-icon-close"></el-button>
+						</template>
+					</el-table-column>
+				</el-table-column>
+			</el-table>
+			<el-divider content-position="center">
+				<h4>技工组添加</h4>
+			</el-divider>
+			<div style="margin: 10px 0px;">
+				<el-form label-width="100px" :inline="true" size="mini">
+					<el-form-item label="工组编号：">
+						<el-input class="winput" disabled></el-input>
+					</el-form-item>
+					<el-form-item label="技工组名：">
+						<el-input class="winput"></el-input>
+					</el-form-item>
+					<el-form-item label-width="0px">
+						<el-button size="mini" type="success">添加</el-button>
+						<el-button type="primary">修改</el-button>
+					</el-form-item>
+				</el-form>
+			</div>
+			<el-divider content-position="center">
+				<h4>技工添加</h4>
+			</el-divider>
+			<div style="margin: 10px 0px;">
+				<el-form label-width="100px" :inline="true" size="mini">
+					<el-form-item label="技工工号：" disabled>
+						<el-input class="winput"></el-input>
+					</el-form-item>
+					<el-form-item label="技工姓名：">
+						<el-input class="winput"></el-input>
+					</el-form-item>
+					<el-form-item label="技工性别：">
+						<el-input class="winput"></el-input>
+					</el-form-item>
+					<el-form-item label="电话号码：">
+						<el-input class="winput"></el-input>
+					</el-form-item>
+					<el-form-item label="录用岗位：">
+						<el-input class="winput"></el-input>
+					</el-form-item>
+					<el-form-item label-width="0px">
+						<el-button type="success">添加</el-button>
+						<el-button type="primary">修改</el-button>
+					</el-form-item>
+				</el-form>
+			</div>
+		</div>
+	</body>
+
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript">
+		var emp = new Vue({
+			el: '#emp',
+			data: {
+				//工作组
+				fixempgroup:[
+					{
+						gid:'20200512001',
+						gname:'临时技工组',
+						gcount:'5'
+					},
+					{
+						gid:'20200512001',
+						gname:'机电组',
+						gcount:'3'
+					},
+					{
+						gid:'20200512001',
+						gname:'美容组',
+						gcount:'4'
+					}
+				],
+				//技工
+				fixemp:[
+					{
+						eid:'20200324001',
+						ename:'张三',
+						post:'机电工',
+						group:'临时技工组'
+					},
+					{
+						eid:'20200324001',
+						ename:'李四',
+						post:'美容工',
+						group:'临时技工组'
+					},
+					{
+						eid:'20200324001',
+						ename:'王五',
+						post:'喷漆工',
+						group:'临时技工组'
+					}
+				]
+			},
+			methods: {
+
+			},
+			mounted() {
+
+			}
+		});
+	</script>
+
+</html>

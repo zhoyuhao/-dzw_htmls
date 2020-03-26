@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link href="../css/style.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="../css/index.css" />
+	</head>
+
+	<body>
+		<div id="addApp" style="width: 80%;margin: 0 auto;">
+			<h2 style="text-align: center;">外勤车辆管理添加</h2>
+			<el-form style="width: 70%;margin: 0 auto;" :inline="true" label-position="left" label-width="100px" :model="bill" style="text-align: center;">
+				<el-form-item label="车牌号：">
+					<el-input v-model="bill.categoryid"></el-input>
+				</el-form-item>
+				<el-form-item label="品牌:">
+					<el-input v-model="bill.title"></el-input>
+				</el-form-item>
+				<el-form-item label="车型：">
+					<el-input v-model="bill.summary"></el-input>
+				</el-form-item>
+				<el-form-item label="当前里程：">
+					<el-input v-model="bill.summary"></el-input>
+				</el-form-item>
+				<el-form-item label="当前里程：">
+	<el-select v-model="bill.createdate" placeholder="当前里程">
+      <el-option label="区域一" value="shanghai"></el-option>
+      <el-option label="区域二" value="beijing"></el-option>
+    </el-select></el-form-item>
+				<el-form-item label="状态：">
+					<el-input v-model="bill.summary"></el-input>
+				</el-form-item>
+			</el-form>
+			<div style="text-align: right;">
+				<el-button @click="addBill">保存</el-button>
+				<el-button @click="gotoHt">取消</el-button>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+		<script type="text/javascript" src="../js/vue.js"></script>
+		<script type="text/javascript" src="../js/index.js"></script>
+		<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+		<script>
+			var myDate = new Date();
+			var app = new Vue({
+				data: {
+					bill: {
+						id:'',
+						categoryid: '',
+						title: '',
+						summary: '',
+						uploaduser: '',
+						createdate:'',
+					},
+					activeName: 'first'
+				},
+			
+			}).$mount("#addApp");
+		</script>
+	</body>
+
+</html>

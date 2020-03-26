@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>离职登记</title>
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+
+		<style>
+			.el-table .warning-row {
+				background: oldlace;
+			}
+			
+			.el-table .success-row {
+				background: #f0f9eb;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="lzdjApp">
+			<el-row style="margin-bottom: 20px;">
+				<el-col :span="8">
+					<h1 style="font-size: 24px;">离职登记</h1>
+				</el-col>
+				<el-col :span="8">
+					&nbsp
+				</el-col>
+				<el-col :span="8">
+					<el-input v-model="name" placeholder="请输入内容" style="width: 50%;"></el-input>
+					<el-button type="primary">搜索</el-button>
+					<el-button type="info">关闭</el-button>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span="14	">
+					&nbsp
+				</el-col>
+				<el-col :span="10">
+					<el-button type="primary" plain @click="lizhidj">离职</el-button>
+					<el-button type="primary" plain>回滚</el-button>
+					<el-button type="primary" plain @click="dakai">打开</el-button>
+					<el-button type="primary" plain>删除</el-button>
+					<el-button type="primary" plain>查询</el-button>
+					<el-button type="primary" plain>导出</el-button>
+				</el-col>
+			</el-row>
+			<el-table ref="singleTable" :data="lizhi" highlight-current-row @current-change="handleCurrentChange" style="width: 100%">
+				<el-table-column type="index" width="50">
+				</el-table-column>
+				<el-table-column property="bumen" label="部门" width="120">
+				</el-table-column>
+				<el-table-column property="no" label="编号" width="120">
+				</el-table-column>
+				<el-table-column property="name" label="姓名">
+				</el-table-column>
+				<el-table-column property="sex" label="性别">
+				</el-table-column>
+				<el-table-column property="zhiwei" label="职位">
+				</el-table-column>
+				<el-table-column property="time" label="离职日期">
+				</el-table-column>
+				<el-table-column property="txt" label="离职原因">
+				</el-table-column>
+			</el-table>
+			<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="员工卡片" :visible.sync="isshow1" width="99%" :before-close="handleClose">
+				<div id="cnt1"></div>
+			</el-dialog>
+			<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="离职登记" :visible.sync="isshow2" width="99%" :before-close="handleClose">
+				<div id="cnt2"></div>
+			</el-dialog>
+		</div>
+
+	</body>
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+
+	<script>
+		var lzdjApp = new Vue({
+			el: '#lzdjApp',
+			data: {
+				isshow1: false,
+				isshow2: false,
+				name: '',
+				currentRow: null,
+				lizhi: [{
+						bumen: '管钱部',
+						no: 'OME0001',
+						name: '张三',
+						sex: '男',
+						zhiwei: '销售经理',
+						time: '2019-09-09',
+						txt: 'jdlkasjd'
+					},
+					{
+						bumen: '管钱部',
+						no: 'OME0002',
+						name: '李四',
+						sex: '女',
+						zhiwei: '销售总监',
+						time: '2019-09-09',
+						txt: 'jdlkasjd'
+
+					}
+				]
+			},
+			methods: {
+				handlerOpen1() {
+					$("#cnt1").load('员工卡片.html'); //ajax读取页面
+				},
+				handlerOpen2() {
+					$("#cnt2").load('离职.html'); //ajax读取页面
+				},
+				handleClose(done) {
+					this.$confirm('确认关闭？').then(_ => {
+						done();
+					}).catch(_ => {});
+				},
+				dakai() {
+					this.isshow1 = true;
+				},
+				lizhidj() {
+					this.isshow2 = true;
+				},
+				handleCurrentChange(val) {
+					this.currentRow = val;
+					alert(JSON.stringify(this.currentRow));
+				}
+			}
+		});
+	</script>
+
+</html>

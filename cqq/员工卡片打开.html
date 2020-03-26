@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>员工卡片</title>
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+	</head>
+
+	<body>
+		<div id="zjclApp" class="form-horizontal" v-cloak>
+			<template>
+				<el-tabs v-model="activeName" @tab-click="handleClick">
+					<el-tab-pane label="基本资料" name="second">
+						<el-form :inline="true" :model="formInline" class="demo-form-inline">
+							<el-form-item label="员工编号">
+								<el-input v-model="formInline.user" placeholder="员工编号"></el-input>
+							</el-form-item>
+							<el-form-item label="员工姓名">
+								<el-input v-model="formInline.user" placeholder="审批人"></el-input>
+							</el-form-item>
+							<el-form-item label="性别">
+								<el-select v-model="formInline.region" placeholder="活动区域">
+									<el-option label="男女" value="shanghai"></el-option>
+									<el-option label="区域二" value="beijing"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="所在门店">
+								<el-input v-model="formInline.user" placeholder="所在门店"></el-input>
+							</el-form-item>
+							<el-form-item label="所在部门">
+								<el-select v-model="formInline.region" placeholder="活动区域">
+									<el-option label="区域一" value="shanghai"></el-option>
+									<el-option label="区域二" value="beijing"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="登录账号">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="岗位">
+								<el-select v-model="formInline.region" placeholder="活动区域">
+									<el-option label="区域一" value="shanghai"></el-option>
+									<el-option label="区域二" value="beijing"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="身体状况">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="身高">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="籍贯">
+								<el-select v-model="formInline.region" placeholder="活动区域">
+									<el-option label="区域一" value="shanghai"></el-option>
+									<el-option label="区域二" value="beijing"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="民族">
+								<el-select v-model="formInline.region" placeholder="活动区域">
+									<el-option label="区域一" value="shanghai"></el-option>
+									<el-option label="区域二" value="beijing"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="婚姻状况">
+								<el-select v-model="formInline.region" placeholder="活动区域">
+									<el-option label="区域一" value="shanghai"></el-option>
+									<el-option label="区域二" value="beijing"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="学历">
+								<el-select v-model="formInline.region" placeholder="活动区域">
+									<el-option label="区域一" value="shanghai"></el-option>
+									<el-option label="区域二" value="beijing"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="毕业学校">
+								<el-select v-model="formInline.region" placeholder="活动区域">
+									<el-option label="区域一" value="shanghai"></el-option>
+									<el-option label="区域二" value="beijing"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="专业">
+								<el-select v-model="formInline.region" placeholder="活动区域">
+									<el-option label="区域一" value="shanghai"></el-option>
+									<el-option label="区域二" value="beijing"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="专业资格">
+								<el-select v-model="formInline.region" placeholder="活动区域">
+									<el-option label="区域一" value="shanghai"></el-option>
+									<el-option label="区域二" value="beijing"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="属性">
+								<el-select v-model="formInline.region" placeholder="活动区域">
+									<el-option label="区域一" value="shanghai"></el-option>
+									<el-option label="区域二" value="beijing"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="学位">
+								<el-select v-model="formInline.region" placeholder="活动区域">
+									<el-option label="区域一" value="shanghai"></el-option>
+									<el-option label="区域二" value="beijing"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="编制">
+								<el-select v-model="formInline.region" placeholder="活动区域">
+									<el-option label="区域一" value="shanghai"></el-option>
+									<el-option label="区域二" value="beijing"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="身份证">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="户口地址">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="现在地址">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="联系电话">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="手机">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="EMail">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="开户银行">
+								<el-select v-model="formInline.region" placeholder="活动区域">
+									<el-option label="区域一" value="shanghai"></el-option>
+									<el-option label="区域二" value="beijing"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="银行账号">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="紧急联系人">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="紧急联系人电话">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="入职日期">
+								<el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions">
+								</el-date-picker>
+							</el-form-item>
+							<el-form-item label="试用到期">
+								<el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions">
+								</el-date-picker>
+							</el-form-item>
+							<el-form-item label="出生日期">
+								<el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions">
+								</el-date-picker>
+							</el-form-item>
+							<el-form-item label="合同开始日期">
+								<el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions">
+								</el-date-picker>
+							</el-form-item>
+							<el-form-item label="合同结束日期">
+								<el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions">
+								</el-date-picker>
+							</el-form-item>
+							<el-form-item label="卡自编号">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="卡内编号">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="推荐人">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="整单折扣权%">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="工时折扣权%">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="商品折扣权%">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+							<el-form-item label="减免权">
+								<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+							</el-form-item>
+						</el-form>
+						<div>
+							<el-button type="warning" plain @click="xinzeng">保存</el-button>
+							<el-button type="info" plain @click="quxiao">关闭</el-button>
+						</div>
+					</el-tab-pane>
+					<el-tab-pane label="其他信息" name="first">用户管理</el-tab-pane>
+				</el-tabs>
+			</template>
+		</div>
+	</body>
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+	<script>
+		var zjclApp = new Vue({
+			el: "#zjclApp",
+			data: {
+				pickerOptions: {
+					disabledDate(time) {
+						return time.getTime() > Date.now();
+					},
+					shortcuts: [{
+						text: '今天',
+						onClick(picker) {
+							picker.$emit('pick', new Date());
+						}
+					}, {
+						text: '昨天',
+						onClick(picker) {
+							const date = new Date();
+							date.setTime(date.getTime() - 3600 * 1000 * 24);
+							picker.$emit('pick', date);
+						}
+					}, {
+						text: '一周前',
+						onClick(picker) {
+							const date = new Date();
+							date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+							picker.$emit('pick', date);
+						}
+					}]
+				},
+				value1: '',
+				value2: '',
+				formInline: {
+					user: '',
+					region: ''
+				},
+				activeName: 'second',
+				tyeps: [{
+					id: '1',
+					name: '雅马哈'
+				}, {
+					id: '2',
+					name: '铃木'
+				}],
+				car: {
+					cno: '',
+					ctype: '',
+					driver: '',
+					driverphone: '',
+					driverbirthday: '',
+					carbirthday: '',
+					milomerter: '',
+					buydate: ''
+				}
+			},
+			methods: {
+				handleClick(tab, event) {
+					console.log(tab, event);
+				},
+				clearcar() {
+					this.car = {
+						cno: '',
+						ctype: '',
+						driver: '',
+						driverphone: '',
+						driverbirthday: '',
+						carbirthday: '',
+						milomerter: '',
+						buydate: ''
+					}
+				},
+				xinzeng() {
+
+				},
+				quxiao() {
+					lzdjApp.isshow1 = false;
+				}
+
+			},
+			mounted() {
+
+			}
+		});
+	</script>
+
+</html>
