@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="kfzlclAdd">
+			
+						<template>
+							<h4>客户：{{temp.name}}</h4>
+								<el-table :data="list" border style="width: 100%">
+								
+									<el-table-column width="50" align="center">
+										<template slot="header" slot-scope="scope">
+											<el-button type="text" @click="clxxAdd" icon="el-icon-plus"></el-button>
+										</template>
+										<template slot-scope="scope">
+											<el-button type="text" @click="clxxRemove(scope.$index)" icon="el-icon-delete"></el-button>
+										</template>
+
+									</el-table-column>
+									
+									<el-table-column label="车牌号">
+										<template slot-scope="scope" >
+											<el-input size="mini" placeholder="请输入车牌" v-model="scope.row.cp" clearable>
+											</el-input>
+										</template>
+									</el-table-column>
+									<el-table-column label="车辆品牌">
+										<template slot-scope="scope">
+
+											<el-input size="mini" placeholder="请输入品牌" v-model="scope.row.pp" clearable>
+											</el-input>
+										</template>
+									</el-table-column>
+
+									<el-table-column label="车辆颜色">
+										<template slot-scope="scope">
+											<el-input size="mini" v-model="scope.row.ys" clearable>
+											</el-input>
+										</template>
+									</el-table-column>
+
+									<el-table-column label="配置">
+										<template slot-scope="scope">
+											<el-input size="mini" v-model="scope.row.pz" clearable>
+											</el-input>
+										</template>
+									</el-table-column>
+									<el-table-column label="产地">
+										<template slot-scope="scope">
+											<el-input size="mini" v-model="scope.row.cd" clearable>
+											</el-input>
+										</template>
+									</el-table-column>
+									<el-table-column label="车辆款式">
+										<template slot-scope="scope">
+											<el-input size="mini" v-model="scope.row.ks" clearable>
+											</el-input>
+										</template>
+									</el-table-column>
+								</el-table>
+								 
+  								<div style="text-align: right;margin-top: 2ex;">
+  									<el-button type="primary" style="width: 150px;" :disabled="bool==true?true:false" @click="cltj">提交</el-button>
+  									<el-button style="width: 150px;" @click="quxiao">取消</el-button>
+  								</div>
+							</template>
+			
+		</div>
+	</body>
+	
+	<script>
+	var khzlxg = new Vue({
+			el: "#kfzlclAdd",
+			data: {
+				list:[],
+				temp:{},
+				bool:true
+			},
+			methods: {
+				
+				/*车辆提交*/
+				cltj(){
+					let _this=this;
+					let bool=true;
+						$.each(_this.list, function(i, obj) {
+						if(obj.cp == "" && obj.pp == "") {
+							_this.$message({
+								showClose: true,
+								message: '车牌号和品牌不能为空！',
+								type: 'error'
+							});
+							bool = false;
+						} else if(obj.cp == "") {
+							_this.$message({
+								showClose: true,
+								message: '请填写车牌号',
+								type: 'error'
+							});
+							bool = false;
+						} else if(obj.pp == "") {
+							_this.$message({
+								showClose: true,
+								message: '请填写车辆品牌',
+								type: 'error'
+							});
+							bool =  false;
+						}
+
+					});
+					if(bool){
+						alert("添加成功")
+						gangwei.radio="";
+					gangwei.dialogVisible2 = false;
+				
+					}
+				},
+				/*取消*/
+				quxiao(){
+					gangwei.radio="";
+					gangwei.dialogVisible2 = false;
+				},
+					addcl() {
+						this.bool=false;
+					this.list.splice(0, 0, {
+						pp: '',
+						ks: '',
+						cp: '',
+						pz: '',
+						ys: '',
+						cd: ''
+					});
+				},
+				
+				/*车辆填写信息移除*/
+				clxxRemove(index) {
+					
+					this.list.splice(index, 1);
+					this.bool=this.list.length==0?true:false;
+				},
+				
+				/*车辆信息添加*/
+				clxxAdd() {
+					
+					let _this = this;
+					if(_this.list.length == 0) {
+						_this.addcl();
+						return
+					}
+					let bool =true;
+						$.each(_this.list, function(i, obj) {
+						if(obj.cp == "" && obj.pp == "") {
+							_this.$message({
+								showClose: true,
+								message: '车牌号和品牌不能为空！',
+								type: 'error'
+							});
+							bool = false;
+						} else if(obj.cp == "") {
+							_this.$message({
+								showClose: true,
+								message: '请填写车牌号',
+								type: 'error'
+							});
+							bool = false;
+						} else if(obj.pp == "") {
+							_this.$message({
+								showClose: true,
+								message: '请填写车辆品牌',
+								type: 'error'
+							});
+							bool =  false;
+						}
+
+					});
+					if(bool) {
+						_this.addcl()
+					}
+
+				}
+			},
+			mounted() {
+			
+					this.temp=JSON.parse(sessionStorage.getItem("khzlclAdd"));
+					gangwei.fullscreenLoading = false;
+			}
+		})
+	</script>
+</html>

@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<style>
+			[v-cloak]{
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body style="background-color: #e6e6e6;">
+
+		<div id="ygqx" style="margin: 0px auto;border: 0px solid; margin: 5px;" v-cloak>
+
+			<div style="background-color: white;margin-bottom:1ex;padding-left: 3ex; box-shadow: 0px 0px 5px #000000;">
+				<el-button type="text" icon="el-icon-search" @click="clickquery">查看</el-button>
+				<el-button type="text" icon="el-icon-edit" @click="clcikupdate">修改</el-button>
+				<el-button type="text" icon="el-icon-delete" @click="deletes">删除</el-button>
+				<el-button type="text" icon="el-icon-plus" @click="yuangongAdd">新增</el-button>
+				<el-button type="text" icon="el-icon-s-custom" @click="yuangongjuese">员工角色</el-button>
+				<el-button type="text" icon="el-icon-s-tools" @click="quanxian">操作权限</el-button>
+				<span style="margin-left: 55ex;">
+					 德召文汽修部门： <el-select  clearable  size="mini" v-model="bumenval" filterable >
+    <el-option
+      v-for="item in bumens"
+      :key="item.value"
+     
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+				
+			</span>
+			</div>
+			<template>
+				<el-table border ref="multipleTable" :data="tableData" tooltip-effect="dark" 
+					style="width: 100%;" @selection-change="handleSelectionChange">
+					<el-table-column>
+					<el-table-column type="selection" width="55">
+					</el-table-column>
+
+					<el-table-column label="编号" width="50">
+						<template slot-scope="scope">{{ scope.$index+1}}</template>
+					</el-table-column>
+
+					<el-table-column prop="name" label="姓名" width="120">
+					</el-table-column>
+
+					<el-table-column prop="gh" label="工号" width="120">
+					</el-table-column>
+
+					<el-table-column prop="gw" label="岗位" width="120">
+					</el-table-column>
+
+					<el-table-column prop="bm" label="部门" width="120">
+					</el-table-column>
+
+					<el-table-column prop="js" label="角色" width="120">
+					</el-table-column>
+
+					<el-table-column prop="xb" label="性别" width="120">
+					</el-table-column>
+
+					<el-table-column prop="xl" label="学历" width="120">
+					</el-table-column>
+
+					<el-table-column label="入职日期" width="120">
+						<template slot-scope="scope">{{ scope.row.date }}</template>
+					</el-table-column>
+
+					<el-table-column prop="hm" label="联系号码" width="120">
+					</el-table-column>
+					<el-table-column prop="address" label="家庭地址" show-overflow-tooltip>
+					</el-table-column>
+				</el-table>
+				<div class="block" style="text-align: center;background-color: white;padding-top: 3ex;padding-bottom: 3ex;">
+					<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+					</el-pagination>
+				</div>
+			</template>
+
+			<el-dialog title="员工查询" :visible.sync="dialogVisible" width="600px" :before-close="handleClose">
+				<span slot="footer" class="dialog-footer">
+   
+    <el-button type="primary" style="width: 100px;" @click="dialogVisible = false">查看</el-button>
+  </span>
+				<div>
+					<span> 
+  	员工编号：<el-input
+  placeholder="请输入内容"
+  size="mini"
+   style="width: 120px;"
+  v-model="bh"
+  clearable>
+</el-input>
+  </span>
+
+					<span>  员工姓名：<el-input
+  placeholder="请输入内容"
+  style="width: 120px;"
+    size="mini"
+  v-model="xm"
+  clearable>
+</el-input>
+  </span>
+
+					<span>  性别：
+      	  <el-radio v-model="xb" label="1">男</el-radio>
+  <el-radio v-model="radio" label="2">女</el-radio>
+  </span>
+
+				</div>
+				<div style="margin-top: 2ex;">
+					<span>  岗位：
+      	  <el-select v-model="gw" style="width: 120px;" size="mini" filterable placeholder="请选择">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+  </span>
+
+					<span>  入职日期：
+       
+    <el-date-picker
+    	 style="width: 120px;" size="mini"
+      v-model="rzrq"
+      type="date"
+      placeholder="选择日期">
+    </el-date-picker>
+  </span>
+					<span>  学历：
+       <el-select v-model="xl" style="width: 120px;" size="mini" filterable placeholder="请选择">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+  </span>
+				</div>
+				<div style="margin-top: 2ex;">
+
+					<span>  部门：
+       <el-select v-model="bm" style="width: 120px;" size="mini" filterable placeholder="请选择">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+  </span>
+				</div>
+			</el-dialog>
+
+			<!--修改-->
+
+			<el-dialog :title="title" v-loading.fullscreen.lock="fullscreenLoading" :visible.sync="dialogVisible2" width="800px" :before-close="handleClose">
+			 <div id="cnt">
+ <div style="width: 200px; margin: 0px auto;text-align: center;">
+ 	<span class="el-icon-loading"></span>正在初始化......
+ </div>
+ 
+ </div>
+				
+			</el-dialog>
+
+			<el-dialog title="员工信息添加" :visible.sync="dialogVisible3" width="800px" :before-close="handleClose">
+				<el-form :model="ruleForm" :inline="true" :rules="rules" ref="ruleForm2" label-width="100px" class="demo-form-inline">
+					<el-form-item label="工号" prop="gh">
+						<el-input v-model="ruleForm.gh" style="width: 250px;" :disabled="true"></el-input>
+					</el-form-item>
+
+					<el-form-item label="姓名" placeholder="请输入姓名" prop="name">
+
+						<el-input v-model="ruleForm.name" style="width: 250px;"></el-input>
+
+					</el-form-item>
+
+					<el-form-item label="岗位" prop="gw">
+						<el-select style="width: 250px;" v-model="ruleForm.gw" placeholder="请选择岗位">
+							<el-option label="维修工" value="shanghai"></el-option>
+							<el-option label="检验工" value="beijing"></el-option>
+						</el-select>
+					</el-form-item>
+
+					<el-form-item label="部门" prop="bm">
+						<el-select style="width: 250px;" v-model="ruleForm.bm" placeholder="请选择岗位">
+							<el-option label="维修部门" value="shanghai"></el-option>
+							<el-option label="检验部门" value="beijing"></el-option>
+						</el-select>
+
+					</el-form-item>
+
+					<el-form-item label="角色" prop="js">
+						<el-select style="width: 250px;" v-model="ruleForm.js" placeholder="请选择岗位">
+							<el-option label="经理" value="shanghai"></el-option>
+							<el-option label="普通员工" value="beijing"></el-option>
+						</el-select>
+
+					</el-form-item>
+					<el-form-item label="性别" prop="xb">
+						<el-radio-group style="width: 250px;" v-model="ruleForm.xb">
+							<el-radio label="男"></el-radio>
+							<el-radio label="女"></el-radio>
+						</el-radio-group>
+					</el-form-item>
+
+					<el-form-item label="学历" prop="xl">
+						<el-select style="width: 250px;" v-model="ruleForm.xl" placeholder="请选择学历">
+							<el-option label="大专" value="shanghai"></el-option>
+							<el-option label="本科" value="beijing"></el-option>
+						</el-select>
+					</el-form-item>
+
+					<el-form-item label="入职日期" prop="date">
+						<el-date-picker style="width: 250px;" type="date" placeholder="选择日期" v-model="ruleForm.date"></el-date-picker>
+					</el-form-item>
+
+					<el-form-item label="联系号码" placeholder="请输入号码" prop="hm">
+						<el-input style="width: 250px;" v-model="ruleForm.hm"></el-input>
+					</el-form-item>
+
+					<el-form-item label="家庭地址" placeholder="请输入地址" prop="address">
+						<el-input style="width: 250px;" v-model="ruleForm.address"></el-input>
+
+					</el-form-item>
+
+					<el-form-item style="margin: 0px auto;width: 700px; text-align: right;">
+						<el-button type="primary" style="width: 150px;" @click="submitForm2('ruleForm2')">数据提交</el-button>
+						<el-button style="width: 150px;" @click="xiugaiquxiao2('ruleForm2')">取消</el-button>
+					</el-form-item>
+				</el-form>
+			</el-dialog>
+
+
+<el-dialog
+
+  title="员工角色"
+  :visible.sync="dialogVisible4"
+  width="30%"
+  :before-close="handleClose">
+  <div style="box-shadow: 0px 0px 5px #000000;padding: 1ex;width:330px;margin: 0px auto;margin-bottom: 2ex;">
+ <label>当前角色：{{jueseval}}</label>
+ </div>
+ <div style="box-shadow: 0px 0px 5px #000000;padding: 1ex;width:330px;margin: 0px auto;">
+ 	<el-radio-group v-model="jueseval">
+ 	<div  v-for="(temp,i) in jueseList" >   
+ 		<el-radio style="margin-top: 1ex;" @change="radiochangejs(temp)" :label="temp.name">{{temp.name}}</el-radio></div>
+   
+
+  </el-radio-group>
+ 	
+ </div>
+  
+  <div style="clear: both;margin: 0px auto;margin-top: 3ex;text-align: center;"> 
+  	<el-button style="width: 120px;" type="primary" @click="">确 定</el-button>
+    <el-button style="width: 120px;" @click="dialogVisible4= false">取 消</el-button>
+   </div>
+
+</el-dialog>
+
+
+
+		</div>
+
+	</body>
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+	<script>
+		
+		var main= {
+    data() {
+      const generateData = _ => {
+        const data =[];
+        return null;
+      };
+      return {};
+    }
+  };
+  
+  var ygqx=Vue.extend(main);
+  var ygqx2=new ygqx({
+			el: "#ygqx",
+			data: {
+				
+			chekArray:[2,4,7],
+        data: [{
+          id: 1,
+          label: '前台管理',
+          children: [{
+            id: 4,
+            label: '结算中心',
+            fid:1
+          },{
+            id: 2,
+            label: '会员卡',
+             fid:1
+          },{
+            id: 3,
+            label: '会卡重置',
+             fid:1
+          }]
+        },{
+          id: 9,
+          label: '权限管理',
+          children: [{
+            id: 6,
+            label: '角色管理',
+             fid:9
+          },{
+            id: 7,
+            label: '使用管理',
+                         fid:9
+          },{
+            id: 5,
+            label: '用户管理',
+                         fid:9
+          }]
+        }],
+        defaultProps: {
+          children: 'children',
+          label: 'label'
+        },
+				
+				dqjs:'',
+				jueseList:[
+				{id:1,name:"经理"},
+				{id:2,name:"普通员工"},
+				{id:3,name:"部门经理"},
+				{id:4,name:"仓管员"},
+				{id:5,name:"维修站长"}
+				],
+				jueseval:'',
+				dialogVisible5:false,
+				dialogVisible4:false,
+				dialogVisible3: false,
+				bumenval: "",
+				bumens: [{
+					label: "维修部门",
+					value: "2"
+				}, {
+					label: "检验部门",
+					value: "3"
+				}, {
+					label: "财务部门",
+					value: "4"
+				}],
+				dialogVisible2: false,
+				currentPage4: 1,
+				bh: '',
+				xm: '',
+				xl: '',
+				xb: '',
+				gw: '',
+				rzrq: '',
+				bm: '',
+				options: [{
+					value: '选项1',
+					label: '黄金糕'
+				}, {
+					value: '选项2',
+					label: '双皮奶'
+				}, {
+					value: '选项3',
+					label: '蚵仔煎'
+				}, {
+					value: '选项4',
+					label: '龙须面'
+				}, {
+					value: '选项5',
+					label: '北京烤鸭'
+				}],
+				value: '',
+				radio: "",
+				dialogVisible: false,
+				tableData: [{
+					date: '2016-05-03',
+					name: '王小虎',
+					address: '上海市普陀区金沙江路 1518 弄',
+					gh: 1003,
+					xb: "男",
+					bm: "修理部",
+					hm: "123123123123",
+					gw: "维修工",
+					xl: "大专"
+				}, {
+					date: '2016-05-03',
+					name: '王小虎',
+					address: '上海市普陀区金沙江路 1518 弄',
+					gh: 1003,
+					xb: "女",
+					bm: "修理部",
+					hm: "123123123123",
+					gw: "维修工",
+					xl: "大专"
+				}, {
+					date: '2016-05-03',
+					name: '王小虎',
+					address: '上海市普陀区金沙江路 1518 弄',
+					gh: 1003,
+					xb: "男",
+					bm: "修理部",
+					hm: "123123123123",
+					gw: "维修工",
+					xl: "大专"
+				}, {
+					date: '2016-05-03',
+					name: '王小虎',
+					address: '上海市普陀区金沙江路 1518 弄',
+					gh: 1003,
+					xb: "男",
+					bm: "修理部",
+					hm: "123123123123",
+					gw: "维修工",
+					xl: "大专"
+				}, {
+					date: '2016-05-03',
+					name: '王小虎',
+					address: '上海市普陀区金沙江路 1518 弄',
+					gh: 1003,
+					xb: "男",
+					bm: "修理部",
+					hm: "123123123123",
+					gw: "维修工",
+					xl: "大专",
+					js: "经理"
+				}],
+				multipleSelection: [],
+				ruleForm: {},
+				rules: {
+					name: [{
+							required: true,
+							message: '请输入姓名',
+							trigger: 'blur'
+						},
+						{
+							min: 3,
+							max: 5,
+							message: '长度在 3 到 5 个字符',
+							trigger: 'blur'
+						}
+					],
+					bm: [{
+						required: true,
+						message: '请选择部门',
+						trigger: 'change'
+					}],
+					xl: [{
+						required: true,
+						message: '请选择学历',
+						trigger: 'change'
+					}],
+					js: [{
+						required: true,
+						message: '请选择角色',
+						trigger: 'change'
+					}],
+					gw: [{
+						required: true,
+						message: '请选择岗位',
+						trigger: 'change'
+					}],
+					date: [{
+						required: true,
+						required: true,
+						message: '请选择日期',
+						trigger: 'change'
+					}],
+					type: [{
+						type: 'array',
+						required: true,
+						message: '请至少选择一个活动性质',
+						trigger: 'change'
+					}],
+					xb: [{
+						required: true,
+						message: '请选择性别',
+						trigger: 'change'
+					}],
+					hm: [{
+						required: true,
+						message: '请填写号码',
+						trigger: 'blur'
+					}],
+					address: [{
+						required: true,
+						message: '请填写地址',
+						trigger: 'blur'
+					}]
+				},fullscreenLoading:false,
+				title:''
+
+			},
+			methods: {
+			
+				/*权限*/
+				quanxian(){
+					let _this=this;
+					if(this.multipleSelection.length == 0) {
+						this.$message({
+							showClose: true,
+							message: '提示，请单选你要操作的数据',
+							type: 'warning'
+						});
+						return
+					}
+					if(this.multipleSelection.length > 1) {
+						this.$message({
+							showClose: true,
+							message: '错误操作，请单选数据',
+							type: 'error'
+						});
+
+						return
+					}
+					this.title="员工权限操作";
+					this.dialogVisible2=true;
+					this.fullscreenLoading = true;
+					setTimeout(()=>{
+						sessionStorage.setItem("qxjs",this.multipleSelection[0].js);
+					sessionStorage.setItem("qxyh",this.multipleSelection[0].name);
+					sessionStorage.setItem("qxgh",this.multipleSelection[0].gh);
+					$("#cnt").load("员工权限修改.html");
+					},"1000");
+					
+				},
+				/*角色id*/
+				radiochangejs(obj){
+					this.qdjs=obj.id;
+				},
+				/*员工角色*/
+				yuangongjuese(){
+					if(this.multipleSelection.length == 0) {
+						this.$message({
+							showClose: true,
+							message: '提示，请单选你要修改的数据',
+							type: 'warning'
+						});
+						return
+					}
+					if(this.multipleSelection.length > 1) {
+						this.$message({
+							showClose: true,
+							message: '错误操作，请单选修改',
+							type: 'error'
+						});
+
+						return
+					}
+					this.jueseval=this.multipleSelection[0].js;
+					this.dialogVisible4=true;
+					
+				},
+				/*員工添加*/
+				yuangongAdd() {
+					this.ruleFor = {};
+					this.dialogVisible3 = true;
+
+				},
+				submitForm2(formName) {
+					this.$refs[formName].validate((valid) => {
+						if(valid) {
+							alert('submit!');
+						} else {
+							console.log('error submit!!');
+							return false;
+						}
+					});
+				},
+				/*重置*/
+				resetForm(formName) {
+					this.$refs[formName].resetFields();
+				},
+				/*修改取消*/
+				xiugaiquxiao2(formName) {
+					this.resetForm(formName)
+					this.ruleForm = {};
+					this.toggleSelection()
+					this.dialogVisible3 = false;
+				},
+				/*数据删除*/
+				deletes() {
+					let _this = this;
+					if(this.multipleSelection.length == 0) {
+						this.$message({
+							showClose: true,
+							message: '提示，请勾选选你要删除的数据',
+							type: 'warning'
+						});
+						return
+					}
+					this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						_this.$alert(JSON.stringify(_this.multipleSelection))
+						this.$message({
+							type: 'success',
+							message: '删除成功!'
+						});
+					}).catch(() => {
+						this.$message({
+							type: 'info',
+							message: '已取消删除'
+						});
+					});
+
+				},
+				handleSelectionChange(val) {
+					this.multipleSelection = val;
+				},
+				/*多选取消*/
+				toggleSelection(rows) {
+					if(rows) {
+						rows.forEach(row => {
+							this.$refs.multipleTable.toggleRowSelection(row);
+						});
+					} else {
+						this.$refs.multipleTable.clearSelection();
+					}
+				},
+				/*修改取消*/
+				xiugaiquxiao(formName) {
+					this.resetForm(formName)
+					this.ruleForm = {};
+					this.toggleSelection()
+					this.dialogVisible2 = false;
+				},
+				submitForm(formName) {
+					this.$refs[formName].validate((valid) => {
+						if(valid) {
+							alert('submit!');
+						} else {
+							console.log('error submit!!');
+							return false;
+						}
+					});
+				},
+				/*修改提交*/
+				updatesOk() {
+					this.dialogVisible2 = false;
+				},
+				handleSizeChange(val) {
+					console.log(`每页 ${val} 条`);
+				},
+				handleCurrentChange(val) {
+					console.log(`当前页: ${val}`);
+				},
+				handleSelectionChange(val) {
+					this.multipleSelection = val;
+
+				},
+				/*查看 */
+				clickquery() {
+					this.dialogVisible = true;
+				},
+				handleClose(done) {
+					this.$confirm('确认关闭？')
+						.then(_ => {
+							this.dialogVisible=false;
+							this.dialogVisible2=false;
+							this.dialogVisible4=false;
+							this.dialogVisible3 =false;
+							this.xiugaiquxiao('ruleForm')
+							done();
+
+						})
+						.catch(_ => {});
+				},
+				/*修改*/
+				clcikupdate() {
+					if(this.multipleSelection.length == 0) {
+						this.$message({
+							showClose: true,
+							message: '提示，请单选你要修改的数据',
+							type: 'warning'
+						});
+						return
+					}
+					if(this.multipleSelection.length > 1) {
+						this.$message({
+							showClose: true,
+							message: '错误操作，请单选修改',
+							type: 'error'
+						});
+
+						return
+					}
+					this.title="员工信息修改";
+					sessionStorage.setItem("ygxxxg",JSON.stringify(this.multipleSelection[0]));
+					this.dialogVisible2 = true;
+					this.fullscreenLoading = true;
+					setTimeout(()=>{
+						$("#cnt").load("员工信息修改.html");
+					},"1000")
+				}
+			},
+			mounted() {
+
+			}
+		})
+		/*var zhnanei = new Vue*/
+	</script>
+
+</html>

@@ -3,9 +3,9 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<title>站内接单</title>
+		<title>德召文汽修站内接单</title>
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
-
+		<link rel="stylesheet" href="../css/bootstrap.min.css" />
 <style>
   .el-table .warning-row {
     background: oldlace;
@@ -17,72 +17,175 @@
 </style>
 	</head>
 
-	<body>
-		<div id="zhnanei" style="text-align: center;">
-			<h2>站内接单</h2>
-			<template>
-				<el-select v-model="value" filterable placeholder="请选择技工">
-					<el-option v-for="item in options" :key="item.id" :label="item.label" :value="item.id">
+	<body style="  background-color: #e6e6e6;">
+		<div id="zhnanei" style="text-align: center;margin: 0px auto; box-shadow: 0px 0px 5px rgba(57, 61, 73, 1); 
+			margin-top: 5ex;width: 800px;
+			padding: 2ex;
+			">
+			<h2>德召文汽修站内接单</h2>
+			<div style="margin-bottom: 2ex;margin-top: 3ex;">
+				<template>
+				<el-select v-model="value" @change="jigong" filterable placeholder="请选择技工">
+					<el-option v-for="(item,i) in options" :key="item.id" :label="item.label" :value="i">
 					</el-option>
 				</el-select>
 			</template>
 			<template>
 				<el-select v-model="value2" filterable placeholder="请选择车辆品牌">
-					<el-option v-for="item in options2" :key="item.id" :label="item.label" :value="item.id">
+					<el-option v-for="(item,i) in options2" :key="item.id" :label="item.label" :value="i">
 					</el-option>
 				</el-select>
 				<el-input style="width: 150px;" placeholder="请输入车牌号" v-model="input" clearable>
 				</el-input>
 			</template>
+			</div>
+			<div style="text-align: left;margin: 0px auto;background-color: white;border-radius:10px; width: 600px;margin-bottom: 1ex;">
+				<el-button  @click="addXiangMu" type="primary">添加维修项目</el-button>
+				<div style="float: right;">
+						<label>
+						总金额：<el-input
+  v-model="moneySum"
+  :disabled="true" style="width: 100px;">
+
+</el-input>
+						</label>
+				</div>
+			</div>
+				
 <template>
   <el-table
     :data="tableData"
-    style="width: 600px"
+    style="width: 600px;margin: 0px auto;"
     :row-class-name="tableRowClassName">
-    <el-table-column
-      prop="date"
-      label="日期"
+    <el-table-column  label="订单浏览">
+    	 <el-table-column
+      label="编号"
       width="180">
+      <template  slot-scope="scope">
+      	{{scope.$index+1}}
+      </template>
+    </el-table-column>
+    
+    
+    <el-table-column
+      prop="type"
+      label="维修项目名称">
+    </el-table-column>
+     <el-table-column
+      label="维修价格">
+      <template   slot-scope="scope">
+      	<label style="">{{scope.row.money}}</label>
+      	<el-button  style="float: right;" v-if="scope.$index!=0" @click="removeKaiDan(scope.$index)" type="danger" icon="el-icon-delete" circle></el-button>
+      </template>
+    </el-table-column>
+    
+   
+  </el-table>
+  <div style="margin-top: 3ex;margin-bottom: 5ex;">
+    <el-button @click="addJieDan" v-if="loading==false" style="width: 200px;" type="success">开始维修</el-button>
+  	<el-button v-if="loading" style="width: 200px;" icon="el-icon-loading"  type="info" plain disabled >加载</el-button>
+  	
+  </div>
+  
+</template>
+
+<div class="modal fade" id="modal1" data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">维修项目</h4>
+      </div>
+      <div class="modal-body">
+  <div style="margin-top: 15px;">
+  <el-input placeholder="模糊查看" v-model="input2" class="input-with-select">
+
+  <template slot="prepend">项目名称：</template>
+ 
+    <el-button slot="append" type="primary" icon="el-icon-search" plain></el-button>
+  </el-input>
+</div>
+       <template>
+  <el-table
+    ref="multipleTable"
+    :data="tableData2"
+    tooltip-effect="dark"
+    style="width: 100%"
+      height="250"
+    @selection-change="handleSelectionChange">
+    <el-table-column
+      type="selection"
+      width="55">
+    </el-table-column>
+    
+    <el-table-column
+      label="编号"
+      width="120">
+      <template slot-scope="scope">{{scope.$index+1}}</template>
     </el-table-column>
     <el-table-column
       prop="name"
-      label="姓名"
-      width="180">
+      label="项目名称"
+      width="120">
     </el-table-column>
     <el-table-column
-      prop="address"
-      label="地址">
+      prop="money"
+      label="标准价格"
+      show-overflow-tooltip>
+    </el-table-column>
+    <el-table-column
+      prop="vipMoney"
+      label="会员价格"
+      show-overflow-tooltip>
     </el-table-column>
   </el-table>
 </template>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" @click="xiangmuOk" class="btn btn-primary">
+        	确定维修项目
+        </button>
+        
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 		</div>
 
 	</body>
 	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="../js/vue.js"></script>
 	<script type="text/javascript" src="../js/index.js"></script>
 	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
-
-	<script>
+		<script>
 		var zhnanei = new Vue({
 			el: "#zhnanei",
 			data: {
+				moneySum:0,
+				loading:false,
 				value: '',
 				value2: '',
 				input: '',
+				input2:'',
 				user: {},
 				options: [{
 					id: '1',
-					label: '黄金糕'
+					label: '詹三',
+					money:50
 				}, {
 					id: '2',
-					label: '双皮奶'
+					label: '李四',
+					money:30
 				}, {
 					id: '3',
-					label: '蚵仔煎'
+					label: '李三',
+					money:60
 				}, {
 					id: '4',
-					label: '蚵仔煎2'
+					label: '王五',
+					money:80
 				}],
 				options2: [{
 					id: '1',
@@ -97,26 +200,78 @@
 					id: '4',
 					label: '奥迪'
 				}],
-				tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }]
+				tableData: [],
+				tableData2:[{id:"1",name:"米其林轮胎",money:"500",vipMoney:"480"},{id:"2",name:"维斯特发动机",money:"2000",vipMoney:"1900"},
+				{id:"3",name:"保修",money:"200",vipMoney:"190"},{id:"4",name:"洗车",money:"50",vipMoney:"45"}],
+				XiangMu:[]
 			},
 			
 			methods: {
+				/*勾选项目*/
+				handleSelectionChange(obj){
+				this.XiangMu=obj
+				},
+				/*添加维修项目*/
+				addXiangMu(){
+					$("#modal1").modal();
+				},
+				/*确定添加项目*/
+				xiangmuOk(){
+					let _this=this;
+					if(this.XiangMu.length==0){
+						   this.$notify({
+          title: '警告',
+          message: '请选择维修项目',
+          type: 'warning'
+        });
+					return }
+						$.each(_this.XiangMu,function(i,obj){
+							_this.tableData.push(
+								{
+									type:obj.name,
+									money:obj.money
+								}
+						)
+						});
+						_this.summoney();
+					  _this.$refs.multipleTable.clearSelection();
+					$("#modal1").modal("hide");
+					
+				},
+				/*确定接单*/
+				addJieDan(){
+					let _this=this
+	
+        this.loading=true;
+        setTimeout(row=>{
+        	_this.moneySum=0;
+        	_this.loading=false;
+        	_this.tableData=[]
+        	this.$message({
+          message: '开始维修',
+          type: 'success'
+          
+        });
+        	
+        },"700")
+				},
+				/*删除维修项目*/
+				removeKaiDan(index){
+					this.tableData.splice(index,1);
+					 	this.summoney();
+				},
+				/*技工选择*/
+				jigong(index){
+					let _this=this;
+					if(this.tableData.length>0 && this.tableData[0].type.substring(0,3)=="技工费"){
+						this.tableData.splice(0,1);
+					}
+					this.tableData.splice(0,0,{
+						type:"技工费("+_this.options[index].label+")",
+						money:_this.options[index].money
+					});
+				_this.summoney();
+				},
 				 tableRowClassName({row, rowIndex}) {
         if (rowIndex === 1) {
           return 'warning-row';
@@ -125,24 +280,18 @@
         }
         return '';
       },
-				/*查看余额*/
-				yue() {
-					$("#cnt").html("<h1>您的账户余额是：" + this.user.balance + "元</h1>");
-
-				},
-				clickOpen(url) {
-					$("#cnt").load(url)
-				},
-				queryNumber() {
-
-					$("#cnt").load("小型促销库存查询.html")
-				}
-
+      summoney(){
+      		let _this=this;
+      		let money=0;
+				$.each(this.tableData,function(i,obj){
+					money+=parseInt(obj.money);
+				});
+				this.moneySum=money;
+      }
 			},
 			mounted() {
 
-				this.user = JSON.parse(sessionStorage.getItem("user"));
-
+			
 			}
 		})
 	</script>

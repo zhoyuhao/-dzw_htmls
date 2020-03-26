@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+
+		<div style="margin: 0px auto;" id="ygqxxg">
+			<h4 style="margin-top: -2ex;box-shadow: 0px 0px 5px #000000;line-height: 30px;height: 30px;">
+ 		<span style="margin-left: 3ex;">工号：{{qxgh}}</span>
+ 		<span style="margin-left: 2ex;">用户：{{qxyh}}</span>
+ 		<span style="margin-left: 2ex;">角色：{{qxjs}}</span>
+ 	</h4>
+			<div style="box-shadow: 0px 0px 5px #000000;padding-bottom: 3ex;">
+
+				<el-tree ref="tree" :data="data" show-checkbox node-key="id" :getCurrentKey="w" :default-expanded-keys="chekArray" :default-checked-keys="chekArray" :props="defaultProps">
+				</el-tree>
+
+				<div style="clear: both;margin: 0px auto;margin-top: 3ex;text-align: center;">
+					<el-button style="width: 120px;" type="primary" @click="qxxiugaiOk">确 定</el-button>
+					<el-button style="width: 120px;" @click="quxiao">取 消</el-button>
+				</div>
+
+			</div>
+
+		</div>
+	</body>
+	<script>
+		var clgl = new Vue({
+			el: "#ygqxxg",
+			data: {
+				defaultProps: {
+					children: 'children',
+					label: 'label'
+				},
+				qxgh: '',
+				qxyh: '',
+				qxjs: '',
+				data: [{
+          id: 1,
+          label: '前台管理',
+          children: [{
+            id: 4,
+            label: '结算中心',
+            fid:1
+          },{
+            id: 2,
+            label: '会员卡',
+             fid:1
+          },{
+            id: 3,
+            label: '会卡重置',
+             fid:1
+          }]
+        },{
+          id: 9,
+          label: '权限管理',
+          children: [{
+            id: 6,
+            label: '角色管理',
+             fid:9
+          },{
+            id: 7,
+            label: '使用管理',
+                         fid:9
+          },{
+            id: 5,
+            label: '用户管理',
+                         fid:9
+          }]
+        }],
+				quanxians: [1, 2],
+				titles: ["未授权", "已授权"],
+				qxgh: "",
+				qxyh: "",
+				qxjs: '',
+				chekArray: [2, 4, 7]
+
+			},
+			methods: {
+				
+				quxiao(){
+					ygqx2.dialogVisible2=false;
+				},
+				handleSelectionChange(val) {
+					this.multipleSelection = val;
+				},
+				w() {
+					let _this = this;
+					let arry = this.$refs.tree.getCheckedNodes(false, true);
+					let arr = this.$refs.tree.getCheckedNodes(false, true);
+
+					$.each(arry, function(j, obj2) {
+						$.each(_this.data, function(i, obj) {
+
+							if(obj.id == obj2.id) {
+								console.log(`每页 ${obj.id} ||${obj2.id} ${j}条`);
+								arr = arr.filter(i => {
+									return i != obj2
+								})
+								//arr.splice(j,1)
+
+							}
+
+						})
+					});
+					//console.log(` ${JSON.stringify(arry)}`);
+					console.log(` ${JSON.stringify(arr)}`);
+
+				},
+				qxxiugaiOk() {
+					this.$confirm('权限操作请谨慎, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+
+						console.log(`授权数据${this.quanxians}`);
+						this.w();
+						this.dialogVisible5 = false;
+						this.$message({
+							type: 'success',
+							message: '授权成功!'
+						});
+					}).catch(() => {
+						this.$message({
+							type: 'info',
+							message: '已取消授权'
+						});
+					});
+
+				}
+
+			},
+			mounted() {
+					ygqx2.fullscreenLoading = false;
+				this.qxjs = sessionStorage.getItem("qxjs");
+				this.qxyh = sessionStorage.getItem("qxyh");
+				this.qxgh = sessionStorage.getItem("qxgh");
+
+			}
+		})
+	</script>
+
+</html>
