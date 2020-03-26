@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>维修单</title>
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+
+		<style>
+			.el-table .warning-row {
+				background: oldlace;
+			}
+			
+			.el-table .success-row {
+				background: #f0f9eb;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="lzdjApp">
+			<el-row style="margin-bottom: 20px;">
+				<el-col :span="8">
+					<h1 style="font-size: 24px;">结算中心</h1>
+				</el-col>
+				<el-col :span="12">
+					&nbsp
+				</el-col>
+				<el-col :span="4">
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span="17">
+					单号：0000000001
+				</el-col>
+				<el-col :span="7">
+					<el-button type="primary" plain>委托书</el-button>
+					<el-button type="primary" plain>结算单</el-button>
+					<el-button type="primary" plain>照片</el-button>
+					<el-button type="primary" plain>附件</el-button>
+				</el-col>
+			</el-row>
+			<el-row>
+				<template>
+					<el-form :inline="true" :model="formInline" class="demo-form-inline">
+						<el-form-item label="车牌号码">
+							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						</el-form-item>
+						<el-form-item label="车架号">
+							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						</el-form-item>
+						<el-form-item label="车辆型号">
+							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						</el-form-item>
+						<el-form-item label="车辆品牌">
+							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						</el-form-item>
+						<el-form-item label="发动机号">
+							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						</el-form-item>
+						<el-form-item label="发动机品牌">
+							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						</el-form-item>
+						<el-form-item label="服务顾问">
+							<el-select v-model="formInline.region" placeholder="活动区域">
+								<el-option label="区域一" value="shanghai"></el-option>
+								<el-option label="区域二" value="beijing"></el-option>
+							</el-select>
+						</el-form-item>
+						<el-form-item label="车主姓名">
+							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						</el-form-item>
+						<el-form-item label="驾驶员">
+							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						</el-form-item>
+						<el-form-item label="联系电话">
+							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						</el-form-item>
+						<el-form-item label="进厂里程">
+							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						</el-form-item>
+						<el-form-item label="进厂油量">
+							<el-select v-model="formInline.region" placeholder="活动区域">
+								<el-option label="区域一" value="shanghai"></el-option>
+								<el-option label="区域二" value="beijing"></el-option>
+							</el-select>
+						</el-form-item>
+						<el-form-item label="上次里程">
+							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						</el-form-item>
+						<el-form-item label="进厂时间">
+							<el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions">
+							</el-date-picker>
+						</el-form-item>
+						<el-form-item label="业务类别">
+							<el-select v-model="formInline.region" placeholder="活动区域">
+								<el-option label="区域一" value="shanghai"></el-option>
+								<el-option label="区域二" value="beijing"></el-option>
+							</el-select>
+						</el-form-item>
+						<el-form-item label="施工班次">
+							<el-select v-model="formInline.region" placeholder="活动区域">
+								<el-option label="区域一" value="shanghai"></el-option>
+								<el-option label="区域二" value="beijing"></el-option>
+							</el-select>
+						</el-form-item>
+						<el-form-item label="接车人">
+							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						</el-form-item>
+						<el-form-item label="预计完工">
+							<el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions">
+							</el-date-picker>
+						</el-form-item>
+						<el-form-item label="结算方式">
+							<el-select v-model="formInline.region" placeholder="活动区域">
+								<el-option label="区域一" value="shanghai"></el-option>
+								<el-option label="区域二" value="beijing"></el-option>
+							</el-select>
+						</el-form-item>
+						<el-form-item label="赔款公司">
+							<el-select v-model="formInline.region" placeholder="活动区域">
+								<el-option label="区域一" value="shanghai"></el-option>
+								<el-option label="区域二" value="beijing"></el-option>
+							</el-select>
+						</el-form-item>
+						<el-form-item label="完工时间">
+							<el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions">
+							</el-date-picker>
+						</el-form-item>
+						<el-form-item label="上次进厂时间">
+							<el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions">
+							</el-date-picker>
+						</el-form-item>
+						<el-form-item label="预估金额">
+							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						</el-form-item>
+						<el-form-item label="接待备注">
+							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						</el-form-item>
+
+						<el-form-item label="报修陈述">
+							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						</el-form-item>
+					</el-form>
+				</template>
+			</el-row>
+
+			<template>
+				<el-tabs v-model="activeName" @tab-click="handleClick">
+					<el-tab-pane label="维修项目" name="second">
+						<el-table ref="singleTable" :data="lizhi" highlight-current-row @current-change="handleCurrentChange" style="width: 100%">
+							<el-table-column type="index" width="50">
+							</el-table-column>
+							<el-table-column type="selection" width="55">
+							</el-table-column>
+							<el-table-column property="bumen" label="销售单号" width="120">
+							</el-table-column>
+							<el-table-column property="no" label="单据类型" width="120">
+							</el-table-column>
+							<el-table-column property="name" label="结算方式">
+							</el-table-column>
+							<el-table-column property="sex" label="单据状态">
+							</el-table-column>
+							<el-table-column property="zhiwei" label="结算状态">
+							</el-table-column>
+							<el-table-column property="time" label="结算时间">
+							</el-table-column>
+							<el-table-column property="txt" label="结算人">
+							</el-table-column>
+							<el-table-column property="txt" label="结算金额">
+							</el-table-column>
+							<el-table-column property="txt" label="业务类型">
+							</el-table-column>
+							<el-table-column property="txt" label="客户名称">
+							</el-table-column>
+							<el-table-column property="txt" label="车牌号">
+							</el-table-column>
+							<el-table-column property="txt" label="车型">
+							</el-table-column>
+						</el-table>
+					</el-tab-pane>
+					<el-tab-pane label="领料情况" name="first">领料情况</el-tab-pane>
+					<el-tab-pane label="附加项目" name="third">附加项目</el-tab-pane>
+					<el-tab-pane label="结算信息" name="fourth">结算信息</el-tab-pane>
+				</el-tabs>
+			</template>
+		</div>
+
+	</body>
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+
+	<script>
+		var lzdjApp = new Vue({
+			el: '#lzdjApp',
+			data: {
+				activeName: 'second',
+				formInline: {
+					user: '',
+					region: ''
+				},
+				pickerOptions: {
+					disabledDate(time) {
+						return time.getTime() > Date.now();
+					},
+					shortcuts: [{
+						text: '今天',
+						onClick(picker) {
+							picker.$emit('pick', new Date());
+						}
+					}, {
+						text: '昨天',
+						onClick(picker) {
+							const date = new Date();
+							date.setTime(date.getTime() - 3600 * 1000 * 24);
+							picker.$emit('pick', date);
+						}
+					}, {
+						text: '一周前',
+						onClick(picker) {
+							const date = new Date();
+							date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+							picker.$emit('pick', date);
+						}
+					}]
+				},
+				isshow1: false,
+				isshow2: false,
+				name: '',
+				currentRow: null,
+				lizhi: [{
+						bumen: '管钱部',
+						no: 'OME0001',
+						name: '张三',
+						sex: '男',
+						zhiwei: '销售经理',
+						time: '2019-09-09',
+						txt: 'jdlkasjd'
+					},
+					{
+						bumen: '管钱部',
+						no: 'OME0002',
+						name: '李四',
+						sex: '女',
+						zhiwei: '销售总监',
+						time: '2019-09-09',
+						txt: 'jdlkasjd'
+
+					}
+				]
+			},
+			methods: {
+				handlerOpen1() {
+					$("#cnt1").load('员工卡片.html'); //ajax读取页面
+				},
+				handlerOpen2() {
+					$("#cnt2").load('离职.html'); //ajax读取页面
+				},
+				handleClose(done) {
+					this.$confirm('确认关闭？').then(_ => {
+						done();
+					}).catch(_ => {});
+				},
+				dakai() {
+					this.isshow1 = true;
+				},
+				lizhidj() {
+					this.isshow2 = true;
+				},
+				handleCurrentChange(val) {
+					this.currentRow = val;
+					alert(JSON.stringify(this.currentRow));
+				}
+			}
+		});
+	</script>
+
+</html>

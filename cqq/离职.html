@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>离职</title>
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+	</head>
+
+	<body>
+		<div id="zjclApp" class="form-horizontal" v-cloak>
+			<template>
+				<el-form :inline="true" :model="formInline" class="demo-form-inline">
+					<el-form-item label="所在部门">
+						<el-select v-model="formInline.region" placeholder="活动区域">
+							<el-option label="区域一" value="shanghai"></el-option>
+							<el-option label="区域二" value="beijing"></el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="入职日期">
+						<el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions">
+						</el-date-picker>
+					</el-form-item>
+					<el-form-item label="减免权">
+						<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+					</el-form-item>
+				</el-form>
+				<template>
+					<el-table :data="tableData" style="width: 100%">
+						<el-table-column prop="date" label="日期" width="180">
+						</el-table-column>
+						<el-table-column prop="name" label="姓名" width="180">
+						</el-table-column>
+						<el-table-column prop="address" label="地址">
+						</el-table-column>
+					</el-table>
+				</template>
+				<div>
+					<el-button type="warning" plain @click="xinzeng">保存</el-button>
+					<el-button type="info" plain @click="quxiao">关闭</el-button>
+				</div>
+			</template>
+		</div>
+	</body>
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+	<script>
+		var zjclApp = new Vue({
+			el: "#zjclApp",
+			data: {
+				tableData: [{
+					date: '2016-05-02',
+					name: '王小虎',
+					address: '上海市普陀区金沙江路 1518 弄'
+				}, {
+					date: '2016-05-04',
+					name: '王小虎',
+					address: '上海市普陀区金沙江路 1517 弄'
+				}, {
+					date: '2016-05-01',
+					name: '王小虎',
+					address: '上海市普陀区金沙江路 1519 弄'
+				}, {
+					date: '2016-05-03',
+					name: '王小虎',
+					address: '上海市普陀区金沙江路 1516 弄'
+				}],
+				pickerOptions: {
+					disabledDate(time) {
+						return time.getTime() > Date.now();
+					},
+					shortcuts: [{
+						text: '今天',
+						onClick(picker) {
+							picker.$emit('pick', new Date());
+						}
+					}, {
+						text: '昨天',
+						onClick(picker) {
+							const date = new Date();
+							date.setTime(date.getTime() - 3600 * 1000 * 24);
+							picker.$emit('pick', date);
+						}
+					}, {
+						text: '一周前',
+						onClick(picker) {
+							const date = new Date();
+							date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+							picker.$emit('pick', date);
+						}
+					}]
+				},
+				value1: '',
+				value2: '',
+				formInline: {
+					user: '',
+					region: ''
+				},
+				activeName: 'second',
+				tyeps: [{
+					id: '1',
+					name: '雅马哈'
+				}, {
+					id: '2',
+					name: '铃木'
+				}],
+				car: {
+					cno: '',
+					ctype: '',
+					driver: '',
+					driverphone: '',
+					driverbirthday: '',
+					carbirthday: '',
+					milomerter: '',
+					buydate: ''
+				}
+			},
+			methods: {
+				handleClick(tab, event) {
+					console.log(tab, event);
+				},
+				clearcar() {
+					this.car = {
+						cno: '',
+						ctype: '',
+						driver: '',
+						driverphone: '',
+						driverbirthday: '',
+						carbirthday: '',
+						milomerter: '',
+						buydate: ''
+					}
+				},
+				xinzeng() {
+
+				},
+				quxiao() {
+					lzdjApp.isshow1 = false;
+				}
+
+			},
+			mounted() {
+
+			}
+		});
+	</script>
+
+</html>

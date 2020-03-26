@@ -46,6 +46,7 @@
 			</el-row>
 			<el-row>
 				<el-col>
+					<el-button type="info" plain @click="xinzeng">新增</el-button>
 					<el-button type="primary" plain>增加客户和车</el-button>
 					<el-button type="primary" plain>增加客户</el-button>
 					<el-button type="primary" plain>修改客户</el-button>
@@ -143,6 +144,9 @@
 					</el-tab-pane>
 				</el-tabs>
 			</template>
+			<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="增加车辆" :visible.sync="isshow1" width="60%" :before-close="handleClose">
+				<div id="cnt1"></div>
+			</el-dialog>
 		</div>
 	</body>
 	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
@@ -154,6 +158,8 @@
 		var lzdjApp = new Vue({
 			el: '#lzdjApp',
 			data: {
+				isshow1: false,
+				isshow2: false,
 				activeName: 'second',
 				name: '',
 				currentRow: null,
@@ -179,6 +185,17 @@
 				]
 			},
 			methods: {
+				handlerOpen1() {
+					$("#cnt1").load('员工卡片.html'); //ajax读取页面
+				},
+				handleClose(done) {
+					this.$confirm('确认关闭？').then(_ => {
+						done();
+					}).catch(_ => {});
+				},
+				xinzeng() {
+					this.isshow1 = true;
+				},
 				handleClick(tab, event) {
 					console.log(tab, event);
 				},
