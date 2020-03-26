@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<title>客户资料管理</title>
+		<title>会员管理</title>
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
 		<style>
 			[v-cloak] {
@@ -15,8 +15,8 @@
 	<body style="background-color: #e6e6e6;">
 		<div id="kehuziliao" style="background-color: white;padding: 2ex;" v-cloak>
 
-			<h2 style="margin-left: 3ex;padding: 1ex;margin-top: 0px;">客户资料管理</h2>
-			<span style="display: block;margin-bottom: 3ex;margin-left: 5ex;">顾客姓名：
+			<h2 style="margin-left: 3ex;padding: 1ex;margin-top: 0px;">会员管理</h2>
+			<span style="display: block;margin-bottom: 3ex;margin-left: 5ex;">会员姓名：
     <el-input
     	style="width: 200px;"
     	size="mini"
@@ -26,8 +26,7 @@
 </el-input>
 
     <el-button type="primary"size="mini" @click="queryClick(input)"><span class="el-icon-search"  ></span></el-button>
-			<el-button type="success" size="mini" @click="addClick">添加数据</el-button>
-			<el-button type="success" size="mini" @click="clAdd">添加车辆</el-button>
+			<el-button type="success" size="mini" @click="addClick">添加会员</el-button>
 			<el-button type="warning" size="mini" @click="updateClick">编辑</el-button>
 			</span>
 			<template>
@@ -59,32 +58,20 @@
 					<el-table-column width="180" label="顾客编码">
 						<template slot-scope="temp">
 							<el-radio v-model="radio" :label="temp.$index+1" @change="radiochange(temp.row)">{{temp.row.id}}</el-radio>
-
 						</template>
 					</el-table-column>
-					<el-table-column label="顾客名称" width="180" prop="name">
+					<el-table-column label="会员名称" width="180" prop="name">
 					</el-table-column>
-					<el-table-column label="地址" width="280" prop="desc">
-					</el-table-column>
-
 					<el-table-column label="性别" width="120" prop="xb">
 					</el-table-column>
-
 					<el-table-column label="联系号码" width="280" prop="hm">
 					</el-table-column>
-
-					<el-table-column label="客户类型" width="280" prop="lx">
+					<el-table-column label="会员类型" width="280" prop="lx">
 					</el-table-column>
-
-					<el-table-column label="身份证" width="280" prop="hm">
-					</el-table-column>
-
 					<el-table-column label="会员卡号" width="280" prop="hm">
 					</el-table-column>
-
 					<el-table-column label="累计积分" width="280" prop="hm">
 					</el-table-column>
-
 					<el-table-column label="会员余额" width="280" prop="hm">
 					</el-table-column>
 
@@ -95,24 +82,23 @@
 
 				<template>
 					<el-tabs v-model="activeName" @tab-click="handleClick">
-						<el-tab-pane label="顾客信息填写" name="first">
+						<el-tab-pane label="会员信息填写" name="first">
 
 							<el-form :model="ruleForm" :inline="true" :rules="rules" ref="ruleForm" label-width="100px" class="demo-form-inline">
 
-								<el-form-item label="顾客编号">
+								<el-form-item label="会员编号">
 
 									<el-input v-model="ruleForm.bh" :disabled="true" style="width: 250px;"></el-input>
 
 								</el-form-item>
-								<el-form-item label="顾客姓名" placeholder="请输入姓名" prop="name">
+								<el-form-item label="会员姓名" placeholder="请输入姓名" prop="name">
 
 									<el-input v-model="ruleForm.name" style="width: 250px;"></el-input>
 
 								</el-form-item>
 
-								<el-form-item label="地址" placeholder="请输入地址">
+								<el-form-item label="会员地址" placeholder="请输入地址">
 									<el-cascader :options="options" @change="handleChange" clearable></el-cascader>
-
 								</el-form-item>
 
 								<el-form-item label="性别" prop="xb">
@@ -133,7 +119,7 @@
 
 								</el-form-item>
 
-								<el-form-item label="客户类型" placeholder="请选择类型" prop="lx">
+								<el-form-item label="会员类型" placeholder="请选择类型" prop="lx">
 									<el-select style="width: 250px;" v-model="ruleForm.lx" @change="leixiChange" placeholder="请选择类型">
 										<el-option v-for="item in huiyuanleix" :key="item.value" :label="item.label" :value="item.value">
 										</el-option>
@@ -414,7 +400,7 @@
 					this.dialogVisible2 = true;
 					setTimeout(() => {
 						sessionStorage.setItem("khzlclAdd", JSON.stringify(this.xruleForm));
-						$("#cnt").load("客户资料车辆添加.html");
+						$("#cnt").load("员工卡片打开.html");
 					}, "700")
 
 				},
@@ -550,7 +536,7 @@
 					this.dialogVisible2 = true;
 					setTimeout(() => {
 						sessionStorage.setItem("khzlxg", JSON.stringify(this.xruleForm));
-						$("#cnt").load("客户资料修改.html");
+						$("#cnt").load("员工卡片打开.html");
 					}, "1000");
 
 				},
