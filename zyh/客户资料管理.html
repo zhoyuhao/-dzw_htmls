@@ -5,10 +5,15 @@
 		<meta charset="UTF-8">
 		<title>客户资料管理</title>
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<style>
+			[v-cloak]{
+				display: none;
+			}
+		</style>
 	</head>
 
 	<body style="background-color: #e6e6e6;">
-		<div id="kehuziliao" style="background-color: white;padding: 2ex;">
+		<div id="kehuziliao" style="background-color: white;padding: 2ex;" v-cloak>
 
 			<h2 style="margin-left: 3ex;padding: 1ex;margin-top: 0px;">客户资料管理</h2>
 			<span style="display: block;margin-bottom: 3ex;margin-left: 5ex;">顾客姓名：
@@ -22,6 +27,7 @@
 
     <el-button type="primary"size="mini" @click="queryClick(input)"><span class="el-icon-search"  ></span></el-button>
 			<el-button type="success" size="mini" @click="addClick">添加数据</el-button>
+			<el-button type="success" size="mini" @click="clAdd">添加车辆</el-button>
 			<el-button type="warning" size="mini" @click="updateClick">编辑</el-button>
 			</span>
 			<template>
@@ -169,7 +175,6 @@
 										<template slot-scope="scope">
 											<el-button type="text" @click="clxxRemove(scope.$index)" icon="el-icon-delete"></el-button>
 										</template>
-									</el-table-column>
 
 									</el-table-column>
 									<el-table-column label="车牌号">
@@ -223,15 +228,14 @@
 			
 			
 <el-dialog
-	@opened="opened"
-  title="资料修改"
+  :title="title"
   :visible.sync="dialogVisible2"
   width="900px"
 v-loading.fullscreen.lock="fullscreenLoading"
   :before-close="handleClose">
  <div id="cnt">
  <div style="width: 200px; margin: 0px auto;text-align: center;">
- 	<span class="el-icon-loading"></span>正在加载中......
+ 	<span class="el-icon-loading"></span>正在初始化......
  </div>
  
  </div>
@@ -248,6 +252,7 @@ v-loading.fullscreen.lock="fullscreenLoading"
 		var gangwei = new Vue({
 			el: "#kehuziliao",
 			data: {
+				title:"",
 				fullscreenLoading:true,
 				bb: true,
 				dz: "",
@@ -390,7 +395,31 @@ v-loading.fullscreen.lock="fullscreenLoading"
 				huiyuanleix:[{label:"普通",value:1},{label:"会员",value:2}]
 			},
 			methods: {
-			
+				/*验证是否选中*/
+				code(){
+						if(this.radio == "") {
+						this.$message({
+							message: '警告哦，请选择要修改的数据',
+							type: 'warning'
+						});
+						return true;
+					}
+						return false;
+				},
+			/*车辆添加*/
+			clAdd(){
+				this.title="客户车辆添加";
+				if(this.code()){
+					return
+					}
+				this.fullscreenLoading = true;
+				this.dialogVisible2=true;
+				setTimeout(()=>{
+					sessionStorage.setItem("khzlclAdd",JSON.stringify(this.xruleForm));
+					$("#cnt").load("客户资料车辆添加.html");
+				},"700")
+				
+			},
 				submitForm(formName) {
 					let _this = this;
 					this.$refs[formName].validate((valid) => {
@@ -494,7 +523,7 @@ v-loading.fullscreen.lock="fullscreenLoading"
 				/*类型选择*/
 				leixiChange() {
 					this.leixi = this.ruleForm.lx == "2" ? true : false;
-					console.log(this.leixi)
+					console.log(`this.leixi`)
 				},
 				/*选择*/
 				radiochange(val) {
@@ -511,27 +540,20 @@ v-loading.fullscreen.lock="fullscreenLoading"
 					this.leixi=false;
 					  this.activeName='first';
 					this.dialogVisible = true;
-				},	
-				opened(){
-					
-					  
-						sessionStorage.setItem("khzlxg",JSON.stringify(this.xruleForm));
-					$("#cnt").load("客户资料修改.html");
-					
 				},
 				/*编辑*/
 				updateClick() {
-					console.log(`${this.xruleForm.lx}`)
-					if(this.radio == "") {
-						this.$message({
-							message: '警告哦，请选择要修改的数据',
-							type: 'warning'
-						});
-						return
+					this.title="资料修改";
+					if(this.code()){
+					return
 					}
+				
 					this.fullscreenLoading = true;
 					this.dialogVisible2 = true;
-					
+					setTimeout(()=>{
+						sessionStorage.setItem("khzlxg",JSON.stringify(this.xruleForm));
+						$("#cnt").load("客户资料修改.html");
+					},"1000");
       		
 					
 				},

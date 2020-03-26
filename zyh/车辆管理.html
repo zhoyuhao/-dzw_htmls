@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>车辆管理</title>
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+	</head>
+	<style>
+/* 用来设置当前页面element全局table 选中某行时的背景色*/
+.el-table__body tr.current-row>td{
+  background-color: #f19944 !important;
+  /* color: #f19944; */  /* 设置文字颜色，可以选择不设置 */
+}
+[v-cloak]{
+	display: none;
+}
+</style>
+
+	<body>
+		
+		<div id="clgl" style="margin: 0px auto;" v-cloak>
+			<h2 style="margin-left: 3ex;padding: 1ex;margin-top: 0px;margin-bottom: 0px ;">客户车辆管理</h2>
+			<span style="margin-left: 10ex;">车牌号：<el-input
+				size="mini"
+				style="width: 150px;"
+  placeholder="请输入内容"
+  v-model="input"
+  clearable>
+</el-input></span>
+<el-button type="primary" size="mini">查看</el-button>
+  <el-button type="success" size="mini" @click="cltj">添加车辆</el-button>
+  <el-button type="info" size="mini" style="margin-bottom: 2ex;" @click="clshanchu">删除</el-button>
+			<template >
+					 <el-table
+					 	:row-style="selectedHighlight" 
+					 	    :row-class-name="tableRowClassName"
+					 	  	size="mini"
+					 	  	@row-click="rowClick"
+    ref="multipleTable"
+    :data="list"
+    @row-dblclick="rowdblclick"
+    tooltip-effect="dark"
+    style="width: 100%"
+    height="400"
+    :header-cell-style="{background:'#eef1f6'}"
+    @selection-change="handleSelectionChange">
+ <el-table-column
+      type="selection"
+      width="55">
+    </el-table-column>
+								<el-table-column size="mini" prop="cp" label="车牌号">
+								</el-table-column>
+
+								<el-table-column prop="pp" label="车辆品牌">
+								</el-table-column>
+
+								<el-table-column prop="cp" label="车辆颜色">
+								</el-table-column>
+								<el-table-column prop="cp" label="配置" width="180">
+								</el-table-column>
+								<el-table-column prop="cp" label="产地">
+								</el-table-column>
+
+								<el-table-column prop="cp" label="车辆款式">
+								</el-table-column>
+							</el-table>
+				
+			</template>
+			
+			
+			<h3>顾客信息</h3>
+			
+			<template>
+  <el-table
+  	 :header-cell-style="{background:'#eef1f6'}"
+  	size="mini"
+    :data="tableData"
+    border
+    style="width: 100%">
+   <el-table-column  prop="bh" label="顾客编码">
+					</el-table-column>
+					<el-table-column label="顾客名称"  prop="name">
+					</el-table-column>
+					<el-table-column label="地址"  prop="desc">
+					</el-table-column>
+
+					<el-table-column label="性别"  prop="xb">
+					</el-table-column>
+
+					<el-table-column label="联系号码"  prop="hm">
+					</el-table-column>
+
+					<el-table-column label="客户类型"prop="lx">
+					</el-table-column>
+
+					<el-table-column label="身份证"prop="hm">
+					</el-table-column>
+
+					<el-table-column label="会员卡号"  prop="hm">
+					</el-table-column>
+
+					<el-table-column label="累计积分"prop="hm">
+					</el-table-column>
+
+					<el-table-column label="会员余额"  prop="hm">
+					</el-table-column>
+
+  </el-table>
+</template>
+
+<el-dialog
+  title="车辆添加"
+  width="850px"
+  v-loading.fullscreen.lock="fullscreenLoading"
+  :visible.sync="dialogVisible"
+  :before-close="handleClose">
+   <div id="cnt">
+ <div style="width: 200px; margin: 0px auto;text-align: center;">
+ 	<span class="el-icon-loading"></span>正在初始化......
+ </div>
+ 
+ </div>
+</el-dialog>
+			
+		</div>
+		
+	</body>
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+	<script>
+			var clgl = new Vue({
+			el: "#clgl",
+			data: {
+				fullscreenLoading:false,
+				    dialogVisible: false,
+				getIndex:null,
+				input:'',
+				tableData:[],
+				list:[{cp:"we",pp:"奔驰",list:[{
+				
+					id: '12987122',
+					name: '好滋好味鸡蛋仔',
+					category: '江浙小吃、小吃零食',
+					desc: '荷兰优质淡奶，奶香浓而不腻',
+					address: '上海市普陀区真北路',
+					shop: '王小虎夫妻店',
+					shopId: '10333',
+					hm:"1231231231233",
+					lx:2,
+					ye:12,
+					xb:"男",
+					sfz:"430033123123"
+				}
+				]},{cp:"we",pp:"奔驰",list:[{bh:"123",name:"李四"}]},{cp:"we",pp:"奔驰",list:[{bh:"123",name:"李四"}]}],
+				multipleSelection:[]
+			},
+			/*return { "background-color": "#FFDDAA" }*/
+			methods: {
+				 handleClose(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+      },
+				tableRowClassName ({row, rowIndex}) {
+       //把每一行的索引放进row
+     row.index = rowIndex;
+    },
+    rowClick (row) {
+    	sessionStorage.setItem("khzlclAdd",null);
+    	this.tableData=[];
+       this.getIndex=null;
+    },
+    selectedHighlight({row, rowIndex}) {
+         if ((this.getIndex) === rowIndex ) {
+            return {
+          "background-color": "#CAE1FF"
+       };
+     }
+    },
+		/*警告提示*/
+      open3(title) {
+        this.$message({
+          message:`${title}`,
+          type: 'warning'
+        });
+      },
+				/*车辆删除*/
+				clshanchu(){
+					if(this.multipleSelection.length==0){
+					this.open3("请勾选中你要删除的车辆")
+					}
+					console.log(`删除的数据${JSON.stringify(this.multipleSelection)}`)
+				},
+				/*车辆添加*/
+				cltj(){
+					if(this.getIndex==null){
+						this.open3("请先双击车辆获取顾客信息");
+						return
+					}
+					this.fullscreenLoading = true;
+					this.dialogVisible=true;
+					setTimeout(()=>{
+						$("#cnt").load("车辆管理车辆添加.html");
+					},"1000")
+				},
+				 handleSelectionChange(val) {
+        this.multipleSelection = val;
+     },
+     rowdblclick(row,col,event){
+     	sessionStorage.setItem("khzlclAdd",JSON.stringify(row.list[0]));
+     	 this.getIndex=row.index;
+     	this.tableData=row.list;
+     }
+				
+			},
+			mounted() {}
+		})
+		
+	</script>
+</html>

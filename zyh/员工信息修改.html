@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="ygxxxiugai">
+			<el-form :model="ruleForm" :inline="true" :rules="rules" ref="ruleForm" label-width="100px" class="demo-form-inline">
+					<el-form-item label="工号" prop="gh">
+						<el-input v-model="ruleForm.gh" style="width: 250px;" :disabled="true"></el-input>
+					</el-form-item>
+
+					<el-form-item label="姓名" placeholder="请输入姓名" prop="name">
+
+						<el-input v-model="ruleForm.name" style="width: 250px;"></el-input>
+
+					</el-form-item>
+
+					<el-form-item label="岗位" prop="gw">
+						<el-select style="width: 250px;" v-model="ruleForm.gw" placeholder="请选择岗位">
+							<el-option label="维修工" value="shanghai"></el-option>
+							<el-option label="检验工" value="beijing"></el-option>
+						</el-select>
+					</el-form-item>
+
+					<el-form-item label="部门" prop="bm">
+						<el-select style="width: 250px;" v-model="ruleForm.bm" placeholder="请选择部门">
+							<el-option label="维修部门" value="shanghai"></el-option>
+							<el-option label="检验部门" value="beijing"></el-option>
+						</el-select>
+
+					</el-form-item>
+
+					<el-form-item label="角色" prop="js">
+						<el-select style="width: 250px;" v-model="ruleForm.js" placeholder="请选择角色">
+							<el-option label="经理" value="shanghai"></el-option>
+							<el-option label="普通员工" value="beijing"></el-option>
+						</el-select>
+					</el-form-item>
+
+					<el-form-item label="性别" prop="xb">
+						<el-radio-group style="width: 250px;" v-model="ruleForm.xb">
+							<el-radio label="男"></el-radio>
+							<el-radio label="女"></el-radio>
+						</el-radio-group>
+					</el-form-item>
+
+					<el-form-item label="学历" prop="xl">
+						<el-select style="width: 250px;" v-model="ruleForm.xl" placeholder="请选择学历">
+							<el-option label="大专" value="shanghai"></el-option>
+							<el-option label="本科" value="beijing"></el-option>
+						</el-select>
+					</el-form-item>
+
+					<el-form-item label="入职日期" prop="date">
+						<el-date-picker style="width: 250px;" type="date" placeholder="选择日期" v-model="ruleForm.date"></el-date-picker>
+					</el-form-item>
+
+					<el-form-item label="联系号码" placeholder="请输入号码" prop="hm">
+						<el-input style="width: 250px;" v-model="ruleForm.hm"></el-input>
+					</el-form-item>
+
+					<el-form-item label="家庭地址" placeholder="请输入地址" prop="address">
+						<el-input style="width: 250px;" v-model="ruleForm.address"></el-input>
+
+					</el-form-item>
+
+					<el-form-item style="margin: 0px auto;width: 700px; text-align: right;">
+						<el-button type="primary" style="width: 150px;" @click="submitForm('ruleForm')">数据提交</el-button>
+						<el-button style="width: 150px;" @click="xiugaiquxiao('ruleForm')">取消</el-button>
+					</el-form-item>
+				</el-form>
+		</div>	
+		
+	</body>
+	
+			
+	<script>
+	var ygxxxiugai = new Vue({
+			el: "#ygxxxiugai",
+			data: {
+				ruleForm: {},
+				rules: {
+					name: [{
+							required: true,
+							message: '请输入姓名',
+							trigger: 'blur'
+						},
+						{
+							min: 3,
+							max: 5,
+							message: '长度在 3 到 5 个字符',
+							trigger: 'blur'
+						}
+					],
+					bm: [{
+						required: true,
+						message: '请选择部门',
+						trigger: 'change'
+					}],
+					xl: [{
+						required: true,
+						message: '请选择学历',
+						trigger: 'change'
+					}],
+					js: [{
+						required: true,
+						message: '请选择角色',
+						trigger: 'change'
+					}],
+					gw: [{
+						required: true,
+						message: '请选择岗位',
+						trigger: 'change'
+					}],
+					date: [{
+						required: true,
+						required: true,
+						message: '请选择日期',
+						trigger: 'change'
+					}],
+					type: [{
+						type: 'array',
+						required: true,
+						message: '请至少选择一个活动性质',
+						trigger: 'change'
+					}],
+					xb: [{
+						required: true,
+						message: '请选择性别',
+						trigger: 'change'
+					}],
+					hm: [{
+						required: true,
+						message: '请填写号码',
+						trigger: 'blur'
+					}],
+					address: [{
+						required: true,
+						message: '请填写地址',
+						trigger: 'blur'
+					}]
+				}
+			},
+			methods: {
+				submitForm(formName) {
+					this.$refs[formName].validate((valid) => {
+						if(valid) {
+							alert('submit!');
+						} else {
+							console.log('error submit!!');
+							return false;
+						}
+					});
+				},
+				/*修改取消*/
+				xiugaiquxiao(formName) {
+					this.$refs[formName].resetFields();
+					ygqx2.dialogVisible2=false;
+				}
+			},
+			mounted() {
+			this.ruleForm=JSON.parse(sessionStorage.getItem("ygxxxg"));
+					ygqx2.fullscreenLoading = false;
+			}
+		})
+	</script>
+</html>
