@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>员工管理</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<link rel="stylesheet" href="../css/font.css">
+		<link rel="stylesheet" href="../css/xadmin.css">
+		<script src="../lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../js/xadmin.js"></script>
+		<link rel="stylesheet" href="../css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+	</head>
+
+	<body>
+
+		<div class="layui-fluid" id="yggl">
+			<div class="layui-row layui-col-space15">
+				<div class="layui-col-md12">
+
+					<div class="layui-card">
+
+						<el-form :inline="true" :model="tableData" class="demo-form-inline" align="center">
+							<el-form-item label="徳召文商品管理">
+								<el-input v-model="tableData.name" placeholder='商品名称 '></el-input>
+
+							</el-form-item>
+							<el-form-item>
+								<div class="layui-inline layui-show-xs-block">
+									<el-row>
+										<el-button type="primary">查询信息</el-button>
+										<el-button type="success" onclick="xadmin.open('添加员工信息','./员工管理添加.html',600,500)">新增信息</el-button>
+									</el-row>
+								</div>
+
+							</el-form-item>
+						</el-form>
+					</div>
+					<div class="layui-card-header">
+
+						<div class="layui-card-body layui-table-body layui-table-main">
+							<template>
+								<el-table :data="tableData" style="width: 100%; ">
+									<el-table-column label="员工资料管理" align="center">
+										<el-table-column prop="id" align="center" label="员工编号" width="120">
+										</el-table-column>
+										<el-table-column prop="date" align="center" label="入职日期" width="120">
+										</el-table-column>
+										<el-table-column prop="name" align="center" label="员工姓名" width="120">
+										</el-table-column>
+										<el-table-column prop="department" align="center" label="所属部门" width="120">
+										</el-table-column>
+										<el-table-column prop="sex" align="center" label="性别" width="120">
+										</el-table-column>
+										<el-table-column prop="age" align="center" label="年龄" width="120">
+										</el-table-column>
+										<el-table-column prop="phone" align="center" label="联系电话" width="180">
+										</el-table-column>
+										<el-table-column prop="Email" align="center" label="邮编" width="180">
+										</el-table-column>
+										<el-table-column label="操作" align="center">
+											<template slot-scope="temp">
+												<i class="el-icon-s-tools" onclick="xadmin.open('修改员工信息','./员工管理添加.html',600,500)"></i>&nbsp;&nbsp;
+												<i class="el-icon-delete"></i>
+											</template>
+										</el-table-column>
+
+									</el-table-column>
+								</el-table>
+							</template>
+
+						</div>
+						<div class="layui-card-body ">
+							<div style="text-align: center;">
+								<template>
+									<div class="block">
+
+										<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+										</el-pagination>
+									</div>
+								</template>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</body>
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+	<script type="text/javascript" src="../js/dialog.js"></script>
+	<script>
+		var yggl = new Vue({
+			el: "#yggl",
+			data: {
+
+				currentPage4: 4,
+				tableData: [{
+					id: 1,
+					date: '2016-05-02',
+					name: '王小虎',
+					department: '洗车部',
+					position: '普通员工',
+					address: '湖南',
+					age: 12,
+					sex: '男',
+					phone: '1231',
+					Email: '12012@qq.com'
+				}, {
+					id: 2,
+					date: '2016-05-04',
+					name: '王小虎',
+					department: '财务部',
+					position: '普通员工',
+					address: '湖南',
+					age: 12,
+					sex: '男',
+					Email: '12012@qq.com'
+				}, {
+					id: 3,
+					date: '2016-05-01',
+					name: '王小虎',
+					department: '洗车部',
+					position: '普通员工',
+					address: '湖南',
+					age: 12,
+					sex: '男',
+					Email: '12012@qq.com'
+				}, {
+					id: 4,
+					date: '2016-05-03',
+					name: '王小虎',
+					department: '洗车部',
+					position: '普通员工',
+					address: '湖南',
+					age: 12,
+					sex: '男',
+					Email: '12012@qq.com'
+				}],
+				multipleSelection: []
+			},
+			methods: {
+				toggleSelection(rows) {
+					if(rows) {
+						rows.forEach(row => {
+							this.$refs.multipleTable.toggleRowSelection(row);
+						});
+					} else {
+						this.$refs.multipleTable.clearSelection();
+					}
+				},
+				handleSelectionChange(val) {
+					this.multipleSelection = val;
+				},
+				xq() {
+					showWindowDialog('员工管理添加或修改.html', '员工管理添加或修改');
+				}
+			}
+		})
+	</script>
+
+</html>

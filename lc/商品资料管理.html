@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>商品资料管理</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+		<link rel="stylesheet" href="../css/font.css">
+		<link rel="stylesheet" href="../css/xadmin.css">
+		<script src="../lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../js/xadmin.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+	</head>
+
+	<body>
+	
+		<div class="layui-fluid" id="yggl">
+			<div class="layui-row layui-col-space15">
+				<div class="layui-col-md12">
+					<div class="layui-card">
+						<div class="layui-card-body ">
+							<el-form :inline="true" :model="tableData" class="demo-form-inline" align="center">
+							<el-form-item label="徳召文商品管理">
+								<el-input v-model="tableData.name" placeholder='商品名称 '></el-input>
+
+							</el-form-item>
+							<el-form-item>
+								<div class="layui-inline layui-show-xs-block">
+									<el-row>
+										<el-button type="primary">查询信息</el-button>
+										<el-button type="success" onclick="xadmin.open('添加商品信息','./商品添加.html',600,500)">新增信息</el-button>
+									</el-row>
+								</div>
+
+							</el-form-item>
+						</el-form>
+					</div>
+					<div class="layui-card-body layui-table-body layui-table-main">
+						<el-table :data="tableData" style="width: 100%; ">
+				<el-table-column label="商品资料管理"  align="center">
+					<el-table-column prop="id"  align="center" label="商品编号" width="120">
+					</el-table-column>
+					<el-table-column prop="name"  align="center" label="商品名称" width="120">
+					</el-table-column>
+					<el-table-column prop="date"  align="center" label="出产日器" width="120">
+					</el-table-column>
+					<el-table-column prop="pp"  align="center" label="商品品牌" width="120">
+					</el-table-column>
+					<el-table-column prop="drive"  align="center" label="适用车辆" width="120">
+					</el-table-column>
+					<el-table-column prop="price"  align="center" label="商品价格" width="120">
+					</el-table-column>
+					<el-table-column prop="classify"  align="center" label="商品分类" width="120">
+					</el-table-column>
+					<el-table-column prop="desc"  align="center" label="商品简介" width="180">
+					</el-table-column>
+					<el-table-column label="操作"  align="center">
+						<template slot-scope="temp">
+												<i class="el-icon-s-tools" onclick="xadmin.open('修改商品信息','./商品添加.html',600,500)"></i>&nbsp;&nbsp;
+												<i class="el-icon-delete"></i>
+											</template>
+					</el-table-column>
+	
+				</el-table-column>
+			</el-table>
+
+					</div>
+					<div class="layui-card-body ">
+						<div style="text-align: center;">
+							<template>
+								<div class="block">
+
+									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+									</el-pagination>
+								</div>
+							</template>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+
+	</body>
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+	<script>
+		var yggl = new Vue({
+			el: "#yggl",
+			data: {
+				currentPage4: 4,
+				tableData: [{
+					id: 1,
+					date: '2016-05-02',
+					name: '电瓶/72',
+					drive: '卡车',
+					classify: '发动机',
+					price: 1
+				}, {
+					id: 2,
+					date: '2016-05-04',
+					name: '电瓶/72',
+					department: '卡车',
+					classify: '发动机',
+					price: 1
+
+				}, {
+					id: 3,
+					date: '2016-05-01',
+					name: '王小虎',
+					department: '洗车部',
+					position: '普通员工',
+					address: '湖南'
+				}, {
+					id: 4,
+					date: '2016-05-03',
+					name: '王小虎',
+					department: '洗车部',
+					position: '普通员工',
+					address: '湖南'
+				}]
+			},
+			methods: {
+				handleSizeChange(val) {
+					console.log(`每页 ${val} 条`);
+				},
+				handleCurrentChange(val) {
+					console.log(`当前页: ${val}`);
+				}
+			}
+		})
+	</script>
+
+</html>
