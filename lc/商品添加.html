@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+
+		<link rel="stylesheet" href="../css/bootstrap.min.css" />
+		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+		<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+		<script type="text/javascript" src="../js/menu_const.js"></script>
+		<script type="text/javascript" src="../js/view_filter.js"></script>
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<style>
+			i {
+				color: #27A9E3;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="sss">
+			<el-form :model="staff" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
+				<el-form-item label="商品姓名" prop="name">
+					<el-col :span="12">
+						<el-input v-model="staff.name" placeholder="请输入"></el-input>
+					</el-col>
+				</el-form-item>
+
+				<el-form-item label="商品型号" prop="xh">
+
+					<el-col :span="12">
+						<el-input v-model="staff.xh" placeholder="请输入商品型号"></el-input>
+					</el-col>
+				</el-form-item>
+
+				<el-form-item label="商品出产日期" required>
+					<el-col :span="12">
+						<el-form-item prop="staffdate">
+							<el-date-picker type="date" placeholder="请输入商品出产日期" v-model="staff.staffdate" style="width: 100%;"></el-date-picker>
+						</el-form-item>
+					</el-col>
+				</el-form-item>
+				</el-form-item>
+				 <el-form-item label="适用车型">
+				    <el-select v-model="staff.drive" placeholder="请选择">
+				      <el-option label="卡车" value="1"></el-option>
+				      <el-option label="电动车" value="2"></el-option>
+				    </el-select>
+				  </el-form-item>
+				<el-form-item label="商品价格" prop="price">
+					<el-col :span="12">
+						<el-input v-model.number="staff.price"></el-input>
+					</el-col>
+				</el-form-item>
+				</el-form-item>
+
+				<el-form-item label="商品简介" prop="desc">
+					<el-col :span="12">
+						<el-input type="textarea" v-model="staff.desc"></el-input>
+					</el-col>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+					<el-button @click="resetForm('ruleForm')">重置</el-button>
+				</el-form-item>
+			</el-form>
+
+		</div>
+
+	</body>
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+	<script>
+		var yggl = new Vue({
+			el: "#sss",
+			data: {
+
+				staff: {
+					name: '',
+					xh: '',
+					staffdate: '',
+					price: "",
+					desc: '',
+					drive: ''
+				},
+				rules: {
+					name: [{
+						required: true,
+						message: '请输入活动名称',
+						trigger: 'blur'
+					}],
+					region: [{
+						required: true,
+						message: '请选择活动区域',
+						trigger: 'change'
+					}],
+					staffdate: [{
+						type: 'date',
+						required: true,
+						message: '请选择日期',
+						trigger: 'change'
+					}],
+					desc: [{
+						required: true,
+						message: '请填写活动形式',
+						trigger: 'blur'
+					}],
+					price: [{
+							required: true,
+							message: '请填写价格',
+							trigger: 'blur'
+						},
+						{
+							type: 'number',
+							message: '电话必须为数字值'
+						}
+					]
+				}
+			},
+
+			methods: {
+				submitForm(formName) {
+					this.$refs[formName].validate((valid) => {
+						if(valid) {
+							alert('submit!');
+						} else {
+							console.log('error submit!!');
+							return false;
+						}
+					});
+				},
+				resetForm(formName) {
+					this.$refs[formName].resetFields();
+				}
+			}
+		})
+	</script>
+
+</html>
