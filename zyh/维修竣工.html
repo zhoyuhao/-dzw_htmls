@@ -14,14 +14,13 @@
 			<h3 style="margin: 0px auto; width: 300px;text-align: center;padding-top: 1ex;">维修数据
 
 			</h3>
-			
 
-<template>
-  <el-tabs style="margin-top: 0px;width: 1000px;margin:  0px auto;" v-model="activeName" @tab-click="handleClick">
-    <el-tab-pane  label="未竣工" name="first">
-    	
- <div style="text-align: center; margin: 2ex;">
- 	<span style="margin-right: 3ex;">车牌号查看：
+			<template>
+				<el-tabs style="margin-top: 0px;width: 1000px;margin:  0px auto;" v-model="activeName" @tab-click="handleClick">
+					<el-tab-pane label="未竣工" name="first">
+
+						<div style="text-align: center; margin: 2ex;">
+							<span style="margin-right: 3ex;">车牌号查看：
   <el-input
   	size="mini"
   	style="width: 150px;"
@@ -29,7 +28,7 @@
   v-model="chepaiLIke"
   clearable>
 </el-input></span>
-<span>日期查看：
+							<span>日期查看：
     <el-date-picker
     	size="mini"
       v-model="dates"
@@ -40,56 +39,53 @@
       end-placeholder="结束日期"
       align="right">
     </el-date-picker></span>
-    <el-button type="primary" size="mini">查看</el-button>
-</div>
+							<el-button type="primary" size="mini">查看</el-button>
+						</div>
 
-    			<template>
+						<template>
 
-				<el-table :data="tableData" style="width: 1000px;margin: 0px auto;">
-					<el-table-column prop="chepai" align="center" label="维修车牌号" width="180">
+							<el-table :data="tableData" style="width: 1000px;margin: 0px auto;">
+								<el-table-column prop="chepai" align="center" label="维修车牌号" width="180">
 
-					</el-table-column>
+								</el-table-column>
 
-					<el-table-column align="center" label="开始维修日期" prop="statrdate" width="180" sortable>
-						<template slot-scope="scope">
-							<i class="el-icon-time"></i>
-							<span style="margin-left: 10px">{{ scope.row.statrdate }}</span>
+								<el-table-column align="center" label="开始维修日期" prop="statrdate" width="180" sortable>
+									<template slot-scope="scope">
+										<i class="el-icon-time"></i>
+										<span style="margin-left: 10px">{{ scope.row.statrdate }}</span>
+									</template>
+								</el-table-column>
+
+								<el-table-column align="center" label="结束维修日期" prop="enddate" width="180" sortable>
+									<template slot-scope="scope">
+										<i class="el-icon-time"></i>
+										<span style="margin-left: 10px">{{ scope.row.enddate }}</span>
+									</template>
+								</el-table-column>
+								<el-table-column align="center" label="维修金额" prop="money" width="180" sortable>
+									<template slot-scope="scope">
+										￥{{ scope.row.money }}
+									</template>
+								</el-table-column>
+								<el-table-column label="操作" width="280" align="center">
+									<template slot-scope="scope">
+
+										<el-button type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)">竣工检验</el-button>
+										<el-button type="success" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">维修详细</el-button>
+									</template>
+								</el-table-column>
+							</el-table>
 						</template>
-					</el-table-column>
+						<div class="block" style="text-align: center;margin-top: 3ex;">
+							<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[6,3,1]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+							</el-pagination>
+						</div>
 
-					<el-table-column align="center" label="结束维修日期" prop="enddate" width="180" sortable>
-						<template slot-scope="scope">
-							<i class="el-icon-time"></i>
-							<span style="margin-left: 10px">{{ scope.row.enddate }}</span>
-						</template>
-					</el-table-column>
-					<el-table-column align="center" label="维修金额" prop="money" width="180" sortable>
-						<template slot-scope="scope">
-							￥{{ scope.row.money }}
-						</template>
-					</el-table-column>
-					<el-table-column label="操作" width="280" align="center">
-						<template slot-scope="scope">
-		
-							<el-button type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)">竣工检验</el-button>
-							<el-button type="success" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">维修详细</el-button>
-						</template>
-					</el-table-column>
-				</el-table>
-			</template>
-			<div class="block" style="text-align: center;margin-top: 3ex;">
-				<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[6,3,1]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
-				</el-pagination>
-			</div>
+					</el-tab-pane>
+					<el-tab-pane label="已竣工" name="second">
 
-		
-
-    	
-    </el-tab-pane>
-    <el-tab-pane label="已竣工" name="second">
-    	  	
- <div style="text-align: center; margin: 2ex;">
- 	<span style="margin-right: 3ex;">车牌号查看：
+						<div style="text-align: center; margin: 2ex;">
+							<span style="margin-right: 3ex;">车牌号查看：
   <el-input
   	size="mini"
   	style="width: 150px;"
@@ -97,7 +93,7 @@
   v-model="chepaiLIke"
   clearable>
 </el-input></span>
-<span>日期查看：
+							<span>日期查看：
     <el-date-picker
     	size="mini"
       v-model="dates"
@@ -108,104 +104,124 @@
       end-placeholder="结束日期"
       align="right">
     </el-date-picker></span>
-    <el-button type="primary" size="mini">查看</el-button>
-</div>
+							<el-button type="primary" size="mini">查看</el-button>
+						</div>
 
-    			<template>
+						<template>
 
-				<el-table :data="tableData" style="width: 1000px;margin: 0px auto;">
-					<el-table-column prop="chepai" align="center" label="维修车牌号" width="180">
+							<el-table :data="tableData" style="width: 1000px;margin: 0px auto;">
+								<el-table-column prop="chepai" align="center" label="维修车牌号" width="180">
 
-					</el-table-column>
+								</el-table-column>
 
-					<el-table-column align="center" label="开始维修日期" prop="statrdate" width="180" sortable>
-						<template slot-scope="scope">
-							<i class="el-icon-time"></i>
-							<span style="margin-left: 10px">{{ scope.row.statrdate }}</span>
+								<el-table-column align="center" label="开始维修日期" prop="statrdate" width="180" sortable>
+									<template slot-scope="scope">
+										<i class="el-icon-time"></i>
+										<span style="margin-left: 10px">{{ scope.row.statrdate }}</span>
+									</template>
+								</el-table-column>
+
+								<el-table-column align="center" label="结束维修日期" prop="enddate" width="180" sortable>
+									<template slot-scope="scope">
+										<i class="el-icon-time"></i>
+										<span style="margin-left: 10px">{{ scope.row.enddate }}</span>
+									</template>
+								</el-table-column>
+								<el-table-column align="center" label="维修金额" prop="money" width="180" sortable>
+									<template slot-scope="scope">
+										￥{{ scope.row.money }}
+									</template>
+								</el-table-column>
+								<el-table-column label="操作" width="280" align="center">
+									<template slot-scope="scope">
+										<!--		-->
+										<el-button type="success" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">维修详细</el-button>
+									</template>
+								</el-table-column>
+							</el-table>
 						</template>
-					</el-table-column>
+						<div class="block" style="text-align: center;margin-top: 3ex;">
+							<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[6,3,1]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+							</el-pagination>
+						</div>
 
-					<el-table-column align="center" label="结束维修日期" prop="enddate" width="180" sortable>
-						<template slot-scope="scope">
-							<i class="el-icon-time"></i>
-							<span style="margin-left: 10px">{{ scope.row.enddate }}</span>
-						</template>
-					</el-table-column>
-					<el-table-column align="center" label="维修金额" prop="money" width="180" sortable>
-						<template slot-scope="scope">
-							￥{{ scope.row.money }}
-						</template>
-					</el-table-column>
-					<el-table-column label="操作" width="280" align="center">
-						<template slot-scope="scope">
-<!--		-->
-							<el-button type="success" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)" >维修详细</el-button>
-						</template>
-					</el-table-column>
-				</el-table>
-			</template>
-			<div class="block" style="text-align: center;margin-top: 3ex;">
-				<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[6,3,1]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
-				</el-pagination>
-			</div>
+					</el-tab-pane>
 
+				</el-tabs>
 
-    	
-    	
-    	
-    </el-tab-pane>
-   
-  </el-tabs>
-  
-  	<el-dialog title="维修详细信息" align="center" :visible.sync="dialogVisible" width="800px" :before-close="handleClose">
-				<template>
-					<el-table :data="xiangXiData" style="width: 100%;margin: 0px auto;margin-top: -2ex;" >
-						<el-table-column label="编号" align="center" width="180">
-							<template slot-scope="scope">
-								{{scope.$index+1}}
-							</template>
-						</el-table-column>
-						<el-table-column prop="type" align="center" label="维修项目名称">
-						</el-table-column>
-						<el-table-column align="center" label="维修价格">
-							<template slot-scope="scope">
-								<label style="">￥{{scope.row.money}}</label>
-							</template>
-						</el-table-column>
+				<el-dialog title="维修详细信息" align="center" :visible.sync="dialogVisible" width="800px" :before-close="handleClose">
+					<template>
+						<el-table :data="xiangXiData" style="width: 100%;margin: 0px auto;margin-top: -2ex;">
+							<el-table-column label="编号" align="center" width="180">
+								<template slot-scope="scope">
+									{{scope.$index+1}}
+								</template>
+							</el-table-column>
+							<el-table-column prop="type" align="center" label="维修项目名称">
+							</el-table-column>
+							<el-table-column align="center" label="维修价格">
+								<template slot-scope="scope">
+									<label style="">￥{{scope.row.money}}</label>
+								</template>
+							</el-table-column>
 
-					</el-table>
-					<i style="float: left;margin-left: 5ex;margin-top: 3ex;">总金额：<span style="color: red;">￥{{moneySum}}</span></i>
-				</template>
+						</el-table>
+						<i style="float: left;margin-left: 5ex;margin-top: 3ex;">总金额：<span style="color: red;">￥{{moneySum}}</span></i>
+					</template>
 
-				<span slot="footer" class="dialog-footer">
+					<span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
   </span>
-			</el-dialog>
-			
-			
+				</el-dialog>
 
-<el-dialog style="text-align: center;" title="提示竣工" align="center" :visible.sync="dialogVisible2" width="400px" :before-close="handleClose">
-				<template>
-					提醒：一但确定竣工就不得修改撤销<br/>
-				<div style="margin-top: 3ex;text-align: center;">
-						<el-radio v-model="radio2" @change="radioFanGong" label="1">完工</el-radio>
-  <el-radio v-model="radio2"@change="radioFanGong"  label="2">已方返工</el-radio>
-   <el-radio v-model="radio2" @change="radioFanGong" label="3">客户返工</el-radio>
-  <p v-if="fangoufeiwuxianshi">返工费用：
-  		<el-input style="width: 150px;margin-top: 2ex;" oninput="value=value.replace(/[^\d.]/g,'')" v-model="fangongfeiyong" placeholder="请输入返工费用" clearable></el-input>
-  	</el-input></p>
- 			<span slot="footer" class="dialog-footer" style="margin-top: 3ex;display: inline-block;">
+				<el-dialog style="text-align: center;" title="提示竣工" align="center" :visible.sync="dialogVisible2" width="400px" :before-close="handleClose">
+					<template>
+						提醒：一但确定竣工就不得修改撤销<br/>
+						<div style="margin-top: 3ex;text-align: center;">
+							<el-radio v-model="radio2" @change="radioFanGong" label="1">完工</el-radio>
+							<el-radio v-model="radio2" @change="radioFanGong" label="2">已方返工</el-radio>
+							<el-radio v-model="radio2" @change="radioFanGong" label="3">客户返工</el-radio>
+							<p v-if="fangoufeiwuxianshi">
+								<!--	<el-input style="width: 150px;margin-top: 2ex;" oninput="value=value.replace(/[^\d.]/g,'')" v-model="fangongfeiyong" placeholder="请输入返工费用" clearable></el-input>
+  	</el-input>
+  -->
+								<template>
+									选择维修项目：
+									<el-select v-model="value" @change="selectChange" filterable placeholder="请选择">
+										<el-option v-for="(item,i) in weixiu" :key="item.value" :label="item.label" :value="i">
+										</el-option>
+									</el-select>
+								</template>
+								<table v-if="weixiuTable.length!=0" style="width: 350px;border:1px solid;text-align: center;margin: 0px auto;">
+									<tr>
+										<td>编号</td>
+										<td>维修名称</td>
+										<td>价格</td>
+										<td>操作</td>
+									</tr>
+									<tr v-for="(temp,i) in weixiuTable" style="margin: 5px;">
+										<td>{{i+1}}</td>
+										<td>{{temp.name}}</td>
+										<td>{{temp.money}}</td>
+										<td>
+											<a href="javascript:void(0)" @click="removeweixiu(i)" class="el-icon-delete"></a>
+										</td>
+									</tr>
+
+								</table>
+
+							</p>
+							<span slot="footer" class="dialog-footer" style="margin-top: 3ex;display: inline-block;">
     <el-button type="primary" style="margin-right: 3ex;" @click="dialogVisible2Api">确 定</el-button>
     <el-button @click="dialogVisible2 = false">取 消</el-button>
   </span>
-				</div>
-				</template>
+						</div>
+					</template>
 
-	
-			</el-dialog>
-</template>
-	
+				</el-dialog>
+			</template>
+
 		</div>
 
 	</body>
@@ -219,18 +235,31 @@
 		var zhnanei = new Vue({
 			el: "#juegong",
 			data: {
-				dates:'',
-				chepaiLIke:"",
-				 activeName: 'first',
-				fangoufeiwuxianshi:false,
-				fangongfeiyong:'',
+				weixiuTable: [],
+				value: "",
+				weixiu: [{
+						value: '2',
+						label: '洗车',
+						money: 123
+					},
+					{
+						value: '1',
+						label: '换发动机',
+						money: 1000
+					}
+				],
+				dates: '',
+				chepaiLIke: "",
+				activeName: 'first',
+				fangoufeiwuxianshi: false,
+				fangongfeiyong: '',
 				moneySum: 0,
 				xiangXiData: [],
 				dialogVisible: false,
-				dialogVisible_2:false,
-				dialogVisible2:false,
+				dialogVisible_2: false,
+				dialogVisible2: false,
 				radio: '1',
-				radio2:"1",
+				radio2: "1",
 				currentPage4: 1,
 				tableData: [{
 					chepai: "A12345",
@@ -313,53 +342,71 @@
 				}]
 			},
 			methods: {
-				
-				 handleClick(tab, event) {
-        console.log(tab, event);
-     },
-				/*是否返工确定*/
-				dialogVisible2Api(){
-					let _this=this;
-					if(this.fangoufeiwuxianshi && this.fangongfeiyong==''){
- 	this.$message({
-          showClose: true,
-          message: '请输入返工费用！',
-          type: 'error'
-        });
-        
-        
-        return
-					}
-					
-								 _this.$confirm('操作执行不能撤销, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          _this.$message({
-            type: 'success',
-            message: '操作成功!'
-          });
-          _this.dialogVisible2=false;
-            _this.fangoufeiwuxianshi=false;
-            _this.fangongfeiyong='';
-            _this.radio2='1';
-        }).catch(() => {
-          _this.$message({
-            type: 'info',
-            message: '已取消操作'
-          });          
-        });
+				/*刪除返工维修的项目*/
+				removeweixiu(index) {
+					this.weixiuTable.splice(index, 1);
+				},
+				selectChange() {
+					let bool = false;
+					this.weixiuTable.forEach(row => {
+						console.log(`${this.value}`)
+						console.log(`清单${row.name}|添加${this.weixiu[this.value].label}`)
+						if(row.name == this.weixiu[this.value].label) {
+							return bool = true;
+						}
 
-					
-					
+					});
+					if(bool) {
+						return
+					}
+					this.weixiuTable.splice(0, 0, {
+						name: this.weixiu[this.value].label,
+						money: this.weixiu[this.value].money
+					})
+				},
+				handleClick(tab, event) {
+					console.log(tab, event);
+				},
+				/*是否返工确定*/
+				dialogVisible2Api() {
+					let _this = this;
+					if(this.fangoufeiwuxianshi && this.fangongfeiyong == '') {
+						this.$message({
+							showClose: true,
+							message: '请输入返工费用！',
+							type: 'error'
+						});
+
+						return
+					}
+
+					_this.$confirm('操作执行不能撤销, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						_this.$message({
+							type: 'success',
+							message: '操作成功!'
+						});
+						_this.dialogVisible2 = false;
+						_this.fangoufeiwuxianshi = false;
+						_this.fangongfeiyong = '';
+						_this.radio2 = '1';
+					}).catch(() => {
+						_this.$message({
+							type: 'info',
+							message: '已取消操作'
+						});
+					});
+
 				},
 				/*返工选择*/
-				radioFanGong(val){
-					if(val==3){
-						this.fangoufeiwuxianshi=true;
-					}else{
-							this.fangoufeiwuxianshi=false;
+				radioFanGong(val) {
+					if(val == 3) {
+						this.fangoufeiwuxianshi = true;
+					} else {
+						this.fangoufeiwuxianshi = false;
 					}
 				},
 				/*分页*/
@@ -371,7 +418,7 @@
 				},
 				/*竣工操作*/
 				handleEdit(index, row) {
-					this.dialogVisible2=true;
+					this.dialogVisible2 = true;
 					console.log(index, row);
 				},
 				/*维修详细*/

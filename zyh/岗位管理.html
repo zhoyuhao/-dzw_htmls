@@ -4,7 +4,10 @@
 		<meta charset="UTF-8">
 		<title>岗位管理</title>
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
-
+<style>
+	[v-cloak]{
+		display: none;
+	}
 		</style>
 	</head>
 	<body style="background-color: #e6e6e6;" >
@@ -12,44 +15,92 @@
 			
 			
 		
-		<h1 style="margin-left:5ex;">岗位管理</h1>
-		<div id="gangwei" style="text-align: center;">
-			<div>
+		<h3 style="margin-left:5ex;">岗位管理</h3>
+		<div id="gangwei" style="text-align: center;" v-cloak>
+			<div >
 				
 				<span>岗位编号：<el-input style="width: 200px;"  size="mini" v-model="bh" placeholder="请输入内容"></el-input></span>
 				<span style="margin-right: 5ex;">岗位名称：<el-input style="width: 200px;" size="mini" v-model="mc" placeholder="请输入内容"></el-input></span>
-				<el-button type="text" icon="el-icon-plus" @click="add">新增</el-button>
-				<el-button type="text" icon="el-icon-delete" @click="deletes">删除</el-button>
+				<el-button type="primary"size="mini"  icon="el-icon-zoom-in" @click="add">查看</el-button>
+				<el-button type="success"size="mini" icon="el-icon-plus" @click="add">新增</el-button>
+				<el-button type="info"size="mini"  icon="el-icon-delete" @click="deletes">删除</el-button>
 				
 			</div>
-			<div>
+			<div style="border-bottom: 1px solid;">
 				<template>
   <el-table
     ref="multipleTable"
     :data="tableData"
     tooltip-effect="dark"
+    height="300"
     style="width: 500px;margin-left: 36ex;"
+
     @selection-change="handleSelectionChange">
 
 <el-table-column
+	    align="center"
       type="selection"
       width="55"></el-table-column>
     <el-table-column
+    	    align="center"
       prop="bh"
       label="岗位编号"
       width="220">
     </el-table-column>
   <el-table-column
+  	    align="center"
       prop="mc"
       label="岗位名称"
       width="220">
     </el-table-column>
   </el-table>
-  
-</template>
+
+			</template>	
+			</div>
+	
+<div>
+			<h3 style="margin-left:5ex;float: left;clear: both;">角色管理</h3>
+		
+<div style="clear: both; margin-top: 5ex;margin-bottom: 2ex;text-align: center;width: 900px;margin: 0px auto;">
+				
+				<span>角色编号：<el-input style="width: 200px;"  size="mini" v-model="jbh" placeholder="请输入内容"></el-input></span>
+				<span style="margin-right: 5ex;">角色名称：<el-input style="width: 200px;" size="mini" v-model="jmc" placeholder="请输入内容"></el-input></span>
+				<el-button type="primary"size="mini" icon="el-icon-zoom-in" @click="add">查看</el-button>
+				<el-button type="success"size="mini"  icon="el-icon-plus" @click="add">新增</el-button>
+				
+				<el-button type="info" size="mini" icon="el-icon-delete" @click="deletes">删除</el-button>
 				
 			</div>
-			
+			<template>
+    <el-table 
+    ref="multipleTable"
+    :data="tableData2"
+    tooltip-effect="dark"
+     height="300"
+    style="width: 500px;margin-left: 36ex;"
+    @selection-change="handleSelectionChange">
+
+<el-table-column
+	    align="center"
+      type="selection"
+      width="55"></el-table-column>
+    <el-table-column
+      prop="bh"
+          align="center"
+      label="角色编号"
+      width="220">
+    </el-table-column>
+  <el-table-column
+      prop="mc"
+          align="center"
+      label="角色名称"
+      width="220">
+    </el-table-column>
+  </el-table>
+  
+	</template>
+	
+</div>
 		</div>
 		</div>
 	</body>
@@ -62,16 +113,25 @@
 		var gangwei = new Vue({
 			el: "#gangwei",
 			data: {
+				jbh:"",
+				jmc:"",
 				bh:"",
 				mc:"",
 				 tableData: [{
-          mc: '王小虎',
-         bh:"1233"
+          mc: '财务员',
+         bh:"1"
         }, {
-          mc: '王小虎',
-          bh:"12323"
+          mc: '调度员',
+          bh:"2"
         }],
-           multipleSelection: []
+           multipleSelection: [],
+           tableData2:[{
+          mc: '经理',
+         bh:"1"
+        }, {
+          mc: '组长',
+          bh:"2"
+        }]
 			},
 			methods: {
 				/*新增*/

@@ -163,7 +163,7 @@
 
 			<!--修改-->
 
-			<el-dialog :title="title" v-loading.fullscreen.lock="fullscreenLoading" :visible.sync="dialogVisible2" width="800px" :before-close="handleClose">
+			<el-dialog :title="title" 	 v-loading.fullscreen.lock="fullscreenLoading" :visible.sync="dialogVisible2" width="800px" :before-close="handleClose">
 			 <div id="cnt">
  <div style="width: 200px; margin: 0px auto;text-align: center;">
  	<span class="el-icon-loading"></span>正在初始化......
@@ -243,7 +243,6 @@
 
 
 <el-dialog
-
   title="员工角色"
   :visible.sync="dialogVisible4"
   width="30%"
@@ -280,13 +279,13 @@
 	<script>
 		
 		var main= {
-    data() {
+    data() {/*
       const generateData = _ => {
         const data =[];
         return null;
       };
       return {};
-    }
+    */}
   };
   
   var ygqx=Vue.extend(main);
@@ -294,40 +293,7 @@
 			el: "#ygqx",
 			data: {
 				
-			chekArray:[2,4,7],
-        data: [{
-          id: 1,
-          label: '前台管理',
-          children: [{
-            id: 4,
-            label: '结算中心',
-            fid:1
-          },{
-            id: 2,
-            label: '会员卡',
-             fid:1
-          },{
-            id: 3,
-            label: '会卡重置',
-             fid:1
-          }]
-        },{
-          id: 9,
-          label: '权限管理',
-          children: [{
-            id: 6,
-            label: '角色管理',
-             fid:9
-          },{
-            id: 7,
-            label: '使用管理',
-                         fid:9
-          },{
-            id: 5,
-            label: '用户管理',
-                         fid:9
-          }]
-        }],
+			chekArray:[11,21,25],
         defaultProps: {
           children: 'children',
           label: 'label'
