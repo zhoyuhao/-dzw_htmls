@@ -4,8 +4,6 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>供货单位添加</title>
-		<link rel="stylesheet" type="text/css" href="../css/index.css" />
-
 		<style>
 			.el-table .warning-row {
 				background: oldlace;
@@ -18,7 +16,7 @@
 	</head>
 
 	<body>
-		<div id="lzdjApp">
+		<div id="gonghuodanweitianjia">
 			<el-row>
 				<template>
 					<el-form :inline="true" :model="formInline" class="demo-form-inline">
@@ -89,20 +87,15 @@
 				</template>
 			</el-row>
 			<div>
-				<el-button type="warning" plain @click="xinzeng">保存</el-button>
-				<el-button type="info" plain @click="quxiao">关闭</el-button>
+				<el-button type="warning" plain @click="baocun">保存</el-button>
+				<el-button type="info" plain @click="guanbi">关闭</el-button>
 			</div>
 		</div>
 
 	</body>
-	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
-	<script type="text/javascript" src="../js/vue.js"></script>
-	<script type="text/javascript" src="../js/index.js"></script>
-	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
-
 	<script>
 		var lzdjApp = new Vue({
-			el: '#lzdjApp',
+			el: '#gonghuodanweitianjia',
 			data: {
 				activeName: 'second',
 				formInline: {
@@ -160,22 +153,16 @@
 				]
 			},
 			methods: {
-				handlerOpen1() {
-					$("#cnt1").load('员工卡片.html'); //ajax读取页面
-				},
-				handlerOpen2() {
-					$("#cnt2").load('离职.html'); //ajax读取页面
-				},
 				handleClose(done) {
 					this.$confirm('确认关闭？').then(_ => {
 						done();
 					}).catch(_ => {});
 				},
-				dakai() {
-					this.isshow1 = true;
-				},
-				lizhidj() {
-					this.isshow2 = true;
+				guanbi() {
+					//alert();
+					gonghuodanwei.isshow1 = false;
+
+					gonghuodanwei.isshow2 = false;
 				},
 				handleCurrentChange(val) {
 					this.currentRow = val;

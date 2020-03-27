@@ -5,7 +5,6 @@
 		<meta charset="UTF-8">
 		<title>供货单位</title>
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
-
 		<style>
 			.el-table .warning-row {
 				background: oldlace;
@@ -18,7 +17,7 @@
 	</head>
 
 	<body>
-		<div id="lzdjApp">
+		<div id="gonghuodanwei">
 			<el-row style="margin-bottom: 20px;">
 				<el-col :span="8">
 					<h1 style="font-size: 24px;">供货单位</h1>
@@ -37,20 +36,20 @@
 					&nbsp
 				</el-col>
 				<el-col :span="13">
-					<el-button type="primary" plain @click="lizhidj">添加</el-button>
-					<el-button type="primary" plain>修改</el-button>
-					<el-button type="primary" plain @click="dakai">删除</el-button>
-					<el-button type="primary" plain>查询</el-button>
-					<el-button type="primary" plain>照片</el-button>
-					<el-button type="primary" plain>导出</el-button>
-					<el-button type="primary" plain>联系人</el-button>
-					<el-button type="primary" plain>字段设置</el-button>
+					<el-button type="primary" plain @click="tianjia">添加</el-button>
+					<el-button type="primary" plain @click="xiugai">修改</el-button>
+					<el-button type="primary" plain @click="shanchu">删除</el-button>
+					<el-button type="primary" plain @click="chaxun">查询</el-button>
+					<el-button type="primary" plain @click="zhaopian">照片</el-button>
+					<el-button type="primary" plain @click="daochu">导出</el-button>
+					<el-button type="primary" plain @click="lianxiren">联系人</el-button>
+					<el-button type="primary" plain @click="ziduanshezhi">字段设置</el-button>
 				</el-col>
 			</el-row>
 
 			<el-row>
 				<el-col :span="4">
-					&nbsp;1111
+					<el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
 				</el-col>
 				<el-col :span="20">
 					<el-table ref="singleTable" :data="lizhi" highlight-current-row @current-change="handleCurrentChange" style="width: 100%">
@@ -89,10 +88,10 @@
 				</el-col>
 			</el-row>
 
-			<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="员工卡片" :visible.sync="isshow1" width="99%" :before-close="handleClose">
+			<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="添加供货单位" :visible.sync="isshow1" width="99%" :before-close="handleClose">
 				<div id="cnt1"></div>
 			</el-dialog>
-			<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="离职登记" :visible.sync="isshow2" width="99%" :before-close="handleClose">
+			<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="供货单位编辑" :visible.sync="isshow2" width="99%" :before-close="handleClose">
 				<div id="cnt2"></div>
 			</el-dialog>
 		</div>
@@ -105,7 +104,7 @@
 
 	<script>
 		var lzdjApp = new Vue({
-			el: '#lzdjApp',
+			el: '#gonghuodanwei',
 			data: {
 				isshow1: false,
 				isshow2: false,
@@ -130,29 +129,71 @@
 						txt: 'jdlkasjd'
 
 					}
-				]
+				],
+				data: [{
+					label: '一级 1',
+					children: [{
+						label: '二级 1-1',
+						children: [{
+							label: '三级 1-1-1'
+						}]
+					}]
+				}, {
+					label: '一级 2',
+					children: [{
+						label: '二级 2-1',
+						children: [{
+							label: '三级 2-1-1'
+						}]
+					}, {
+						label: '二级 2-2',
+						children: [{
+							label: '三级 2-2-1'
+						}]
+					}]
+				}, {
+					label: '一级 3',
+					children: [{
+						label: '二级 3-1',
+						children: [{
+							label: '三级 3-1-1'
+						}]
+					}, {
+						label: '二级 3-2',
+						children: [{
+							label: '三级 3-2-1'
+						}]
+					}]
+				}],
+				defaultProps: {
+					children: 'children',
+					label: 'label'
+				}
 			},
 			methods: {
 				handlerOpen1() {
-					$("#cnt1").load('员工卡片.html'); //ajax读取页面
+					$("#cnt1").load('供货单位添加.html'); //ajax读取页面
 				},
 				handlerOpen2() {
-					$("#cnt2").load('离职.html'); //ajax读取页面
+					$("#cnt2").load('供货单位修改.html'); //ajax读取页面
 				},
 				handleClose(done) {
 					this.$confirm('确认关闭？').then(_ => {
 						done();
 					}).catch(_ => {});
 				},
-				dakai() {
+				tianjia() {
 					this.isshow1 = true;
 				},
-				lizhidj() {
-					this.isshow2 = true;
+				xiugai() {
+					if(this.currentRow == null)
+						alert("请选中一行");
+					else
+						this.isshow2 = true;
 				},
 				handleCurrentChange(val) {
 					this.currentRow = val;
-					alert(JSON.stringify(this.currentRow));
+					//alert(JSON.stringify(this.currentRow));
 				}
 			}
 		});

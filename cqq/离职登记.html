@@ -18,7 +18,7 @@
 	</head>
 
 	<body>
-		<div id="lzdjApp">
+		<div id="lizhidengji">
 			<el-row style="margin-bottom: 20px;">
 				<el-col :span="8">
 					<h1 style="font-size: 24px;">离职登记</h1>
@@ -79,7 +79,7 @@
 
 	<script>
 		var lzdjApp = new Vue({
-			el: '#lzdjApp',
+			el: '#lizhidengji',
 			data: {
 				isshow1: false,
 				isshow2: false,
@@ -108,7 +108,7 @@
 			},
 			methods: {
 				handlerOpen1() {
-					$("#cnt1").load('员工卡片.html'); //ajax读取页面
+					$("#cnt1").load('员工卡片打开.html'); //ajax读取页面
 				},
 				handlerOpen2() {
 					$("#cnt2").load('离职.html'); //ajax读取页面
