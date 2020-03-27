@@ -9,6 +9,9 @@
 			[v-cloak]{
 				display: none;
 			}
+			.el-table--enable-row-hover .el-table__body tr:hover>td {
+  background-color: #CAE1FF;
+}
 		</style>
 	</head>
 
@@ -33,7 +36,7 @@
       :value="item.value">
     </el-option>
   </el-select>
-				
+
 			</span>
 			</div>
 			<template>
@@ -298,7 +301,7 @@
           children: 'children',
           label: 'label'
         },
-				
+      
 				dqjs:'',
 				jueseList:[
 				{id:1,name:"经理"},

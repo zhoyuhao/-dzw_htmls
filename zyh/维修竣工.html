@@ -6,6 +6,7 @@
 		<title>维修竣工</title>
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
 		<link rel="stylesheet" href="../css/bootstrap.min.css" />
+
 	</head>
 
 	<body style="background-color: #e6e6e6;">
@@ -16,7 +17,7 @@
 			</h3>
 
 			<template>
-				<el-tabs style="margin-top: 0px;width: 1000px;margin:  0px auto;" v-model="activeName" @tab-click="handleClick">
+				<el-tabs style="margin-top: 0px;width: 1200px;margin:  0px auto;" v-model="activeName" @tab-click="handleClick">
 					<el-tab-pane label="未竣工" name="first">
 
 						<div style="text-align: center; margin: 2ex;">
@@ -44,7 +45,7 @@
 
 						<template>
 
-							<el-table :data="tableData" style="width: 1000px;margin: 0px auto;">
+							<el-table :data="tableData" style="width: 1200px;margin: 0px auto;">
 								<el-table-column prop="chepai" align="center" label="维修车牌号" width="180">
 
 								</el-table-column>
@@ -67,6 +68,14 @@
 										￥{{ scope.row.money }}
 									</template>
 								</el-table-column>
+								
+									<el-table-column align="center" label="维修状态" prop="money" width="100" >
+									<template slot-scope="scope">
+										<span style="color: #E6A23C;" v-if="scope.row.statuc==1">接车中</span>
+									<span style="color: #E6A23C;" v-if="scope.row.statuc==2">修理中</span>
+									</template>
+								</el-table-column>
+								
 								<el-table-column label="操作" width="280" align="center">
 									<template slot-scope="scope">
 
@@ -266,6 +275,7 @@
 					money: 2000,
 					statrdate: '2016-06-02',
 					enddate: '2020-08-03',
+					statuc:1,
 					xiangXiData: [{
 							id: 1,
 							type: "技工(李四)",
@@ -278,6 +288,7 @@
 						}
 					]
 				}, {
+					statuc:2,
 					chepai: "A12345",
 					money: 1000,
 					statrdate: '2016-05-02',
@@ -298,6 +309,7 @@
 					money: 1000,
 					statrdate: '2016-05-02',
 					enddate: '2020-03-03',
+					statuc:3,
 					xiangXiData: [{
 							id: 1,
 							type: "技工(李四)",
