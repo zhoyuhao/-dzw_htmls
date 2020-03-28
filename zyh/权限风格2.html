@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<style>
+			[v-cloak]{
+				display: none;
+			}
+			.el-table--enable-row-hover .el-table__body tr:hover>td {
+  background-color: #CAE1FF;
+}
+		</style>
+	</head>
+
+	<body style="background-color: #e6e6e6;">
+
+		<div id="ygqx" style="margin: 0px auto;border: 0px solid; margin: 5px;" v-cloak>
+		<el-container style="height: 500px; border: 1px solid #eee;background-color: white;height: 650px">
+  <el-aside width="250px"  style="background-color:white;">
+    <el-menu  style="margin: 2ex;max-height:600px;min-height: 600px;">
+     <el-menu-item index="0"  @click="quanxian1()">
+        <i class="el-icon-menu">德召文汽修角色</i>
+        <span slot="title"></span>
+      </el-menu-item>
+      
+          <el-menu-item :index="temp.id" v-for="(temp,i) in juese" @click="quanxian(temp)" >
+        <i class="el-icon-s-custom"style="font-size: 15px;">{{temp.name}}</i>
+        <span slot="title"></span>
+      </el-menu-item>
+    </el-menu>
+      
+    
+  </el-aside>
+  
+  <el-container>
+
+    <el-main >
+    
+    	<h3 style="margin:3ex;float: left;margin-left: 8ex;">{{namejues}}权限设置<span class="el-icon-s-tools"></span></h3>
+    	<div style="border: 0px solid ;width: 200px;clear: both;margin-left: 8ex; height:420px;display: inline-block;float: left;overflow: auto">
+    			<el-tree ref="tree" :data="quanxiandata" 
+					show-checkbox node-key="id" 
+					:getCurrentKey="w" 
+					:default-expanded-keys="chekArray"
+				
+					  :props="defaultProps">
+				</el-tree>
+    		 
+    	</div>
+   
+<div id="" style="margin-left: 6ex;display: inline-block;border: 0px solid ;float: left;margin-top: -6ex;">
+	
+
+				<template>
+  <el-table
+    :data="tableData"
+    :row-style="selectedHighlight" 
+	 :row-class-name="tableRowClassName"
+	@row-click="rowClick"
+	 @row-dblclick="rowdblclick"
+    stripe
+    size="mini"
+    align="center"
+    height="500px"
+    style="width: 100%">
+     <el-table-column  align="center" label="德召文员工">
+    <el-table-column
+      prop="id"
+      label="工号"
+      align="center"
+      width="200">
+    </el-table-column>
+    <el-table-column
+      prop="name"
+      label="姓名"
+      align="center"
+      width="200">
+    </el-table-column>
+    
+    <el-table-column
+    	align="center"
+      prop="gw"
+       width="200"
+      label="岗位">
+    </el-table-column>
+  </el-table>
+</template>
+</div>
+<div style="margin-left: 3ex;clear: both;width: 250px; text-align: center; border: 0px solid ;float: left;margin-top: 1ex;"> 
+	<el-button type="primary" size="mini" style="width: 200px;" @click="qxxiugaiOk">权限修改</el-button></div>
+
+    </el-main>
+  </el-container>
+</el-container>
+
+		</div>
+
+	</body>
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+	<script>
+		
+		var main= {
+    data() {/*
+      const generateData = _ => {
+        const data =[];
+        return null;
+      };
+      return {};
+    */}
+  };
+  
+  var ygqx=Vue.extend(main);
+  var ygqx2=new ygqx({
+			el: "#ygqx",
+			
+			data: {
+				tableData:[{
+					name:"张三",id:"23230",gw:"维修技术员",js:"总经理",
+					quanxians: [11,22,41,41,54,51]
+					
+				}],
+				juese:[
+				{name:"总经理",id:"1",qx:[11]},{name:"维修经理",id:"2",qx:[11,51]},{name:"采购经理",id:"3"},{name:"质检经理",id:"4"},{name:"技术员",id:"5"}
+				],
+				gangwei:[
+				{mc:"前台收银",id:1},{mc:""}
+				]
+				,namejues:'',
+				userquanxian:[],
+							defaultProps: {
+					children: 'children',
+					label: 'label'
+				},
+				quanxiandata: [{
+          id: 1,
+          label: '前台管理',
+          children: [{
+            id: 11,
+            label: '结算中心',
+            fid:1
+          },{
+            id: 12,
+            label: '会员卡充值管理',
+             fid:1
+          }]
+        },{
+          id: 2,
+          label: '人事管理',
+          children: [{
+            id: 21,
+            label: '员工管理',
+             fid:2
+          },{
+            id: 22,
+            label: '离职管理',
+                         fid:2
+          },{
+            id: 23,
+            label: '岗位管理',
+                         fid:2
+          },{
+            id: 24,
+            label: '通讯录管理',
+                         fid:2
+          },{
+            id: 25,
+            label: '技工管理',
+                         fid:2
+          },{
+            id: 26,
+            label: '外勤车辆管理',
+                         fid:2
+          }]
+        },
+        {
+          id: 3,
+          label: '系统管理',
+            disabled: true,
+          children: []
+        },
+        {
+          id: 4,
+          label: '维修管理',
+          children: [{
+            id: 41,
+            label: '维修接单',
+             fid:4
+          },
+          {
+            id: 42,
+            label: '竣工操作',
+             fid:4
+          }]
+        },{
+          id: 5,
+          label: '客户管理',
+          children: [{
+            id: 51,
+            label: '客户资料管理',
+             fid:5
+          },
+          {
+            id: 52,
+            label: '车辆管理',
+             fid:5
+          }]
+        },
+        {
+          id: 6,
+          label: '数据管理',
+          children: [{
+            id: 61,
+            label: '发动机品牌管理',
+             fid:6
+          },
+          {
+            id: 62,
+            label: '车型档案管理',
+             fid:6
+          },
+           {
+            id: 63,
+            label: '商品资料管理',
+             fid:6
+          },
+           {
+            id: 64,
+            label: '供货单位',
+             fid:6
+          },
+          {
+            id: 65,
+            label: '维修项目管理',
+             fid:6
+          }
+           
+          ]
+        }
+        
+        ],
+				chekArray:[],
+				getIndex:null
+			},
+			methods: {
+				tableRowClassName ({row, rowIndex}) {
+       //把每一行的索引放进row
+     row.index = rowIndex;
+    },
+    rowClick (row) {
+    	this.namejues="";
+    	for(var i=0;i<this.$refs.tree.store._getAllNodes().length;i++){
+           this.$refs.tree.store._getAllNodes()[i].expanded=this.isexpand;
+        }
+    	this.chekArray=[];
+   		this.$refs.tree.setCheckedKeys(this.chekArray);
+       this.getIndex=null;
+    },
+    selectedHighlight({row, rowIndex}) {
+         if ((this.getIndex) === rowIndex ) {
+            return {
+          "background-color": "#CAE1FF"
+       };
+     }
+    },  rowdblclick(row,col,event){
+    	this.namejues=row.name+"-"+row.js+":";
+    	this.chekArray=row.quanxians;
+    	this.$refs.tree.setCheckedKeys(row.quanxians);//获取已经设置的资源后渲染
+    	console.log(JSON.stringify(row.quanxians))
+     	 this.getIndex=row.index;
+    },
+    	qxxiugaiOk() {
+					this.$confirm('权限操作请谨慎, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						this.w();
+						this.$message({
+							type: 'success',
+							message: '授权成功!'
+						});
+					}).catch(() => {
+						this.$message({
+							type: 'info',
+							message: '已取消授权'
+						});
+					});
+
+				}
+,
+			
+				w() {
+					let _this = this;
+					let arry = this.$refs.tree.getCheckedNodes(false, true);
+					$.each(arry, function(j, obj1) {
+						$.each(_this.quanxiandata, function(i, obj) {
+							if(obj.id == obj1.id) {
+								arry = arry.filter(row => {
+									return row != obj1
+								})
+							}
+						})
+					});
+					console.log(` ${JSON.stringify(arry)}`);
+
+				},
+				/*权限*/
+				quanxian(ent){
+				this.namejues=ent.name+":";
+				this.chekArray=ent.qx;
+    			this.$refs.tree.setCheckedKeys(this.chekArray);//获取已经设置的资源后渲染
+					
+				},/*权限*/
+				quanxian1(ent){
+						for(var i=0;i<this.$refs.tree.store._getAllNodes().length;i++){
+           this.$refs.tree.store._getAllNodes()[i].expanded=this.isexpand;
+        }
+				this.namejues='';
+				this.chekArray=[];
+    			this.$refs.tree.setCheckedKeys(this.chekArray);//获取已经设置的资源后渲染
+				},
+				/*修改取消*/
+				xiugaiquxiao2(formName) {
+					this.resetForm(formName)
+					this.ruleForm = {};
+					this.toggleSelection()
+					this.dialogVisible3 = false;
+				},
+				/*数据删除*/
+				deletes() {
+					let _this = this;
+					if(this.multipleSelection.length == 0) {
+						this.$message({
+							showClose: true,
+							message: '提示，请勾选选你要删除的数据',
+							type: 'warning'
+						});
+						return
+					}
+					this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						_this.$alert(JSON.stringify(_this.multipleSelection))
+						this.$message({
+							type: 'success',
+							message: '删除成功!'
+						});
+					}).catch(() => {
+						this.$message({
+							type: 'info',
+							message: '已取消删除'
+						});
+					});
+
+				},
+				handleSelectionChange(val) {
+					this.multipleSelection = val;
+				},
+				/*修改提交*/
+				updatesOk() {
+					this.dialogVisible2 = false;
+				}
+				
+				
+			},
+			mounted() {
+
+			}
+		})
+		/*var zhnanei = new Vue*/
+	</script>
+
+</html>
