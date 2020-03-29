@@ -9,19 +9,11 @@
         <meta http-equiv="Cache-Control" content="no-siteapp" />
         <link rel="stylesheet" href="./css/font.css">
         <link rel="stylesheet" href="./css/xadmin.css">
-        <!-- <link rel="stylesheet" href="./css/theme5.css"> -->
-        	<link rel="stylesheet" href="css/theme3085.min.css" />
+        <link rel="stylesheet" href="css/theme3085.min.css" />
+        	<link rel="stylesheet" type="text/css" href="css/index.css" />
         <script src="./lib/layui/layui.js" charset="utf-8"></script>
         <script type="text/javascript" src="./js/xadmin.js"></script>
-        <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
-        <!--[if lt IE 9]>
-          <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
-          <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
-        <script>
-            // 是否开启刷新记忆tab功能
-            // var is_remember = false;
-        </script>
+        
     </head>
     <body class="index">
         <!-- 顶部开始 -->
@@ -51,158 +43,24 @@
         <!-- 顶部结束 -->
         <!-- 中部开始 -->
         <!-- 左侧菜单开始 -->
-        <div class="left-nav">
-            <div id="side-nav">
-                <ul id="nav">
-                    <li>
+        <div class="left-nav" id="indexApp">
+            <div id="side-nav" >
+                <ul id="nav"  >  
+                	
+                	  <li v-for="(temp,i) in showData">
                         <a href="javascript:;">
-                            <i class="iconfont left-nav-li" lay-tips="前台管理">&#xe6b8;</i>
-                            <cite>前台管理</cite>
+                            <i class="iconfont left-nav-li" lay-tips="temp.label">&#xe6b8;</i>
+                            <cite>{{temp.label}}</cite>
                             <i class="iconfont nav_right">&#xe697;</i></a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a onclick="xadmin.add_tab('结算中心','cqq/结算中心.html')">
+                        <ul class="sub-menu" >
+                            <li v-for="temp2 in temp.list"  v-if="filterViewShow(temp2.label)">
+                            	<a @click="xadmin(temp2.label,temp2.url)">
                                     <i class="iconfont">&#xe6a7;</i>
-                                    <cite>结算中心</cite></a>
+                                    <cite>{{temp2.label}}</cite></a>
                             </li>
-                            <li>
-                                <a onclick="xadmin.add_tab('会员卡管理','cqq/会员管理.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>会员卡充值管理</cite></a>
-                            </li>
-                            
                           
-                        </ul>
+                            </ul>
                     </li>
-                    <li>
-                        <a href="javascript:;">
-                            <i class="iconfont left-nav-li" lay-tips="人事管理">&#xe723;</i>
-                            <cite>人事管理</cite>
-                            <i class="iconfont nav_right">&#xe697;</i></a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a onclick="xadmin.add_tab('员工管理','lc/员工管理.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>员工管理</cite></a>
-                            </li>
-                            <li>
-                                <a onclick="xadmin.add_tab('离职管理','cqq/离职.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>离职管理</cite></a>
-                            </li>
-                            <li>
-                                <a onclick="xadmin.add_tab('岗位管理','zyh/岗位管理.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>岗位管理</cite></a>
-                            </li>
-                            <li>
-                                <a onclick="xadmin.add_tab('通讯录管理','ljn/通讯录.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>通讯录管理</cite></a>
-                            </li>
-                              <li>									
-                                <a onclick="xadmin.add_tab('技工管理','yld/技工管理.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>技工管理</cite></a>
-                            </li>
-                              <li>									
-                                <a onclick="xadmin.add_tab('外勤车辆管理','ljn/外勤车辆管理.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>外勤车辆管理</cite></a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="javascript:;">
-                            <i class="iconfont left-nav-li" lay-tips="系统管理">&#xe723;</i>
-                            <cite>系统管理</cite>
-                            <i class="iconfont nav_right">&#xe697;</i></a>
-                        <ul class="sub-menu">
-                           
-                             <li>
-                                <a onclick="xadmin.add_tab('员工权限管理','zyh/权限风格2.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>员工权限管理</cite></a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="javascript:;">
-                            <i class="iconfont left-nav-li" lay-tips="维修管理">&#xe723;</i>
-                            <cite>维修管理</cite>
-                            <i class="iconfont nav_right">&#xe697;</i></a>
-                        <ul class="sub-menu">
-                          <!--  <li>
-                                <a onclick="xadmin.add_tab('站内','zyh/站内开单.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>站内接单</cite></a>
-                            </li> -->
-                            <li>
-                                <a onclick="xadmin.add_tab('站外','yld/站外接单.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>维修接单</cite></a>
-                            </li>
-                             <li>
-                                <a onclick="xadmin.add_tab('竣工操作','zyh/维修竣工.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>竣工操作</cite></a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="javascript:;">
-                            <i class="iconfont left-nav-li" lay-tips="客户管理">&#xe726;</i>
-                            <cite>客户管理</cite>
-                            <i class="iconfont nav_right">&#xe697;</i></a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a onclick="xadmin.add_tab('客户资料管理','zyh/客户资料管理.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>客户资料管理</cite></a>
-                            </li>
-                            <li>
-                                <a onclick="xadmin.add_tab('车辆资料管理','zyh/车辆管理.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>车辆资料管理</cite></a>
-                            </li>
-                           
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="javascript:;">
-                            <i class="iconfont left-nav-li" lay-tips="数据管理">&#xe6ce;</i>
-                            <cite>数据管理</cite>
-                            <i class="iconfont nav_right">&#xe697;</i></a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a onclick="xadmin.add_tab('发动机品牌管理','zyh/发动机品牌管理.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>发动机品牌管理</cite></a>
-                            </li>
-                            <li>
-                                <a onclick="xadmin.add_tab('车型档案管理','ljn/车型档案管理.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>车型档案管理</cite></a>
-                            </li>
-                            <li>
-                                <a onclick="xadmin.add_tab('商品资料管理','lc/商品资料管理.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>商品资料管理</cite></a>
-                            </li>
-                            <li>
-                                <a onclick="xadmin.add_tab('供货单位','cqq/供货单位.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>供货单位</cite></a>
-                            </li>
-                            <li>
-                                <a onclick="xadmin.add_tab('维修项目管理','echarts5.html')">
-                                    <i class="iconfont">&#xe6a7;</i>
-                                    <cite>维修项目管理</cite></a>
-                            </li>
-                           
-                        </ul>
-                    </li>
-                   
                 
                 </ul>
             </div>
@@ -230,12 +88,48 @@
             </div>
         </div>
         <div class="page-content-bg"></div>
-        <style id="theme_style"></style>
-        <!-- 右侧主体结束 -->
-        <!-- 中部结束 -->
+    </body>
+ 	<script type="text/javascript" src="js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="js/vue.js"></script>
+	<script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/jq_ajax_config.js"></script>
+	<script type="text/javascript" src="js/indexShowView.js"></script>
         <script>//百度统计可去掉
        
-
+			var indexApp=new Vue({
+				el:"#indexApp",
+				data:{
+					showData:indexShowView,
+					quanxian:[
+					{id:11,fid:1,label:"结算中心"},{label:"会员卡管理"}
+					
+					]
+					
+				},
+				methods:{
+					xadmin(title,url){
+						xadmin.add_tab(title,url);
+					},
+					filterViewShow(val){
+						let bool=false;
+						this.quanxian.forEach(row=>{
+							if(row.label==val){
+							bool=true;
+							return
+							}
+						})
+						return true;
+					}
+				},
+				mounted(){
+				/*	this.showData=indexShowView;*/
+					
+				},filters:{
+					filterViewShow(val){
+						return  val=='结算中心'?true:false;
+					}
+				}
+			});
         
         
             var _hmt = _hmt || []; (function() {
@@ -243,7 +137,7 @@
                 hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
                 var s = document.getElementsByTagName("script")[0];
                 s.parentNode.insertBefore(hm, s);
-            })();</script>
-    </body>
-
+            })();
+        
+        </script>
 </html>
