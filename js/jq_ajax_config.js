@@ -10,3 +10,4 @@ jQuery(document).ajaxError(function(ex) {
 	console.log(ex);
 	alert("服务器正忙....");
 });
+
