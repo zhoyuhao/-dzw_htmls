@@ -15,10 +15,15 @@
  	        <script type="text/javascript" src="js/session.js" ></script>
         <script src="./lib/layui/layui.js" charset="utf-8"></script>
         <script type="text/javascript" src="./js/xadmin.js"></script>
-      
+      <style>
+      	[v-cloak]{
+      		display: none;
+      	}
+      	
+      </style>
     </head>
     <body class="index">
-    	<div id="indexApp">
+    	<div id="indexApp" v-cloak>
     		
     
         <!-- 顶部开始 -->
@@ -121,14 +126,13 @@
 							return
 							}
 						})
-						return false;
+						return bool;
 					}
 				},
 				mounted(){
 				this.user=JSON.parse(sessionStorage.getItem("user"));
-				console.log(JSON.stringify(this.user))				
 				this.quanxian=this.user.list;
-					
+				console.log(JSON.stringify(this.quanxian))
 				},filters:{
 					filterViewShow(val){
 						return  val=='结算中心'?true:false;

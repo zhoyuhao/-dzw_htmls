@@ -11,7 +11,7 @@ var indexShowView=[
 {label:"系统管理",list:[{label:'员工权限管理',url:'zyh/权限风格2.html'}]},
 {label:"维修管理",list:[{label:'站外',url:'yld/站外接单.html'},
 {label:'竣工操作',url:'zyh/维修竣工.html'}]},
-{label:"客户管理",url:[{label:'客户资料管理',url:'zyh/客户资料管理.html'},
+{label:"客户管理",list:[{label:'客户资料管理',url:'zyh/客户资料管理.html'},
 {label:'车辆资料管理',url:'zyh/车辆管理.html'}]},
 {label:"数据管理",list:[{label:'发动机品牌管理',url:'zyh/发动机品牌管理.html'},
 {label:'车型档案管理',url:'ljn/车型档案管理.html'},
