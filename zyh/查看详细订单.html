@@ -9,17 +9,27 @@
 				<template>
 					<el-table :data="list" style="width: 100%;margin: 0px auto;margin-top: -2ex;" >
 						<el-table-column label="编号" align="center" width="180">
-							<template slot-scope="scope">
-								{{scope.$index+1}}
-							</template>
-						</el-table-column>
-						<el-table-column prop="type" align="center" label="维修项目名称">
-						</el-table-column>
-						<el-table-column align="center" label="维修价格">
-							<template slot-scope="scope">
-								<label style="">￥{{scope.row.money}}</label>
-							</template>
-						</el-table-column>
+								<template slot-scope="scope">
+									{{scope.$index+1}}
+								</template>
+							</el-table-column>
+							<el-table-column prop="sdname" align="center" label="维修项目名称">
+							</el-table-column>
+							<el-table-column align="center" label="单价">
+								<template slot-scope="scope">
+									<label style="">￥{{scope.row.dprice}}</label>
+								</template>
+							</el-table-column>
+							<el-table-column align="center" label="件数">
+								<template slot-scope="scope">
+									<label style="">{{scope.row.sdnumber}}件</label>
+								</template>
+							</el-table-column>
+							<el-table-column align="center" label="总价">
+								<template slot-scope="scope">
+									<label style="">￥{{scope.row.sdprice}}</label>
+								</template>
+							</el-table-column>
 
 					</el-table>
 				
@@ -56,9 +66,15 @@
 	
 			},
 			mounted() {
-			
+					
 					this.list=JSON.parse(sessionStorage.getItem("xiangxi"));
+					let money=0;
+					$.each(this.list, function(i, obj) {
+						money += obj.sdprice;
+					})
+					this.moneySum = money;
 					gangwei.fullscreenLoading = false;
+					
 			}
 		})
 	</script>
