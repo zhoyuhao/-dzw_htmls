@@ -86,21 +86,21 @@
 					let _this=this;
 					let bool=true;
 						$.each(_this.list, function(i, obj) {
-						if(obj.cp == "" && obj.pp == "") {
+						if(obj.carlicenceplate == "" && obj.carbrand == "") {
 							_this.$message({
 								showClose: true,
 								message: '车牌号和品牌不能为空！',
 								type: 'error'
 							});
 							bool = false;
-						} else if(obj.cp == "") {
+						} else if(obj.carlicenceplate == "") {
 							_this.$message({
 								showClose: true,
 								message: '请填写车牌号',
 								type: 'error'
 							});
 							bool = false;
-						} else if(obj.pp == "") {
+						} else if(obj.carbrand == "") {
 							_this.$message({
 								showClose: true,
 								message: '请填写车辆品牌',

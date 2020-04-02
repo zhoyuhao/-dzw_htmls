@@ -63,7 +63,7 @@
 								</el-table>
 								 
   								<div style="text-align: right;margin-top: 2ex;">
-  									<el-button type="primary" style="width: 150px;" :disabled="bool==true?true:false" @click="cltj">提交</el-button>
+  									<el-button type="primary" style="width: 150px;" :disabled="bool==true?true:false" @click="clxxAdd">提交</el-button>
   									<el-button style="width: 150px;" @click="quxiao">取消</el-button>
   								</div>
 							</template>
@@ -81,70 +81,23 @@
 			},
 			methods: {
 				
-				/*车辆提交*/
-				cltj(){
-					let _this=this;
-					let bool=true;
-						$.each(_this.list, function(i, obj) {
-						if(obj.cp == "" && obj.pp == "") {
-							_this.$message({
-								showClose: true,
-								message: '车牌号和品牌不能为空！',
-								type: 'error'
-							});
-							bool = false;
-						} else if(obj.cp == "") {
-							_this.$message({
-								showClose: true,
-								message: '请填写车牌号',
-								type: 'error'
-							});
-							bool = false;
-						} else if(obj.pp == "") {
-							_this.$message({
-								showClose: true,
-								message: '请填写车辆品牌',
-								type: 'error'
-							});
-							bool =  false;
-						}
-
-					});
-					if(bool){
-						$.ajax(`http://127.0.0.1:8080/zyhCustomerBAction/api/carAdd`, {
-						type: "post",
-						dataType: "json",
-						data:JSON.stringify(_this.list),
-						contentType: "application/json",
-						success: function(data) {
-							if(data > 0) {
-								_this.$message({
-										duration:"1000",
-									type: 'success',
-									message: '操作成功!'
-								});
-								_this.queryClick();
-							}
-						}
-					});
-					clgl.dialogVisible = false;
 				
-					}
-				},
 				/*取消*/
 				quxiao(){
 				
 					clgl.dialogVisible = false;
 				},
 					addcl() {
+						let _this=this;
 						this.bool=false;
 					this.list.splice(0, 0, {
-						pp: '',
-						ks: '',
-						cp: '',
-						pz: '',
-						ys: '',
-						cd: ''
+							cidk:_this.temp.cidk,
+							carlicenceplate: '',
+						carbrand: '',
+						carcolor: '',
+						carconfigure: '',
+						carlocality: '',
+						carmodel: ''
 					});
 				},
 				
@@ -164,22 +117,22 @@
 						return
 					}
 					let bool =true;
-						$.each(_this.list, function(i, obj) {
-						if(obj.cp == "" && obj.pp == "") {
+							$.each(_this.list, function(i, obj) {
+						if(obj.carlicenceplate == "" && obj.carbrand == "") {
 							_this.$message({
 								showClose: true,
 								message: '车牌号和品牌不能为空！',
 								type: 'error'
 							});
 							bool = false;
-						} else if(obj.cp == "") {
+						} else if(obj.carlicenceplate == "") {
 							_this.$message({
 								showClose: true,
 								message: '请填写车牌号',
 								type: 'error'
 							});
 							bool = false;
-						} else if(obj.pp == "") {
+						} else if(obj.carbrand == "") {
 							_this.$message({
 								showClose: true,
 								message: '请填写车辆品牌',
@@ -190,7 +143,26 @@
 
 					});
 					if(bool) {
-						_this.addcl()
+						console.log(JSON.stringify(_this.list))
+							$.ajax(`http://127.0.0.1:8080/zyhCustomerBAction/api/carAdd`, {
+						type: "post",
+						dataType: "json",
+						data:JSON.stringify(_this.list),
+						contentType: "application/json",
+						success: function(data) {
+							if(data > 0) {
+								_this.$message({
+										duration:"1000",
+									type: 'success',
+									message: '操作成功!'
+								});
+								clgl.list=[];
+								clgl.query();
+								clgl.dialogVisible= false;
+							}
+						}
+					});
+					
 					}
 
 				}
@@ -198,7 +170,6 @@
 			mounted() {
 			
 					this.temp=JSON.parse(sessionStorage.getItem("khzlclAdd"));
-					alert(JSON.stringify(this.temp))
 					clgl.fullscreenLoading = false;
 			}
 		})

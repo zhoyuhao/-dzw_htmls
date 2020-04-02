@@ -6,95 +6,68 @@
 		<title></title>
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
 		<style>
-			[v-cloak]{
+			[v-cloak] {
 				display: none;
 			}
+			
 			.el-table--enable-row-hover .el-table__body tr:hover>td {
-  background-color: #CAE1FF;
-}
+				background-color: #CAE1FF;
+			}
 		</style>
 	</head>
 
 	<body style="background-color: #e6e6e6;">
 
-		<div id="ygqx" style="margin: 0px auto;border: 0px solid; margin: 5px;" v-cloak>
-		<el-container style="height: 500px; border: 1px solid #eee;background-color: white;height: 650px">
-  <el-aside width="250px"  style="background-color:white;">
-    <el-menu  style="margin: 2ex;max-height:600px;min-height: 600px;">
-     <el-menu-item index="0"  @click="quanxian1()">
-        <i class="el-icon-menu">德召文汽修角色</i>
-        <span slot="title"></span>
-      </el-menu-item>
-      
-          <el-menu-item :index="temp.id" v-for="(temp,i) in juese" @click="quanxian(temp)" >
-        <i class="el-icon-s-custom"style="font-size: 15px;">{{temp.name}}</i>
-        <span slot="title"></span>
-      </el-menu-item>
-    </el-menu>
-      
-    
-  </el-aside>
-  
-  <el-container>
+		<div id="ygqx" style="margin: 0px auto;border: 0px solid; margin: 5px;" v-cloak v-loading.fullscreen.lock="fullscreenLoading">
+			<el-container style="height: 500px; border: 1px solid #eee;background-color: white;height: 650px">
+				<el-aside width="250px" style="background-color:white;">
+					<el-menu style="margin: 2ex;max-height:600px;min-height: 600px;">
+						<el-menu-item index="0" @click="quanxian1()">
+							<i class="el-icon-menu">德召文汽修角色</i>
+							<span slot="title"></span>
+						</el-menu-item>
 
-    <el-main >
-    
-    	<h3 style="margin:3ex;float: left;margin-left: 8ex;">{{namejues}}权限设置<span class="el-icon-s-tools"></span></h3>
-    	<div style="border: 0px solid ;width: 200px;clear: both;margin-left: 8ex; height:420px;display: inline-block;float: left;overflow: auto">
-    			<el-tree ref="tree" :data="quanxiandata" 
-					show-checkbox node-key="id" 
-					:getCurrentKey="w" 
-					:default-expanded-keys="chekArray"
-				
-					  :props="defaultProps">
-				</el-tree>
-    		 
-    	</div>
-   
-<div id="" style="margin-left: 6ex;display: inline-block;border: 0px solid ;float: left;margin-top: -6ex;">
-	
+						<el-menu-item :index="temp.id" v-for="(temp,i) in juese" @click="quanxian(temp)">
+							<i class="el-icon-s-custom" style="font-size: 15px;">{{temp.cname}}</i>
+							<span slot="title"></span>
+						</el-menu-item>
+					</el-menu>
 
-				<template>
-  <el-table
-    :data="tableData"
-    :row-style="selectedHighlight" 
-	 :row-class-name="tableRowClassName"
-	@row-click="rowClick"
-	 @row-dblclick="rowdblclick"
-    stripe
-    size="mini"
-    align="center"
-    height="500px"
-    style="width: 100%">
-     <el-table-column  align="center" label="德召文员工">
-    <el-table-column
-      prop="id"
-      label="工号"
-      align="center"
-      width="200">
-    </el-table-column>
-    <el-table-column
-      prop="name"
-      label="姓名"
-      align="center"
-      width="200">
-    </el-table-column>
-    
-    <el-table-column
-    	align="center"
-      prop="gw"
-       width="200"
-      label="岗位">
-    </el-table-column>
-  </el-table>
-</template>
-</div>
-<div style="margin-left: 3ex;clear: both;width: 250px; text-align: center; border: 0px solid ;float: left;margin-top: 1ex;"> 
-	<el-button type="primary" size="mini" style="width: 200px;" @click="qxxiugaiOk">权限修改</el-button></div>
+				</el-aside>
 
-    </el-main>
-  </el-container>
-</el-container>
+				<el-container>
+
+					<el-main>
+
+						<h3 style="margin:3ex;float: left;margin-left: 8ex;">{{namejues}}权限设置<span class="el-icon-s-tools"></span></h3>
+						<div style="border: 0px solid ;width: 200px;clear: both;margin-left: 8ex; height:420px;display: inline-block;float: left;overflow: auto">
+							<el-tree ref="tree" :data="quanxiandata" show-checkbox node-key="fid" :getCurrentKey="w" :default-expanded-keys="chekArray" :props="defaultProps">
+							</el-tree>
+
+						</div>
+
+						<div id="" style="margin-left: 6ex;display: inline-block;border: 0px solid ;float: left;margin-top: -6ex;">
+
+							<template>
+								<el-table :data="tableData" :row-style="selectedHighlight" :row-class-name="tableRowClassName" @row-click="rowClick" @row-dblclick="rowdblclick" stripe size="mini" align="center" height="500px" style="width: 100%">
+									<el-table-column align="center" label="德召文员工">
+										<el-table-column prop="pid" label="工号" align="center" width="200">
+										</el-table-column>
+										<el-table-column prop="pname" label="姓名" align="center" width="200">
+										</el-table-column>
+
+										<el-table-column align="center" prop="gangwei" width="200" label="岗位">
+										</el-table-column>
+								</el-table>
+							</template>
+						</div>
+						<div style="margin-left: 3ex;clear: both;width: 250px; text-align: center; border: 0px solid ;float: left;margin-top: 1ex;">
+							<el-button type="primary" size="mini" style="width: 200px;" @click="qxxiugaiOk">权限修改</el-button>
+						</div>
+
+					</el-main>
+				</el-container>
+			</el-container>
 
 		</div>
 
@@ -104,187 +77,96 @@
 	<script type="text/javascript" src="../js/index.js"></script>
 	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
 	<script>
-		
-		var main= {
-    data() {/*
-      const generateData = _ => {
-        const data =[];
-        return null;
-      };
-      return {};
-    */}
-  };
-  
-  var ygqx=Vue.extend(main);
-  var ygqx2=new ygqx({
+		var main = {
+			data() {
+				/*
+				      const generateData = _ => {
+				        const data =[];
+				        return null;
+				      };
+				      return {};
+				    */
+			}
+		};
+
+		var ygqx = Vue.extend(main);
+		var ygqx2 = new ygqx({
 			el: "#ygqx",
-			
+
 			data: {
-				tableData:[{
-					name:"张三",id:"23230",gw:"维修技术员",js:"总经理",
-					quanxians: [11,22,41,41,54,51]
-					
+				fullscreenLoading: false,
+				jueseid: null,
+				tableData: [],
+				juese: [],
+				gangwei: [{
+					mc: "前台收银",
+					id: 1
+				}, {
+					mc: ""
 				}],
-				juese:[
-				{name:"总经理",id:"1",qx:[11]},{name:"维修经理",id:"2",qx:[11,51]},{name:"采购经理",id:"3"},{name:"质检经理",id:"4"},{name:"技术员",id:"5"}
-				],
-				gangwei:[
-				{mc:"前台收银",id:1},{mc:""}
-				]
-				,namejues:'',
-				userquanxian:[],
-							defaultProps: {
+				namejues: '',
+				userquanxian: [],
+				defaultProps: {
 					children: 'children',
 					label: 'label'
 				},
-				quanxiandata: [{
-          id: 1,
-          label: '前台管理',
-          children: [{
-            id: 11,
-            label: '结算中心',
-            fid:1
-          },{
-            id: 12,
-            label: '会员卡充值管理',
-             fid:1
-          }]
-        },{
-          id: 2,
-          label: '人事管理',
-          children: [{
-            id: 21,
-            label: '员工管理',
-             fid:2
-          },{
-            id: 22,
-            label: '离职管理',
-                         fid:2
-          },{
-            id: 23,
-            label: '岗位管理',
-                         fid:2
-          },{
-            id: 24,
-            label: '通讯录管理',
-                         fid:2
-          },{
-            id: 25,
-            label: '技工管理',
-                         fid:2
-          },{
-            id: 26,
-            label: '外勤车辆管理',
-                         fid:2
-          }]
-        },
-        {
-          id: 3,
-          label: '系统管理',
-            disabled: true,
-          children: []
-        },
-        {
-          id: 4,
-          label: '维修管理',
-          children: [{
-            id: 41,
-            label: '维修接单',
-             fid:4
-          },
-          {
-            id: 42,
-            label: '竣工操作',
-             fid:4
-          }]
-        },{
-          id: 5,
-          label: '客户管理',
-          children: [{
-            id: 51,
-            label: '客户资料管理',
-             fid:5
-          },
-          {
-            id: 52,
-            label: '车辆管理',
-             fid:5
-          }]
-        },
-        {
-          id: 6,
-          label: '数据管理',
-          children: [{
-            id: 61,
-            label: '发动机品牌管理',
-             fid:6
-          },
-          {
-            id: 62,
-            label: '车型档案管理',
-             fid:6
-          },
-           {
-            id: 63,
-            label: '商品资料管理',
-             fid:6
-          },
-           {
-            id: 64,
-            label: '供货单位',
-             fid:6
-          },
-          {
-            id: 65,
-            label: '维修项目管理',
-             fid:6
-          }
-           
-          ]
-        }
-        
-        ],
-				chekArray:[],
-				getIndex:null
+				quanxiandata: [],
+				chekArray: [],
+				getIndex: null,
+				arrayUsers: []
 			},
 			methods: {
-				tableRowClassName ({row, rowIndex}) {
-       //把每一行的索引放进row
-     row.index = rowIndex;
-    },
-    rowClick (row) {
-    	this.namejues="";
-    	for(var i=0;i<this.$refs.tree.store._getAllNodes().length;i++){
-           this.$refs.tree.store._getAllNodes()[i].expanded=this.isexpand;
-        }
-    	this.chekArray=[];
-   		this.$refs.tree.setCheckedKeys(this.chekArray);
-       this.getIndex=null;
-    },
-    selectedHighlight({row, rowIndex}) {
-         if ((this.getIndex) === rowIndex ) {
-            return {
-          "background-color": "#CAE1FF"
-       };
-     }
-    },  rowdblclick(row,col,event){
-    	this.namejues=row.name+"-"+row.js+":";
-    	this.chekArray=row.quanxians;
-    	this.$refs.tree.setCheckedKeys(row.quanxians);//获取已经设置的资源后渲染
-    	console.log(JSON.stringify(row.quanxians))
-     	 this.getIndex=row.index;
-    },
-    	qxxiugaiOk() {
+				tableRowClassName({
+					row,
+					rowIndex
+				}) {
+					//把每一行的索引放进row
+					row.index = rowIndex;
+				},
+				rowClick(row) {
+					this.jueseid = null;
+					this.namejues = "";
+					for(var i = 0; i < this.$refs.tree.store._getAllNodes().length; i++) {
+						this.$refs.tree.store._getAllNodes()[i].expanded = this.isexpand;
+					}
+					this.chekArray = [];
+					this.$refs.tree.setCheckedKeys(this.chekArray);
+					this.getIndex = null;
+				},
+				selectedHighlight({
+					row,
+					rowIndex
+				}) {
+					if((this.getIndex) === rowIndex) {
+						return {
+							"background-color": "#CAE1FF"
+						};
+					}
+				},
+				rowdblclick(row, col, event) {
+					//console.log(JSON.stringify(row))
+					this.jueseid = row.jid;
+					this.namejues = row.pname + "-" + row.juesename + ":";
+					this.chekArray = row.qxListId; //获取当前员工权限选中
+					this.$refs.tree.setCheckedKeys(row.qxListId); //获取已经设置的资源后渲染
+					this.getIndex = row.index;
+				},
+				qxxiugaiOk() {
+					if(this.jueseid == null) {
+						this.$message({
+							showClose: true,
+							duration: "1000",
+							message: '请单击要修改的角色或员工',
+							type: 'error'
+						});
+						return
+					}
 					this.$confirm('权限操作请谨慎, 是否继续?', '提示', {
 						confirmButtonText: '确定',
 						cancelButtonText: '取消',
 						type: 'warning'
 					}).then(() => {
 						this.w();
-						this.$message({
-							type: 'success',
-							message: '授权成功!'
-						});
 					}).catch(() => {
 						this.$message({
 							type: 'info',
@@ -292,38 +174,71 @@
 						});
 					});
 
-				}
-,
-			
+				},
+
 				w() {
 					let _this = this;
 					let arry = this.$refs.tree.getCheckedNodes(false, true);
 					$.each(arry, function(j, obj1) {
 						$.each(_this.quanxiandata, function(i, obj) {
-							if(obj.id == obj1.id) {
+							if(obj.fid == obj1.fid) {
 								arry = arry.filter(row => {
 									return row != obj1
 								})
 							}
 						})
 					});
-					console.log(` ${JSON.stringify(arry)}`);
+					let arrayid = [];
+					arry.forEach(row => {
+						arrayid.push({
+							cid: _this.jueseid,
+							fid: row.fid
+						})
+					});
+					if(arrayid.length == 0) {
+						arrayid = [{
+							cid: _this.jueseid,
+							fid: 0
+						}]
+					}
+					//console.log(JSON.stringify(arrayid))
+					$.ajax(`http://127.0.0.1:8080/zyhRoleAction/api/roleAdd`, {
+						type: "post",
+						dataType: "json",
+						data: JSON.stringify(arrayid),
+						contentType: "application/json",
+						success: function(data) {
+
+							_this.queryAll();
+
+							_this.openFullScreen1()
+
+						}
+					});
 
 				},
 				/*权限*/
-				quanxian(ent){
-				this.namejues=ent.name+":";
-				this.chekArray=ent.qx;
-    			this.$refs.tree.setCheckedKeys(this.chekArray);//获取已经设置的资源后渲染
-					
-				},/*权限*/
-				quanxian1(ent){
-						for(var i=0;i<this.$refs.tree.store._getAllNodes().length;i++){
-           this.$refs.tree.store._getAllNodes()[i].expanded=this.isexpand;
-        }
-				this.namejues='';
-				this.chekArray=[];
-    			this.$refs.tree.setCheckedKeys(this.chekArray);//获取已经设置的资源后渲染
+				quanxian(ent) {
+					this.rowClick();
+					this.jueseid = ent.cid;
+					this.namejues = ent.cname + ":";
+					this.chekArray = ent.list; //权限选中
+					this.tableData = ent.userlist;
+					//console.log(JSON.stringify(ent.userlist))
+					this.$refs.tree.setCheckedKeys(this.chekArray); //获取已经设置的资源后渲染
+
+				},
+				/*权限*/
+				quanxian1(ent) {
+					this.jueseid = null;
+					this.rowClick();
+					for(var i = 0; i < this.$refs.tree.store._getAllNodes().length; i++) {
+						this.$refs.tree.store._getAllNodes()[i].expanded = this.isexpand;
+					}
+					this.tableData = this.arrayUsers;
+					this.namejues = '';
+					this.chekArray = [];
+					this.$refs.tree.setCheckedKeys(this.chekArray); //获取已经设置的资源后渲染
 				},
 				/*修改取消*/
 				xiugaiquxiao2(formName) {
@@ -367,12 +282,49 @@
 				/*修改提交*/
 				updatesOk() {
 					this.dialogVisible2 = false;
-				}
-				
-				
+				},
+				queryAll() {
+
+					let _this = this;
+					_this.juese = [];
+
+					_arrayUsers = [];
+					_this.chekArray = [];
+					_this.quanxiandata = [];
+					this.$refs.tree.setCheckedKeys(this.chekArray); //获取已经设置的资源后渲染
+					$.getJSON(`http://127.0.0.1:8080/zyhRoleAction/api/queryAll`, function(data) {
+						_this.juese = data;
+						_this.tableData = [];
+						_this.arrayUsers = [];
+						data.forEach(row => {
+							row.userlist.forEach(row => {
+								_this.arrayUsers.push(row);
+							})
+						});
+						_this.tableData = _this.arrayUsers;
+					});
+
+					$.getJSON(`http://127.0.0.1:8080/zyhRoleAction/api/qxAll`, function(data) {
+						_this.quanxiandata = data
+						//console.log(JSON.stringify(data))
+					});
+				},
+				openFullScreen1() {
+					this.fullscreenLoading = true;
+					setTimeout(() => {
+						this.fullscreenLoading = false;
+						this.$message({
+							duration: "1000",
+							type: 'success',
+							message: '操作成功!'
+						});
+
+					}, "1000");
+				},
+
 			},
 			mounted() {
-
+				this.queryAll();
 			}
 		})
 		/*var zhnanei = new Vue*/
