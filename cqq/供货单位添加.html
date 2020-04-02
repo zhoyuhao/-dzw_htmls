@@ -20,68 +20,23 @@
 			<el-row>
 				<template>
 					<el-form :inline="true" :model="formInline" class="demo-form-inline">
-						<el-form-item label="厂商代码">
-							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						<el-form-item label="">
+							<el-input v-model="Supplier.ghsid" placeholder="供货商id"></el-input>
 						</el-form-item>
-						<el-form-item label="厂商名称">
-							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						<el-form-item label="">
+							<el-input v-model="Supplier.ghsname" placeholder="供货商名称"></el-input>
 						</el-form-item>
-						<el-form-item label="地址">
-							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						<el-form-item label="">
+							<el-input v-model="Supplier.ghsaddress" placeholder="供货商地址"></el-input>
 						</el-form-item>
-						<el-form-item label="经营情况">
-							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						<el-form-item label="">
+							<el-input v-model="Supplier.ghsphone" placeholder="供货商联系电话"></el-input>
 						</el-form-item>
-						<el-form-item label="网址">
-							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						<el-form-item label="">
+							<el-input v-model="Supplier.ghsuser" placeholder="联系人"></el-input>
 						</el-form-item>
-						<el-form-item label="开户行">
-							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
-						</el-form-item>
-						<el-form-item label="银行账号">
-							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
-						</el-form-item>
-						<el-form-item label="付款方式">
-							<el-select v-model="formInline.region" placeholder="活动区域">
-								<el-option label="区域一" value="shanghai"></el-option>
-								<el-option label="区域二" value="beijing"></el-option>
-							</el-select>
-						</el-form-item>
-						<el-form-item label="厂商等级">
-							<el-select v-model="formInline.region" placeholder="活动区域">
-								<el-option label="区域一" value="shanghai"></el-option>
-								<el-option label="区域二" value="beijing"></el-option>
-							</el-select>
-						</el-form-item>
-						<el-form-item label="经营品牌">
-							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
-						</el-form-item>
-						<el-form-item label="厂商类别">
-							<el-select v-model="formInline.region" placeholder="活动区域">
-								<el-option label="区域一" value="shanghai"></el-option>
-								<el-option label="区域二" value="beijing"></el-option>
-							</el-select>
-						</el-form-item>
-						<el-form-item label="联系人">
-							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
-						</el-form-item>
-						<el-form-item label="电话">
-							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
-						</el-form-item>
-						<el-form-item label="手机">
-							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
-						</el-form-item>
-
-						<el-form-item label="Email1">
-							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
-						</el-form-item>
-						<el-form-item label="帐期（天）">
-							<el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions">
-							</el-date-picker>
-						</el-form-item>
-
-						<el-form-item label="备注">
-							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
+						<el-form-item label="">
+							<el-input v-model="Supplier.ghsaccount" placeholder="打款账号"></el-input>
 						</el-form-item>
 					</el-form>
 				</template>
@@ -91,68 +46,32 @@
 				<el-button type="info" plain @click="guanbi">关闭</el-button>
 			</div>
 		</div>
-
 	</body>
 	<script>
 		var lzdjApp = new Vue({
 			el: '#gonghuodanweitianjia',
 			data: {
-				activeName: 'second',
-				formInline: {
-					user: '',
-					region: ''
-				},
-				pickerOptions: {
-					disabledDate(time) {
-						return time.getTime() > Date.now();
-					},
-					shortcuts: [{
-						text: '今天',
-						onClick(picker) {
-							picker.$emit('pick', new Date());
-						}
-					}, {
-						text: '昨天',
-						onClick(picker) {
-							const date = new Date();
-							date.setTime(date.getTime() - 3600 * 1000 * 24);
-							picker.$emit('pick', date);
-						}
-					}, {
-						text: '一周前',
-						onClick(picker) {
-							const date = new Date();
-							date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-							picker.$emit('pick', date);
-						}
-					}]
-				},
-				isshow1: false,
-				isshow2: false,
-				name: '',
-				currentRow: null,
-				lizhi: [{
-						bumen: '管钱部',
-						no: 'OME0001',
-						name: '张三',
-						sex: '男',
-						zhiwei: '销售经理',
-						time: '2019-09-09',
-						txt: 'jdlkasjd'
-					},
-					{
-						bumen: '管钱部',
-						no: 'OME0002',
-						name: '李四',
-						sex: '女',
-						zhiwei: '销售总监',
-						time: '2019-09-09',
-						txt: 'jdlkasjd'
-
-					}
-				]
+				Supplier: {},
 			},
 			methods: {
+				baocun() {
+					var this_ = this;
+					kehuziliao.isshow1 = false;
+					/*$.ajax(`http://127.0.0.1:8080/CqqSupplierAction/api/add`, {
+						type: "post",
+						contentType: "application/json",
+						data: JSON.stringify(this_.Supplier),
+						dataType: "json",
+						success(date) {
+							if(date > 0) {
+								alert("成功")
+								kehuziliao.isshow1 = false;
+							} else {
+								alert("不成功")
+							}
+						}
+					});*/
+				},
 				handleClose(done) {
 					this.$confirm('确认关闭？').then(_ => {
 						done();
@@ -160,9 +79,9 @@
 				},
 				guanbi() {
 					//alert();
-					gonghuodanwei.isshow1 = false;
+					kehuziliao.isshow1 = false;
 
-					gonghuodanwei.isshow2 = false;
+					kehuziliao.isshow2 = false;
 				},
 				handleCurrentChange(val) {
 					this.currentRow = val;

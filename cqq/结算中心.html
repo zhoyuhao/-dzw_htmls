@@ -5,129 +5,66 @@
 		<meta charset="UTF-8">
 		<title>结算中心</title>
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
-
 		<style>
-			.el-table .warning-row {
-				background: oldlace;
-			}
-			
-			.el-table .success-row {
-				background: #f0f9eb;
+			[v-cloak] {
+				display: none;
 			}
 		</style>
 	</head>
 
-	<body>
-		<div id="lzdjApp">
-			<el-row style="margin-bottom: 20px;">
-				<el-col :span="8">
-					<h1 style="font-size: 24px;">结算中心</h1>
-				</el-col>
-				<el-col :span="12">
-					&nbsp
-				</el-col>
-				<el-col :span="4">
-					<el-button type="primary">搜索</el-button>
-					<el-button type="info">关闭</el-button>
-				</el-col>
-			</el-row>
-			<el-row>
-				<el-col :span="18">
-					&nbsp
-				</el-col>
-				<el-col :span="6">
-					<el-button type="primary" plain>收银</el-button>
-					<el-button type="primary" plain>打开单据</el-button>
-					<el-button type="primary" plain>导出</el-button>
-				</el-col>
-			</el-row>
-			<el-row>
-				<template>
-					<el-form :inline="true" :model="formInline" class="demo-form-inline">
-						<el-form-item label="开单日期">
-							<el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions">
-							</el-date-picker>
-						</el-form-item>
-						<el-form-item label="">
-							<el-date-picker v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions">
-							</el-date-picker>
-						</el-form-item>
-						<el-form-item label="销售单号">
-							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
-						</el-form-item>
-						<el-form-item label="结算状态">
-							<el-select v-model="formInline.region" placeholder="活动区域">
-								<el-option label="区域一" value="shanghai"></el-option>
-								<el-option label="区域二" value="beijing"></el-option>
-							</el-select>
-						</el-form-item>
-						<el-form-item label="车牌号">
-							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
-						</el-form-item>
-						<el-form-item label="客户名称">
-							<el-select v-model="formInline.region" placeholder="活动区域">
-								<el-option label="区域一" value="shanghai"></el-option>
-								<el-option label="区域二" value="beijing"></el-option>
-							</el-select>
-						</el-form-item>
-						<el-form-item label="服务顾问">
-							<el-select v-model="formInline.region" placeholder="活动区域">
-								<el-option label="区域一" value="shanghai"></el-option>
-								<el-option label="区域二" value="beijing"></el-option>
-							</el-select>
-						</el-form-item>
-						<el-form-item label="业务类型">
-							<el-select v-model="formInline.region" placeholder="活动区域">
-								<el-option label="区域一" value="shanghai"></el-option>
-								<el-option label="区域二" value="beijing"></el-option>
-							</el-select>
-						</el-form-item>
-						<el-form-item label="单据类型">
-							<el-select v-model="formInline.region" placeholder="活动区域">
-								<el-option label="区域一" value="shanghai"></el-option>
-								<el-option label="区域二" value="beijing"></el-option>
-							</el-select>
-						</el-form-item>
-						<el-form-item label="备注">
-							<el-input v-model="formInline.user" placeholder="登录账号"></el-input>
-						</el-form-item>
-					</el-form>
-				</template>
-			</el-row>
-			<el-table ref="singleTable" :data="lizhi" highlight-current-row @current-change="handleCurrentChange" style="width: 100%">
-				<el-table-column type="index" width="50">
-				</el-table-column>
-				<el-table-column property="bumen" label="销售单号" width="120">
-				</el-table-column>
-				<el-table-column property="no" label="单据类型" width="120">
-				</el-table-column>
-				<el-table-column property="name" label="结算方式">
-				</el-table-column>
-				<el-table-column property="sex" label="单据状态">
-				</el-table-column>
-				<el-table-column property="zhiwei" label="结算状态">
-				</el-table-column>
-				<el-table-column property="time" label="结算时间">
-				</el-table-column>
-				<el-table-column property="txt" label="结算人">
-				</el-table-column>
-				<el-table-column property="txt" label="结算金额">
-				</el-table-column>
-				<el-table-column property="txt" label="业务类型">
-				</el-table-column>
-				<el-table-column property="txt" label="客户名称">
-				</el-table-column>
-				<el-table-column property="txt" label="车牌号">
-				</el-table-column>
-				<el-table-column property="txt" label="车型">
-				</el-table-column>
-			</el-table>
-			<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="员工卡片" :visible.sync="isshow1" width="99%" :before-close="handleClose">
-				<div id="cnt1"></div>
-			</el-dialog>
-			<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="离职登记" :visible.sync="isshow2" width="99%" :before-close="handleClose">
-				<div id="cnt2"></div>
-			</el-dialog>
+	<body style="background-color: #e6e6e6;">
+		<div id="kehuziliao" style="background-color: white;padding: 2ex;" v-cloak>
+			<h2 style="margin-left: 3ex;padding: 1ex;margin-top: 0px;">结算中心</h2>
+			<span style="display: block;margin-bottom: 3ex;margin-left: 5ex;">会员姓名：
+    <el-input
+    	style="width: 200px;"
+    	size="mini"
+  placeholder="请输入内容"
+  v-model="input"
+  clearable>
+</el-input>
+
+    <el-button type="primary"size="mini" @click="queryClick(input)"><span class="el-icon-search"  ></span></el-button>
+			<el-button type="success" size="mini" @click="addClick">收银</el-button>
+			<el-button type="warning" size="mini" @click="updateClick">打开单据</el-button>
+			<el-button type="success" size="mini" @click="addClick">导出</el-button>
+
+			</span>
+			<template>
+				<el-table max-height="500" :data="pageInfo.list" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
+					<el-table-column type="expand" fixed>
+						详细:{{pageInfo}}
+					</el-table-column>
+
+					<el-table-column width="150" label="销售单号">
+						<template slot-scope="temp">
+							<el-radio v-model="radio" :label="temp.row.wid" @change="radiochange(temp.row)">{{temp.row.wid}}</el-radio>
+						</template>
+					</el-table-column>
+					<el-table-column label="单据类型" width="" prop="wtype">
+					</el-table-column>
+					<el-table-column label="结算方式" width="" prop="wpayment">
+					</el-table-column>
+					<el-table-column label="单据状态" width="" prop="hm">
+					</el-table-column>
+					<el-table-column label="结算状态" width="" prop="lx">
+					</el-table-column>
+					<el-table-column label="结算时间" width="" prop="wenddate">
+					</el-table-column>
+					<el-table-column label="结算人" width="" prop="hm">
+					</el-table-column>
+					<el-table-column label="结算金额" width="" prop="hm">
+					</el-table-column>
+					<el-table-column label="业务类型" width="" prop="hm">
+					</el-table-column>
+					<el-table-column label="客户名称" width="" prop="hm">
+					</el-table-column>
+					<el-table-column label="车牌号" width="" prop="hm">
+					</el-table-column>
+					<el-table-column label="车型" width="" prop="hm">
+					</el-table-column>
+				</el-table>
+			</template>
 		</div>
 
 	</body>
@@ -135,89 +72,219 @@
 	<script type="text/javascript" src="../js/vue.js"></script>
 	<script type="text/javascript" src="../js/index.js"></script>
 	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
-
 	<script>
-		var lzdjApp = new Vue({
-			el: '#lzdjApp',
+		var gangwei = new Vue({
+			el: "#kehuziliao",
 			data: {
-				formInline: {
-					user: '',
-					region: ''
+				pageInfo: [],
+				title: "",
+				fullscreenLoading: true,
+				bb: true,
+				dz: "",
+				dialogVisible2: false,
+				qcxxData: [],
+				activeName: "first",
+				checked: '',
+				ruleForm: {
+					list: []
 				},
-				pickerOptions: {
-					disabledDate(time) {
-						return time.getTime() > Date.now();
-					},
-					shortcuts: [{
-						text: '今天',
-						onClick(picker) {
-							picker.$emit('pick', new Date());
-						}
-					}, {
-						text: '昨天',
-						onClick(picker) {
-							const date = new Date();
-							date.setTime(date.getTime() - 3600 * 1000 * 24);
-							picker.$emit('pick', date);
-						}
-					}, {
-						text: '一周前',
-						onClick(picker) {
-							const date = new Date();
-							date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-							picker.$emit('pick', date);
-						}
-					}]
-				},
-				isshow1: false,
-				isshow2: false,
-				name: '',
-				currentRow: null,
-				lizhi: [{
-						bumen: '管钱部',
-						no: 'OME0001',
-						name: '张三',
-						sex: '男',
-						zhiwei: '销售经理',
-						time: '2019-09-09',
-						txt: 'jdlkasjd'
-					},
-					{
-						bumen: '管钱部',
-						no: 'OME0002',
-						name: '李四',
-						sex: '女',
-						zhiwei: '销售总监',
-						time: '2019-09-09',
-						txt: 'jdlkasjd'
-
-					}
-				]
+				radio: "",
+				hasChildren: false,
+				dialogVisible: false,
+				input: '',
+				leixi: false,
+				xruleForm: {},
+				huiyuanleix: [{
+					label: "普通",
+					value: 1
+				}, {
+					label: "会员",
+					value: 2
+				}]
 			},
 			methods: {
-				handlerOpen1() {
-					$("#cnt1").load('员工卡片.html'); //ajax读取页面
+				/*验证是否选中*/
+				code() {
+					if(this.radio == "") {
+						this.$message({
+							message: '警告哦，请选择要修改的数据',
+							type: 'warning'
+						});
+						return true;
+					}
+					return false;
 				},
-				handlerOpen2() {
-					$("#cnt2").load('离职.html'); //ajax读取页面
+				/*车辆添加*/
+				clAdd() {
+					this.title = "客户车辆添加";
+					if(this.code()) {
+						return
+					}
+					this.fullscreenLoading = true;
+					this.dialogVisible2 = true;
+					setTimeout(() => {
+						sessionStorage.setItem("khzlclAdd", JSON.stringify(this.xruleForm));
+						$("#cnt").load("员工卡片打开.html");
+					}, "700")
+
 				},
+				submitForm(formName) {
+					let _this = this;
+					this.$refs[formName].validate((valid) => {
+						if(valid) {
+							_this.resetForm(formName)
+							_this.dialogVisible = false;
+							alert('submit!');
+						} else {
+							console.log('error submit!!');
+							return false;
+						}
+					});
+				},
+				xsubmitForm(formName) {
+					let _this = this;
+					this.$refs[formName].validate((valid) => {
+						if(valid) {
+							_this.dialogVisible2 = false;
+							alert('submit!');
+						} else {
+							_this.xruleForm = _this.byruleForm;
+							console.log('error submit!!');
+							return false;
+						}
+					});
+				},
+				xiugaiquxiao(formName) {
+					this.radio = "";
+					this.resetForm(formName);
+					this.dialogVisible = false;
+					this.dialogVisible2 = false;
+				},
+				resetForm(formName) {
+					this.$refs[formName].resetFields();
+				},
+				/*车辆填写信息移除*/
+				clxxRemove(index) {
+					this.ruleForm.list.splice(index, 1);
+				},
+				addcl() {
+					this.ruleForm.list.splice(0, 0, {
+						pp: '',
+						ks: '',
+						cp: '',
+						pz: '',
+						ys: '',
+						cd: ''
+					});
+				},
+				/*车辆信息添加*/
+				clxxAdd() {
+					let _this = this;
+					if(_this.ruleForm.list.length == 0) {
+						_this.addcl();
+						return
+					}
+					let bool = true;
+					$.each(_this.ruleForm.list, function(i, obj) {
+						if(obj.cp == "" && obj.pp == "") {
+							_this.$message({
+								showClose: true,
+								message: '车牌号和品牌不能为空！',
+								type: 'error'
+							});
+							bool = false;
+						} else if(obj.cp == "") {
+							_this.$message({
+								showClose: true,
+								message: '请填写车牌号',
+								type: 'error'
+							});
+							bool = false;
+						} else if(obj.pp == "") {
+							_this.$message({
+								showClose: true,
+								message: '请填写车辆品牌',
+								type: 'error'
+							});
+							bool = false;
+						}
+
+					});
+					if(bool) {
+						_this.addcl()
+					}
+
+				},
+				/*地址联动*/
+				handleChange(value) {
+
+					console.log(value);
+				},
+				/*标签页*/
+				handleClick(tab, event) {
+					console.log(tab, event);
+				},
+				/*是否添加车辆*/
+				checkChange() {
+					/*alert(	this.checked)*/
+				},
+				/*类型选择*/
+				leixiChange() {
+					this.leixi = this.ruleForm.lx == "2" ? true : false;
+					console.log(`this.leixi`)
+				},
+				/*选择*/
+				radiochange(val) {
+					this.leixi = val.lx == 1 ? false : true;
+					this.xruleForm = val;
+					console.log(this.leixi)
+				},
+				/*查看*/
+				queryClick(val) {
+					console.log(`客户名称是:${val}`)
+				},
+				/*添加*/
+				addClick() {
+					this.leixi = false;
+					this.activeName = 'first';
+					this.dialogVisible = true;
+				},
+				/*编辑*/
+				updateClick() {
+					this.title = "资料修改";
+					if(this.code()) {
+						return
+					}
+					alert(this.radio)
+					this.fullscreenLoading = true;
+					this.dialogVisible2 = true;
+					setTimeout(() => {
+						sessionStorage.setItem("khzlxg", JSON.stringify(this.xruleForm));
+						$("#cnt").load("员工卡片打开.html");
+					}, "1000");
+
+				},
+				/*关闭对话框*/
+
 				handleClose(done) {
-					this.$confirm('确认关闭？').then(_ => {
-						done();
-					}).catch(_ => {});
+					this.$confirm('确认关闭？')
+						.then(_ => {
+							this.radio = "";
+							done();
+						})
+						.catch(_ => {});
 				},
-				dakai() {
-					this.isshow1 = true;
-				},
-				lizhidj() {
-					this.isshow2 = true;
-				},
-				handleCurrentChange(val) {
-					this.currentRow = val;
-					alert(JSON.stringify(this.currentRow));
+				goToPage(n, s) {
+					let _this = this;
+					$.getJSON(`http://127.0.0.1:8080/CqqServiceAction/api/${n}/${s}`, function(date) {
+						_this.pageInfo = date;
+					});
 				}
+			},
+			mounted() {
+				this.goToPage(1, 3);
 			}
-		});
+		})
 	</script>
 
 </html>

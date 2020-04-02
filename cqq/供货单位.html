@@ -6,92 +6,58 @@
 		<title>供货单位</title>
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
 		<style>
-			.el-table .warning-row {
-				background: oldlace;
-			}
-			
-			.el-table .success-row {
-				background: #f0f9eb;
+			[v-cloak] {
+				display: none;
 			}
 		</style>
 	</head>
 
-	<body>
-		<div id="gonghuodanwei">
-			<el-row style="margin-bottom: 20px;">
-				<el-col :span="8">
-					<h1 style="font-size: 24px;">供货单位</h1>
-				</el-col>
-				<el-col :span="8">
-					&nbsp
-				</el-col>
-				<el-col :span="8">
-					<el-input v-model="name" placeholder="请输入内容" style="width: 50%;"></el-input>
-					<el-button type="primary">搜索</el-button>
-					<el-button type="info">关闭</el-button>
-				</el-col>
-			</el-row>
-			<el-row>
-				<el-col :span="11">
-					&nbsp
-				</el-col>
-				<el-col :span="13">
-					<el-button type="primary" plain @click="tianjia">添加</el-button>
-					<el-button type="primary" plain @click="xiugai">修改</el-button>
-					<el-button type="primary" plain @click="shanchu">删除</el-button>
-					<el-button type="primary" plain @click="chaxun">查询</el-button>
-					<el-button type="primary" plain @click="zhaopian">照片</el-button>
-					<el-button type="primary" plain @click="daochu">导出</el-button>
-					<el-button type="primary" plain @click="lianxiren">联系人</el-button>
-					<el-button type="primary" plain @click="ziduanshezhi">字段设置</el-button>
-				</el-col>
-			</el-row>
+	<body style="background-color: #e6e6e6;">
+		<div id="kehuziliao" style="background-color: white;padding: 2ex;" v-cloak>
+			<h2 style="margin-left: 3ex;padding: 1ex;margin-top: 0px;">供货单位</h2>
+			<span style="display: block;margin-bottom: 3ex;margin-left: 5ex;">供货商名称：
+    <el-input
+    	style="width: 200px;"
+    	size="mini"
+  placeholder="请输入内容"
+  v-model="input"
+  clearable>
+</el-input>
 
-			<el-row>
-				<el-col :span="4">
-					<el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
-				</el-col>
-				<el-col :span="20">
-					<el-table ref="singleTable" :data="lizhi" highlight-current-row @current-change="handleCurrentChange" style="width: 100%">
-						<el-table-column type="index" width="50">
-						</el-table-column>
-						<el-table-column property="bumen" label="厂商代码" width="120">
-						</el-table-column>
-						<el-table-column property="no" label="厂商名称" width="120">
-						</el-table-column>
-						<el-table-column property="name" label="地址">
-						</el-table-column>
-						<el-table-column property="sex" label="经营情况">
-						</el-table-column>
-						<el-table-column property="zhiwei" label="网址">
-						</el-table-column>
-						<el-table-column property="time" label="开户行">
-						</el-table-column>
-						<el-table-column property="txt" label="银行账号">
-						</el-table-column>
-					</el-table>
-					联系人
-					<el-table ref="singleTable" :data="lizhi" highlight-current-row @current-change="handleCurrentChange" style="width: 100%">
-						<el-table-column type="index" width="50">
-						</el-table-column>
-						<el-table-column property="bumen" label="联系人" width="120">
-						</el-table-column>
-						<el-table-column property="no" label="职位" width="120">
-						</el-table-column>
-						<el-table-column property="name" label="手机">
-						</el-table-column>
-						<el-table-column property="sex" label="电话">
-						</el-table-column>
-						<el-table-column property="sex" label="Email">
-						</el-table-column>
-					</el-table>
-				</el-col>
-			</el-row>
+    <el-button type="primary"size="mini" @click="queryClick(input)"><span class="el-icon-search"  ></span></el-button>
+			<el-button type="success" size="mini" @click="addClick">添加</el-button>
+			<el-button type="success" size="mini" @click="daochu">导出</el-button>
+			</span>
+			<template>
+				<el-table max-height="500" :data="pageInfo.list" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
+					<el-table-column type="expand" fixed>
+						详细:
+					</el-table-column>
 
-			<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="添加供货单位" :visible.sync="isshow1" width="99%" :before-close="handleClose">
+					<el-table-column width="150" label="供货商id" prop="ghsid">
+					</el-table-column>
+					<el-table-column label="供货商名称" width="" prop="ghsname">
+					</el-table-column>
+					<el-table-column label="供货商地址" width="" prop="ghsaddress">
+					</el-table-column>
+					<el-table-column label="供货商联系电话" width="" prop="ghsphone">
+					</el-table-column>
+					<el-table-column label="联系人" width="" prop="ghsuser">
+					</el-table-column>
+					<el-table-column label="打款账号" width="" prop="ghsaccount">
+					</el-table-column>
+					<el-table-column label="操作">
+						<template slot-scope="temp">
+							<el-button size="mini" type="primary" @click="suppUpdate(temp.row.ghsid)">修改</el-button>
+							<el-button size="mini" type="danger" @click="suppDelete(temp.row.ghsid)">删除</el-button>
+						</template>
+					</el-table-column>
+				</el-table>
+			</template>
+			<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="添加供货单位" :visible.sync="isshow1" width="66%" :before-close="handleClose">
 				<div id="cnt1"></div>
 			</el-dialog>
-			<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="供货单位编辑" :visible.sync="isshow2" width="99%" :before-close="handleClose">
+			<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="修改供货单位" :visible.sync="isshow2" width="66%" :before-close="handleClose">
 				<div id="cnt2"></div>
 			</el-dialog>
 		</div>
@@ -101,74 +67,14 @@
 	<script type="text/javascript" src="../js/vue.js"></script>
 	<script type="text/javascript" src="../js/index.js"></script>
 	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
-
 	<script>
-		var lzdjApp = new Vue({
-			el: '#gonghuodanwei',
+		var gangwei = new Vue({
+			el: "#kehuziliao",
 			data: {
+				pageInfo: [],
 				isshow1: false,
-				isshow2: false,
-				name: '',
-				currentRow: null,
-				lizhi: [{
-						bumen: '管钱部',
-						no: 'OME0001',
-						name: '张三',
-						sex: '男',
-						zhiwei: '销售经理',
-						time: '2019-09-09',
-						txt: 'jdlkasjd'
-					},
-					{
-						bumen: '管钱部',
-						no: 'OME0002',
-						name: '李四',
-						sex: '女',
-						zhiwei: '销售总监',
-						time: '2019-09-09',
-						txt: 'jdlkasjd'
+				isshow2: false
 
-					}
-				],
-				data: [{
-					label: '一级 1',
-					children: [{
-						label: '二级 1-1',
-						children: [{
-							label: '三级 1-1-1'
-						}]
-					}]
-				}, {
-					label: '一级 2',
-					children: [{
-						label: '二级 2-1',
-						children: [{
-							label: '三级 2-1-1'
-						}]
-					}, {
-						label: '二级 2-2',
-						children: [{
-							label: '三级 2-2-1'
-						}]
-					}]
-				}, {
-					label: '一级 3',
-					children: [{
-						label: '二级 3-1',
-						children: [{
-							label: '三级 3-1-1'
-						}]
-					}, {
-						label: '二级 3-2',
-						children: [{
-							label: '三级 3-2-1'
-						}]
-					}]
-				}],
-				defaultProps: {
-					children: 'children',
-					label: 'label'
-				}
 			},
 			methods: {
 				handlerOpen1() {
@@ -177,26 +83,42 @@
 				handlerOpen2() {
 					$("#cnt2").load('供货单位修改.html'); //ajax读取页面
 				},
-				handleClose(done) {
-					this.$confirm('确认关闭？').then(_ => {
-						done();
-					}).catch(_ => {});
-				},
-				tianjia() {
+				addClick() {
 					this.isshow1 = true;
 				},
-				xiugai() {
-					if(this.currentRow == null)
-						alert("请选中一行");
-					else
-						this.isshow2 = true;
+				suppUpdate(id) {
+					sessionStorage.setItem("id", id);
+					this.isshow2 = true;
 				},
-				handleCurrentChange(val) {
-					this.currentRow = val;
-					//alert(JSON.stringify(this.currentRow));
+				suppDelete(id) {
+					let _this = this;
+					if(confirm("是否删除")) {
+						$.ajax(`http://127.0.0.1:8080/CqqSupplierAction/api/${id}`, {
+							type: "delete",
+							dataType: "json",
+							success(data) {
+								if(data > 0) {
+									alert("成功");
+									_this.goToPage(1, 3);
+								} else {
+									alert("不成功")
+								}
+							}
+						});
+					}
+
+				},
+				goToPage(n, s) {
+					let _this = this;
+					$.getJSON(`http://127.0.0.1:8080/CqqSupplierAction/api/${n}/${s}`, function(date) {
+						_this.pageInfo = date;
+					});
 				}
+			},
+			mounted() {
+				this.goToPage(1, 3);
 			}
-		});
+		})
 	</script>
 
 </html>
