@@ -47,7 +47,7 @@
                          <a></a></dd>
                       
                         <dd>
-                            <a href="yld/登录页面.html">退出</a></dd>
+                            <a @click="tuichu('yld/登录页面.html')" href="javascript:;">退出</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item" style="float: right;"><span style="margin-right: 2ex;">角色:{{user.juesename}}</span>
@@ -115,6 +115,13 @@
 					
 				},
 				methods:{
+				/*退出*/
+					tuichu(url){
+							var id  = $(this).parent().attr('lay-id');
+        					xadmin.del_data(id);
+        					location.href=url;
+					},
+					
 					xadmin(title,url){
 						xadmin.add_tab(title,url);
 					},
@@ -130,17 +137,18 @@
 					}
 				},
 				mounted(){
+			
 				this.user=JSON.parse(sessionStorage.getItem("user"));
 				this.quanxian=this.user.list;
 				console.log(JSON.stringify(this.quanxian))
-				},filters:{
+	},filters:{
 					filterViewShow(val){
 						return  val=='结算中心'?true:false;
 					}
 				}
+
 			});
-        
-        
+
             var _hmt = _hmt || []; (function() {
                 var hm = document.createElement("script");
                 hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
