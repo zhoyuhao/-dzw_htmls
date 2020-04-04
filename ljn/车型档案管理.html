@@ -3,7 +3,12 @@
     
     <head>
         <meta charset="UTF-8">
+        <link rel="stylesheet" href="../css/bootstrap.min.css" />
         <title>欢迎页面-X-admin2.2</title>
+        <link rel="stylesheet" href="../css/index.css" />
+		<script type="text/javascript" src="../js/vue.js"></script>
+		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+		<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
         <meta name="renderer" content="webkit">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
@@ -25,205 +30,106 @@
                 <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
             </a>
         </div>
-        <div class="layui-fluid" style="text-align: left;">
-            <div class="layui-row layui-col-space15">
+            <div class="layui-row layui-col-space15" id="carApp">
                 <div class="layui-col-md12">
                     <div class="layui-card">
-                        <div class="layui-card-body ">
-                            <form class="layui-form layui-col-space5" style="text-align: center;">
+                        <div class="layui-card-body " style="text-align: center;">
                                 <div class="layui-input-inline layui-show-xs-block">
-                                    <input type="text" name="username" placeholder="请输入品牌名称" autocomplete="off" class="layui-input"></div>
+                                    <input type="text" v-model="carlicenceplate" placeholder="请输入车牌" autocomplete="off" class="layui-input"></div>
                                 <div class="layui-input-inline layui-show-xs-block">
-                                    <button class="layui-btn" lay-submit="" lay-filter="sreach">
+                                    <button class="layui-btn" @click="query(1,carlicenceplate)">
                                         <i class="layui-icon">&#xe615;</i></button>
                                 </div>
-                            </form>
-                        </div>
-                        <div class="layui-card-header">
-                            <button class="layui-btn" onclick="xadmin.open('添加用户','车辆品牌添加.html',800,600)">
-                                <i class="layui-icon"></i>添加</button></div>
-                        <div class="layui-card-body ">
-                            <table class="layui-table layui-form">
-                                <thead>
-                                    <tr>
-                                    	<th>
-                                            <input type="checkbox" name="" lay-skin="primary">
-                                        </th>
-                                        <th>编号</th>
-                                        <th>品牌名称</th>
-                                        <th>首字母</th>
-                                        <th>操作</th>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                    	<td>
-                                            <input type="checkbox" name="" lay-skin="primary"></td>
-                                        <td>ljn001</td>
-                                        <td>梦组</td>
-                                        <td>一星技工</td>
-                                        <td>
-                                 <button class="layui-btn" onclick="xadmin.open('添加用户','通讯录添加.html',800,600)">
-                                <i class="layui-icon"></i>编辑</button>
-                                 <button class="layui-btn" onclick="member_del()">
-                                <i class="layui-icon"></i>删除</button>
-                                        </td>
-                                    </tr>
-                                   
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="layui-card-body ">
-                            <div class="page">
-                                <div>
-                                    <a class="prev" href="">&lt;&lt;</a>
-                                    <a class="num" href="">1</a>
-                                    <span class="current">2</span>
-                                    <a class="num" href="">3</a>
-                                    <a class="num" href="">489</a>
-                                    <a class="next" href="">&gt;&gt;</a></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    
-            <div class="layui-row layui-col-space15">
-                <div class="layui-col-md12">
-                    <div class="layui-card">
-                        <div class="layui-card-body ">
-                            <form class="layui-form layui-col-space5" style="text-align: center;">
-                                <div class="layui-input-inline layui-show-xs-block">
-                                    <input type="text" name="username" placeholder="请输入车型名称" autocomplete="off" class="layui-input"></div>
-                                <div class="layui-input-inline layui-show-xs-block">
-                                    <button class="layui-btn" lay-submit="" lay-filter="sreach">
-                                        <i class="layui-icon">&#xe615;</i></button>
-                                </div>
-                            </form>
                         </div>
                         <div class="layui-card-header">
                             <button class="layui-btn" onclick="xadmin.open('添加用户','车辆信息添加.html',800,600)">
                                 <i class="layui-icon"></i>添加</button></div>
-                        <div class="layui-card-body ">
-                            <table class="layui-table layui-form">
-                                <thead>
-                                    <tr>
-                                    	<th>
-                                            <input type="checkbox" name="" lay-skin="primary">
-                                        </th>
-                                        <th>车型ID</th>
-                                        <th>发动机品牌</th>
-                                        <th>车辆品牌</th>
-                                        <th>车辆名称</th>
-                                        <th>参考价格</th>
-                                        <th>地址</th>
-                                </thead>
-                                <tbody>
-                                      <tr>
-                                    	<td>
-                                            <input type="checkbox" name="" lay-skin="primary"></td>
-                                        <td>ljn001</td>
-                                        <td>大众</td>
-                                        <td>奥迪</td>
-                                        <td>ae86</td>
-                                        <td>36666</td>
-                                        <td>
-                                 <button class="layui-btn" onclick="xadmin.open('添加用户','车辆信息添加.html',800,600)">
-                                <i class="layui-icon"></i>编辑</button>
-                                 <button class="layui-btn" onclick="member_del()">
-                                <i class="layui-icon"></i>删除</button>
-                                        </td>
-                                    </tr>
-                                   
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="layui-card-body ">
-                            <div class="page">
-                                <div>
-                                    <a class="prev" href="">&lt;&lt;</a>
-                                    <a class="num" href="">1</a>
-                                    <span class="current">2</span>
-                                    <a class="num" href="">3</a>
-                                    <a class="num" href="">489</a>
-                                    <a class="next" href="">&gt;&gt;</a></div>
-                            </div>
-                        </div>
+                      	<template>
+							<el-table :data="this.page.list" style="width: 100%">
+								<el-table-column label="车辆车牌" prop="carlicenceplate">
+								</el-table-column>
+								<el-table-column label="车辆品牌" prop="carbrand">
+								</el-table-column>
+								<el-table-column label="车辆颜色" prop="carcolor">
+								</el-table-column>
+								<el-table-column label="车辆配置" prop="carconfigure">
+								</el-table-column>
+								<el-table-column label="车辆产地" prop="carlocality">
+								</el-table-column>
+								<el-table-column label="车辆款式" prop="carmodel">
+								</el-table-column>
+								<el-table-column label="操作">
+									<template slot-scope="temp">
+										<el-button icon="el-icon-edit" size="mini" type="primary" @click="showView(temp.row.carid)">编辑</el-button>
+										<el-button icon="el-icon-delete" size="mini" type="danger" @click="delInfo(temp.row.carid)">删除</el-button>
+									</template>
+								</el-table-column>
+							</el-table>
+						</template>
+						<div style="text-align:right;padding-right: 200px;">
+							<el-button size="mini" @click="handleCurrentChange(1)">第一页</el-button>
+							<el-button size="mini" v-if="page.hasPreviousPage" @click="handleCurrentChange(page.prePage)">上一页</el-button>
+							<el-button size="mini" v-if="page.hasNextPage" @click="handleCurrentChange(page.nextPage)">下一页</el-button>
+							<el-button size="mini" @click="handleCurrentChange(page.pages)">最后页</el-button>
+							<span>第{{page.pageNum}}页/共{{page.pages}}页</span>
+						</div>
+						
                     </div>
                 </div>
             </div>
-        </div>
     </body>
-    <script>layui.use(['laydate', 'form'],
-        function() {
-            var laydate = layui.laydate;
-
-            //执行一个laydate实例
-            laydate.render({
-                elem: '#start' //指定元素
-            });
-
-            //执行一个laydate实例
-            laydate.render({
-                elem: '#end' //指定元素
-            });
-        });
-
-        /*用户-停用*/
-        function member_stop(obj, id) {
-            layer.confirm('确认要停用吗？',
-            function(index) {
-
-                if ($(obj).attr('title') == '启用') {
-
-                    //发异步把用户状态进行更改
-                    $(obj).attr('title', '停用');
-                    $(obj).find('i').html('&#xe62f;');
-
-                    $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
-                    layer.msg('已停用!', {
-                        icon: 5,
-                        time: 1000
-                    });
-
-                } else {
-                    $(obj).attr('title', '启用');
-                    $(obj).find('i').html('&#xe601;');
-
-                    $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
-                    layer.msg('已启用!', {
-                        icon: 5,
-                        time: 1000
-                    });
-                }
-
-            });
-        }
-
-        /*用户-删除*/
-        function member_del(obj, id) {
-            layer.confirm('确认要删除吗？',
-            function(index) {
-                //发异步删除数据
-                $(obj).parents("tr").remove();
-                layer.msg('已删除!', {
-                    icon: 1,
-                    time: 1000
-                });
-            });
-        }
-
-        function delAll(argument) {
-
-            var data = tableCheck.getData();
-
-            layer.confirm('确认要删除吗？' + data,
-            function(index) {
-                //捉到所有被选中的，发异步进行删除
-                layer.msg('删除成功', {
-                    icon: 1
-                });
-                $(".layui-form-checked").not('.header').parents('tr').remove();
-            });
-        }</script>
+    <script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+    <script>
+    	var carApp = new Vue({
+			el: '#carApp',
+			data: {
+				page: [],
+				carlicenceplate:"",
+			},
+			methods:{
+				//分页查询车辆信息
+				query(pageNum,carlicenceplate){
+					if(carlicenceplate==""){
+						carlicenceplate=null;
+					}
+					let _this = this;
+					$.getJSON(`http://localhost:8080/ljn/api/ljnCustomercarAction/query/${pageNum}/${carlicenceplate}`, function(res) {
+						_this.page = res;
+					});
+				},
+				//删除车辆信息
+				delInfo(carid){
+					let _this = this;
+					if(confirm("是否删除")){
+						$.getJSON(`http://localhost:8080/ljn/api/ljnCustomercarAction/remove/${carid}`, function(res) {
+						if(res>0){
+							alert("删除成功")
+							_this.query(1, "null");
+						}
+					});
+					}
+				},
+				//翻页
+				handleCurrentChange(pageNum){
+					let _this = this;
+					_this.query(pageNum,"null");
+				},
+				//查询指定车辆信息
+				showView(carid){
+					let _this = this;
+					$.getJSON(`http://localhost:8080/ljn/api/ljnCustomercarAction/queryid/${carid}`, function(res) {
+					window.sessionStorage.setItem('car', JSON.stringify(res));
+					xadmin.open('修改车辆','车辆信息修改.html',800,600);
+				})
+				},
+			},
+			mounted() {
+				let _this = this;
+				_this.query(1, "");
+			},
+    	})
+    	
+    </script>
 
 </html>

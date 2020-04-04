@@ -1,4 +1,5 @@
 <!doctype html>
+<!--不要搞事情哈-->
 <html class="x-admin-sm">
     <head>
         <meta charset="UTF-8">
@@ -15,10 +16,15 @@
  	        <script type="text/javascript" src="js/session.js" ></script>
         <script src="./lib/layui/layui.js" charset="utf-8"></script>
         <script type="text/javascript" src="./js/xadmin.js"></script>
-      
+      <style>
+      	[v-cloak]{
+      		display: none;
+      	}
+      	
+      </style>
     </head>
     <body class="index">
-    	<div id="indexApp">
+    	<div id="indexApp" v-cloak>
     		
     
         <!-- 顶部开始 -->
@@ -42,7 +48,7 @@
                          <a></a></dd>
                       
                         <dd>
-                            <a href="yld/登录页面.html">退出</a></dd>
+                            <a @click="tuichu('yld/登录页面.html')" href="javascript:;">退出</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item" style="float: right;"><span style="margin-right: 2ex;">角色:{{user.juesename}}</span>
@@ -110,6 +116,13 @@
 					
 				},
 				methods:{
+				/*退出*/
+					tuichu(url){
+							var id  = $(this).parent().attr('lay-id');
+        					xadmin.del_data(id);
+        					location.href=url;
+					},
+					
 					xadmin(title,url){
 						xadmin.add_tab(title,url);
 					},
@@ -121,22 +134,22 @@
 							return
 							}
 						})
-						return false;
+						return bool;
 					}
 				},
 				mounted(){
+			
 				this.user=JSON.parse(sessionStorage.getItem("user"));
-				console.log(JSON.stringify(this.user))				
 				this.quanxian=this.user.list;
-					
-				},filters:{
+				console.log(JSON.stringify(this.quanxian))
+	},filters:{
 					filterViewShow(val){
 						return  val=='结算中心'?true:false;
 					}
 				}
+
 			});
-        
-        
+
             var _hmt = _hmt || []; (function() {
                 var hm = document.createElement("script");
                 hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";

@@ -21,9 +21,9 @@
 				
 				<span>岗位编号：<el-input style="width: 200px;"  size="mini" v-model="bh" placeholder="请输入内容"></el-input></span>
 				<span style="margin-right: 5ex;">岗位名称：<el-input style="width: 200px;" size="mini" v-model="mc" placeholder="请输入内容"></el-input></span>
-				<el-button type="primary"size="mini"  icon="el-icon-zoom-in" @click="add">查看</el-button>
-				<el-button type="success"size="mini" icon="el-icon-plus" @click="add">新增</el-button>
-				<el-button type="info"size="mini"  icon="el-icon-delete" @click="deletes">删除</el-button>
+				<el-button type="primary"size="mini"  icon="el-icon-zoom-in" @click="postQuery">查看</el-button>
+				<el-button type="success"size="mini" icon="el-icon-plus" @click="postAdd">新增</el-button>
+			
 				
 			</div>
 			<div style="border-bottom: 1px solid;">
@@ -33,30 +33,36 @@
     :data="tableData"
     tooltip-effect="dark"
     height="300"
-    style="width: 500px;margin-left: 36ex;"
+    style="width: 750px;margin-left: 36ex;"
+   >
 
-    @selection-change="handleSelectionChange">
-
-<el-table-column
-	    align="center"
-      type="selection"
-      width="55"></el-table-column>
     <el-table-column
     	    align="center"
-      prop="bh"
+      prop="pid"
       label="岗位编号"
-      width="220">
+      width="250">
     </el-table-column>
   <el-table-column
   	    align="center"
-      prop="mc"
+      prop="gwname"
       label="岗位名称"
-      width="220">
+      width="250">
     </el-table-column>
+      <el-table-column
+  	    align="center"
+      label="操作"
+      width="250">
+      <template slot-scope="scope">
+      		<el-button type="danger"size="mini"  icon="el-icon-delete" @click="postDelete(scope.row.pid)">删除</el-button>
+      </template>
+    </el-table-column>
+    
   </el-table>
 
 			</template>	
+			<br />
 			</div>
+
 	
 <div>
 			<h3 style="margin-left:5ex;float: left;clear: both;">角色管理</h3>
@@ -65,10 +71,9 @@
 				
 				<span>角色编号：<el-input style="width: 200px;"  size="mini" v-model="jbh" placeholder="请输入内容"></el-input></span>
 				<span style="margin-right: 5ex;">角色名称：<el-input style="width: 200px;" size="mini" v-model="jmc" placeholder="请输入内容"></el-input></span>
-				<el-button type="primary"size="mini" icon="el-icon-zoom-in" @click="add">查看</el-button>
-				<el-button type="success"size="mini"  icon="el-icon-plus" @click="add">新增</el-button>
+				<el-button type="primary"size="mini" icon="el-icon-zoom-in" @click="roleQuery">查看</el-button>
+				<el-button type="success"size="mini"  icon="el-icon-plus" @click="roleAdd">新增</el-button>
 				
-				<el-button type="info" size="mini" icon="el-icon-delete" @click="deletes">删除</el-button>
 				
 			</div>
 			<template>
@@ -77,24 +82,28 @@
     :data="tableData2"
     tooltip-effect="dark"
      height="300"
-    style="width: 500px;margin-left: 36ex;"
-    @selection-change="handleSelectionChange">
-
-<el-table-column
-	    align="center"
-      type="selection"
-      width="55"></el-table-column>
+    style="width: 750px;margin-left: 36ex;"
+  >
     <el-table-column
-      prop="bh"
+      prop="cid"
           align="center"
       label="角色编号"
-      width="220">
+      width="250">
     </el-table-column>
   <el-table-column
-      prop="mc"
+      prop="cname"
           align="center"
       label="角色名称"
-      width="220">
+      width="250">
+    </el-table-column>
+    
+     <el-table-column
+  	    align="center"
+      label="操作"
+      width="250">
+      <template slot-scope="scope">
+      		<el-button type="danger"size="mini"  icon="el-icon-delete" @click="roleDelete(scope.row.cid)">删除</el-button>
+      </template>
     </el-table-column>
   </el-table>
   
@@ -117,60 +126,188 @@
 				jmc:"",
 				bh:"",
 				mc:"",
-				 tableData: [{
-          mc: '财务员',
-         bh:"1"
-        }, {
-          mc: '调度员',
-          bh:"2"
-        }],
+				 tableData: [],
            multipleSelection: [],
-           tableData2:[{
-          mc: '经理',
-         bh:"1"
-        }, {
-          mc: '组长',
-          bh:"2"
-        }]
+           tableData2:[]
 			},
 			methods: {
-				/*新增*/
-				add(){
-					if(this.bh==""){
-						this.$message({
-							showClose: true,
-							message: '提示，请输入岗位编号',
-							type: 'warning'
-						});
-						return
-					}
+				/*岗位查看*/
+				postQuery(){
+					let _this=this;
+					id=this.bh==""?0:this.bh;
+					name=this.mc==""?null:this.mc;
+					$.getJSON(`http://127.0.0.1:8080/RoleAndPostAction/api/postQueryAll/${id}/${name}`, function(data) {
+				_this.tableData=data;
+				})
+				},
+				/*角色查看*/
+				roleQuery(){
+					let _this=this;
+					id=this.jbh==""?0:this.jbh;
+					name=this.jmc==""?null:this.jmc;
+					$.getJSON(`http://127.0.0.1:8080/RoleAndPostAction/api/roleQueryAll/${id}/${name}`, function(data) {
+				_this.tableData2=data;
+				})
+				},
+				/*岗位添加*/
+				postAdd(){
 					if(this.mc==""){
 						this.$message({
+							duration:"1000",
 							showClose: true,
 							message: '提示，请输入岗位名称',
 							type: 'warning'
 						});
 						return
 					}
+					
+					obj={};
+					obj["pid"]=0;
+					obj["gwname"]=this.mc;
+					let _this=this;
+					$.ajax(`http://127.0.0.1:8080/RoleAndPostAction/api/insert`, {
+						type: "post",
+						dataType: "json",
+						data:JSON.stringify(obj),
+						contentType: "application/json",
+						success: function(data) {
+							if(data > 0) {
+								_this.$message({
+										duration:"1000",
+									type: 'success',
+									message: '操作成功!'
+								});
+								_this.mc="";
+									_this.postQuery();
+							}
+						}
+					});
+					
 				},
-				/*删除*/
-				deletes(){
-					if(this.multipleSelection.length==0){
+				/*新增*/
+				roleAdd(){
+					
+					if(this.jmc==""){
 						this.$message({
+							duration:"1000",
 							showClose: true,
-							message: '提示，请勾选你要删除的岗位',
+							message: '提示，请输入角色名称',
 							type: 'warning'
 						});
 						return
 					}
+						
+					obj={};
+					obj["cid"]=0;
+					obj["cname"]=this.jmc;
+					let _this=this;
+					$.ajax(`http://127.0.0.1:8080/RoleAndPostAction/api/roleAdd`, {
+						type: "post",
+						dataType: "json",
+						data:JSON.stringify(obj),
+						contentType: "application/json",
+						success: function(data) {
+							if(data > 0) {
+								_this.$message({
+										duration:"1000",
+									type: 'success',
+									message: '操作成功!'
+								});
+								_this.jmc="";
+								_this.roleQuery();
+							}
+						}
+					});
+					
+					
 				},
-				/*勾选*/
-				 handleSelectionChange(val) {
-        		this.multipleSelection = val;
-      		}
+				/*删除*/
+				postDelete(id){
+				let _this=this;
+				this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+        	$.ajax(`http://127.0.0.1:8080/RoleAndPostAction/api/deleteById/${id}`, {
+						type: "delete",
+						dataType: "json",
+						data:JSON.stringify(_this.ruleForm),
+						contentType: "application/json",
+						success: function(data) {
+							if(data > 0) {
+								_this.$message({
+										duration:"1000",
+									type: 'success',
+									message: '操作成功!'
+								});
+								_this.postQuery();
+							}else{
+							_this.$message({
+									duration:"1000",
+          showClose: true,
+          message: '此岗位正在使用不能删除！',
+          type: 'error'
+        });
+							}
+						}
+					});
+        	
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+				
+				
+				
+				},
+				roleDelete(id){
+					
+				let _this=this;
+				this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+        	$.ajax(`http://127.0.0.1:8080/RoleAndPostAction/api/deleteRole/${id}`, {
+						type: "delete",
+						dataType: "json",
+						data:JSON.stringify(_this.ruleForm),
+						contentType: "application/json",
+						success: function(data) {
+							if(data > 0) {
+								_this.$message({
+										duration:"1000",
+									type: 'success',
+									message: '操作成功!'
+								});
+								_this.roleQuery();
+							}else{
+							_this.$message({
+									duration:"1000",
+          showClose: true,
+          message: '此角色正在使用不能删除！',
+          type: 'error'
+        });
+							}
+						}
+					});
+        	
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+					
+					
+				}
 			},
 			mounted() {
-
+					this.postQuery();
+					this.roleQuery();
 			}
 		})
 	</script>
