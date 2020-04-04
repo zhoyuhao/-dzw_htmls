@@ -10,33 +10,24 @@
 
 	<body>
 		<div id="addApp" style="width: 80%;margin: 0 auto;">
-			<h2 style="text-align: center;">车辆信息添加</h2>
+			<h2 style="text-align: center;">品牌添加</h2>
 			<el-form style="width: 70%;margin: 0 auto;" :inline="true" label-position="left" label-width="100px" :model="bill" style="text-align: center;">
-				<el-form-item label="车辆车牌：">
-					<el-input v-model="bill.carlicenceplate"></el-input>
+				<el-form-item label="品牌编号：">
+					<el-input v-model="bill.categoryid"></el-input>
 				</el-form-item>
-				<el-form-item label="车辆品牌:">
-					<el-input v-model="bill.carbrand"></el-input>
+				<el-form-item label="品牌名称:">
+					<el-input v-model="bill.title"></el-input>
 				</el-form-item>
-				<el-form-item label="车辆颜色：">
-					<el-input v-model="bill.carcolor"></el-input>
+				<el-form-item label="品牌首字母：">
+					<el-input v-model="bill.summary"></el-input>
 				</el-form-item>
-				<el-form-item label="车辆配置：">
-					<el-input v-model="bill.carconfigure"></el-input>
-				</el-form-item>
-				<el-form-item label="车辆产地：">
-					<el-input v-model="bill.carlocality"></el-input>
-				</el-form-item>
-				<el-form-item label="车辆款式：">
-					<el-input v-model="bill.carmodel"></el-input>
-				</el-form-item>
-				
 			</el-form>
 			<div style="text-align: right;">
-				<el-button @click="add">保存</el-button>
-				<el-button onclick="xadmin.close()">取消</el-button>
+				<el-button @click="addBill">保存</el-button>
+				<el-button @click="gotoHt">取消</el-button>
 			</div>
 		</div>
+
 		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
 		<script type="text/javascript" src="../js/vue.js"></script>
 		<script type="text/javascript" src="../js/index.js"></script>
@@ -46,12 +37,12 @@
 			var app = new Vue({
 				data: {
 					bill: {
-					carlicenceplate:'',
-					carbrand:'',
-					carcolor:'',
-					carconfigure:'',
-					carlocality:'',
-					carmodel:'',
+						id:'',
+						categoryid: '',
+						title: '',
+						summary: '',
+						uploaduser: '',
+						createdate:'',
 					},
 					activeName: 'first'
 				},
