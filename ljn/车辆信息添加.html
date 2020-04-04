@@ -6,32 +6,36 @@
 		<title></title>
 		<link href="../css/style.css" rel="stylesheet" type="text/css">
 		<link rel="stylesheet" href="../css/index.css" />
+		<script type="text/javascript" src="../js/xadmin.js"></script>
 	</head>
 
 	<body>
 		<div id="addApp" style="width: 80%;margin: 0 auto;">
 			<h2 style="text-align: center;">车辆信息添加</h2>
 			<el-form style="width: 70%;margin: 0 auto;" :inline="true" label-position="left" label-width="100px" :model="bill" style="text-align: center;">
-				<el-form-item label="车型ID：">
-					<el-input v-model="bill.c1"></el-input>
+				<el-form-item label="车辆车牌：">
+					<el-input v-model="bill.carlicenceplate"></el-input>
 				</el-form-item>
-				<el-form-item label="发动机品牌:">
-					<el-input v-model="bill.c2"></el-input>
+				<el-form-item label="车辆品牌:">
+					<el-input v-model="bill.carbrand"></el-input>
 				</el-form-item>
-				<el-form-item label="车辆品牌：">
-					<el-input v-model="bill.c3"></el-input>
+				<el-form-item label="车辆颜色：">
+					<el-input v-model="bill.carcolor"></el-input>
 				</el-form-item>
-				<el-form-item label="车辆品牌：">
-					<el-input v-model="bill.c3"></el-input>
+				<el-form-item label="车辆配置：">
+					<el-input v-model="bill.carconfigure"></el-input>
 				</el-form-item>
-				<el-form-item label="参考价格：">
-					<el-input v-model="bill.c3"></el-input>
+				<el-form-item label="车辆产地：">
+					<el-input v-model="bill.carlocality"></el-input>
+				</el-form-item>
+				<el-form-item label="车辆款式：">
+					<el-input v-model="bill.carmodel"></el-input>
 				</el-form-item>
 				
 			</el-form>
 			<div style="text-align: right;">
-				<el-button @click="addBill">保存</el-button>
-				<el-button @click="gotoHt">取消</el-button>
+				<el-button @click="add">保存</el-button>
+				<el-button onclick="xadmin.close()">取消</el-button>
 			</div>
 		</div>
 
@@ -44,15 +48,36 @@
 			var app = new Vue({
 				data: {
 					bill: {
-						id:'',
-						c1: '',
-						c2: '',
-						c3: '',
-						c4: '',
-						c5:'',
+					carlicenceplate:'',
+					carbrand:'',
+					carcolor:'',
+					carconfigure:'',
+					carlocality:'',
+					carmodel:'',
 					},
 					activeName: 'first'
 				},
+				methods:{
+				//新增车辆信息
+				add(){
+				let _this = this;
+						$.ajax({
+							type: "POST",
+							contentType: "application/json",
+							data: JSON.stringify(_this.bill),
+							url: `http://127.0.0.1:8080/ljn/api/ljnCustomercarAction/add`,
+							success: function(res) {
+							if(res!=0){
+							alert("新增成功");
+							xadmin.close();
+							carApp.query(1, "null");
+							}
+							}
+						});
+					
+					},
+				},
+				
 			
 			}).$mount("#addApp");
 		</script>
