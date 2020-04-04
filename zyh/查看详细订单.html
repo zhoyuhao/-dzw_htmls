@@ -35,10 +35,7 @@
 				
 				</template>
 <div style="height: 60px;">
-		<i style="float: left;margin-left: 5ex;margin-top: 3ex;">
-			<span style="color: red;">工时：￥{{moneySum}}</span>
-			<br />
-			<span style="color: red;">总金额：￥{{moneySum}}</span>
+		<i style="float: left;margin-left: 5ex;margin-top: 3ex;">总金额：<span style="color: red;">￥{{moneySum}}</span>
 			
 	
 		</i>
@@ -71,7 +68,6 @@
 			mounted() {
 					
 					this.list=JSON.parse(sessionStorage.getItem("xiangxi"));
-					
 					let money=0;
 					$.each(this.list, function(i, obj) {
 						money += obj.sdprice;

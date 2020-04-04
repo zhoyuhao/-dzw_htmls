@@ -16,7 +16,7 @@
 		<div id="kehuziliao" style="background-color: white;padding: 2ex;" v-cloak>
 
 			<h2 style="margin-left: 3ex;padding: 1ex;margin-top: 0px;">会员管理</h2>
-			<span style="display: block;margin-bottom: 3ex;margin-left: 5ex;">会员姓名：
+			<span style="display: block;margin-bottom: 3ex;margin-left: 5ex;">会员名称：
     <el-input
     	style="width: 200px;"
     	size="mini"
@@ -26,197 +26,43 @@
 </el-input>
 
     <el-button type="primary"size="mini" @click="queryClick(input)"><span class="el-icon-search"  ></span></el-button>
-			<el-button type="success" size="mini" @click="addClick">添加会员</el-button>
-			<el-button type="warning" size="mini" @click="updateClick">编辑</el-button>
+			<el-button type="success" size="mini" @click="daochu">导出</el-button>
 			</span>
 			<template>
-				<el-table max-height="500" :data="tableData" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
+				<el-table max-height="500" :data="pageInfo.list" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
 					<el-table-column type="expand" fixed>
-						<template slot-scope="props">
-							<h4 style="margin-top: 0px;">车辆信息</h4>
-							<el-table :header-cell-style="{background:'#eef1f6'}" :data="props.row.list" style="width:900px">
-
-								<el-table-column size="mini" prop="cp" label="车牌号">
-								</el-table-column>
-
-								<el-table-column prop="cp" label="车辆品牌">
-								</el-table-column>
-
-								<el-table-column prop="cp" label="车辆颜色">
-								</el-table-column>
-								<el-table-column prop="cp" label="配置" width="180">
-								</el-table-column>
-								<el-table-column prop="cp" label="产地">
-								</el-table-column>
-
-								<el-table-column prop="cp" label="车辆款式">
-								</el-table-column>
-							</el-table>
-						</template>
+						详细:
 					</el-table-column>
-
-					<el-table-column width="180" label="顾客编码">
+					<el-table-column width="150" label="会员卡号" prop="ckahaok">
+					</el-table-column>
+					<el-table-column label="名称" width="" prop="cnamek">
+					</el-table-column>
+					<el-table-column label="性别" width="" prop="csexk">
+					</el-table-column>
+					<el-table-column label="号码" width="" prop="cphonek">
+					</el-table-column>
+					<el-table-column label="积分" width="" prop="cdoublerk">
+					</el-table-column>
+					<el-table-column label="余额" width="" prop="cmoneyk">
+					</el-table-column>
+					<el-table-column label="操作">
 						<template slot-scope="temp">
-							<el-radio v-model="radio" :label="temp.$index+1" @change="radiochange(temp.row)">{{temp.row.id}}</el-radio>
+							<el-button size="mini" type="primary" @click="chongzhi(temp.row)">充值</el-button>
 						</template>
 					</el-table-column>
-					<el-table-column label="会员名称" width="180" prop="name">
-					</el-table-column>
-					<el-table-column label="性别" width="120" prop="xb">
-					</el-table-column>
-					<el-table-column label="联系号码" width="280" prop="hm">
-					</el-table-column>
-					<el-table-column label="会员类型" width="280" prop="lx">
-					</el-table-column>
-					<el-table-column label="会员卡号" width="280" prop="hm">
-					</el-table-column>
-					<el-table-column label="累计积分" width="280" prop="hm">
-					</el-table-column>
-					<el-table-column label="会员余额" width="280" prop="hm">
-					</el-table-column>
-
 				</el-table>
 			</template>
-
-			<el-dialog title="客服信息填写" :visible.sync="dialogVisible" width="900px" :before-close="handleClose">
-
-				<template>
-					<el-tabs v-model="activeName" @tab-click="handleClick">
-						<el-tab-pane label="会员信息填写" name="first">
-
-							<el-form :model="ruleForm" :inline="true" :rules="rules" ref="ruleForm" label-width="100px" class="demo-form-inline">
-
-								<el-form-item label="会员编号">
-
-									<el-input v-model="ruleForm.bh" :disabled="true" style="width: 250px;"></el-input>
-
-								</el-form-item>
-								<el-form-item label="会员姓名" placeholder="请输入姓名" prop="name">
-
-									<el-input v-model="ruleForm.name" style="width: 250px;"></el-input>
-
-								</el-form-item>
-
-								<el-form-item label="会员地址" placeholder="请输入地址">
-									<el-cascader :options="options" @change="handleChange" clearable></el-cascader>
-								</el-form-item>
-
-								<el-form-item label="性别" prop="xb">
-									<el-radio-group style="width: 250px;" v-model="ruleForm.xb">
-										<el-radio label="男"></el-radio>
-										<el-radio label="女"></el-radio>
-									</el-radio-group>
-								</el-form-item>
-
-								<el-form-item label="联系号码" placeholder="请输入号码" prop="hm">
-
-									<el-input v-model="ruleForm.hm" style="width: 250px;"></el-input>
-
-								</el-form-item>
-								<el-form-item label="身份证">
-
-									<el-input v-model="ruleForm.name" style="width: 250px;"></el-input>
-
-								</el-form-item>
-
-								<el-form-item label="会员类型" placeholder="请选择类型" prop="lx">
-									<el-select style="width: 250px;" v-model="ruleForm.lx" @change="leixiChange" placeholder="请选择类型">
-										<el-option v-for="item in huiyuanleix" :key="item.value" :label="item.label" :value="item.value">
-										</el-option>
-									</el-select>
-
-								</el-form-item>
-								<el-form-item label="会员卡号" prop="name" v-if="leixi">
-									<el-input v-model="ruleForm.name" :disabled="true" style="width: 250px;"></el-input>
-
-								</el-form-item>
-
-								<el-form-item label="累计积分" prop="name" v-if="leixi">
-									<el-input v-model="ruleForm.name" :disabled="true" style="width: 250px;"></el-input>
-
-								</el-form-item>
-								<el-form-item label="会员余额" v-if="leixi">
-									<el-input maxlength="8" oninput="value=value.replace(/[^\d.]/g,'')" style="width: 250px;" v-model="ruleForm.name" placeholder="请输入价格" clearable></el-input>
-								</el-form-item>
-
-								<el-form-item style="margin: 0px auto;width: 700px; text-align: right;">
-									<el-button type="primary" style="width: 150px;" @click="submitForm('ruleForm')">数据提交</el-button>
-									<el-button style="width: 150px;" @click="xiugaiquxiao('ruleForm')">取消</el-button>
-								</el-form-item>
-							</el-form>
-
-						</el-tab-pane>
-						<el-tab-pane label="顾客车辆填写" name="second">
-
-							<template>
-								<el-table :data="ruleForm.list" border style="width: 100%">
-									<el-table-column width="50" align="center">
-										<template slot="header" slot-scope="scope">
-											<el-button type="text" @click="clxxAdd" icon="el-icon-plus"></el-button>
-										</template>
-										<template slot-scope="scope">
-											<el-button type="text" @click="clxxRemove(scope.$index)" icon="el-icon-delete"></el-button>
-										</template>
-
-									</el-table-column>
-									<el-table-column label="车牌号">
-										<template slot-scope="scope">
-											<el-input size="mini" placeholder="请输入车牌" v-model="scope.row.cp" clearable>
-											</el-input>
-										</template>
-									</el-table-column>
-									<el-table-column label="车辆品牌">
-										<template slot-scope="scope">
-
-											<el-input size="mini" placeholder="请输入品牌" v-model="scope.row.pp" clearable>
-											</el-input>
-										</template>
-									</el-table-column>
-
-									<el-table-column label="车辆颜色">
-										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row.ys" clearable>
-											</el-input>
-										</template>
-									</el-table-column>
-
-									<el-table-column label="配置">
-										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row.pz" clearable>
-											</el-input>
-										</template>
-									</el-table-column>
-									<el-table-column label="产地">
-										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row.cd" clearable>
-											</el-input>
-										</template>
-									</el-table-column>
-									<el-table-column label="车辆款式">
-										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row.ks" clearable>
-											</el-input>
-										</template>
-									</el-table-column>
-								</el-table>
-							</template>
-
-						</el-tab-pane>
-
-					</el-tabs>
-				</template>
+			<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="充值" :visible.sync="isshow1" width="33%" :before-close="handleClose">
+				<span style="display: block;margin-bottom: 3ex;margin-left: 5ex;">充值余额：
+    <el-input
+    	style="width: 200px;"
+    	size="mini"
+  placeholder="请输入充值余额"
+  v-model="chonzhiyve"
+  clearable>
+</el-input>     <el-button type="primary"size="mini" @click="querenchongzhi">充值</el-button>
 
 			</el-dialog>
-
-			<el-dialog :title="title" :visible.sync="dialogVisible2" width="900px" v-loading.fullscreen.lock="fullscreenLoading" :before-close="handleClose">
-				<div id="cnt">
-					<div style="width: 200px; margin: 0px auto;text-align: center;">
-						<span class="el-icon-loading"></span>正在初始化......
-					</div>
-
-				</div>
-			</el-dialog>
-
 		</div>
 
 	</body>
@@ -228,331 +74,49 @@
 		var gangwei = new Vue({
 			el: "#kehuziliao",
 			data: {
-				title: "",
-				fullscreenLoading: true,
-				bb: true,
-				dz: "",
-				dialogVisible2: false,
-				options: [{
-						value: '湖南省',
-						label: '湖南省',
-						children: [{
-							value: '长沙市',
-							label: '长沙市',
-						}, {
-							value: '株洲市',
-							label: '株洲市',
-						}]
-					},
-					{
-						value: '浙江省',
-						label: '浙江省',
-						children: [{
-							value: '温州市',
-							label: '温州市',
-						}, {
-							value: '杭州市',
-							label: '杭州市',
-						}]
-					}
-				],
-				qcxxData: [],
-				activeName: "first",
-				checked: '',
-				ruleForm: {
-					list: []
-				},
-				rules: {
-					name: [{
-							required: true,
-							message: '请输入姓名',
-							trigger: 'blur'
-						},
-						{
-							min: 3,
-							max: 5,
-							message: '长度在 3 到 5 个字符',
-							trigger: 'blur'
-						}
-					],
-					bm: [{
-						required: true,
-						message: '请选择部门',
-						trigger: 'change'
-					}],
-					lx: [{
-						required: true,
-						message: '请选择客户类型',
-						trigger: 'change'
-					}],
-					js: [{
-						required: true,
-						message: '请选择角色',
-						trigger: 'change'
-					}],
-					gw: [{
-						required: true,
-						message: '请选择岗位',
-						trigger: 'change'
-					}],
-					date: [{
-						required: true,
-						required: true,
-						message: '请选择日期',
-						trigger: 'change'
-					}],
-					type: [{
-						type: 'array',
-						required: true,
-						message: '请至少选择一个活动性质',
-						trigger: 'change'
-					}],
-					xb: [{
-						required: true,
-						message: '请选择性别',
-						trigger: 'change'
-					}],
-					hm: [{
-						required: true,
-						message: '请填写号码',
-						trigger: 'blur'
-					}],
-					address: [{
-						required: true,
-						message: '请填写地址',
-						trigger: 'blur'
-					}]
-				},
-				radio: "",
-				hasChildren: false,
-				dialogVisible: false,
-				input: '',
-				tableData: [{
-					id: '12987122',
-					name: '好滋好味鸡蛋仔',
-					category: '江浙小吃、小吃零食',
-					desc: '荷兰优质淡奶，奶香浓而不腻',
-					address: '上海市普陀区真北路',
-					shop: '王小虎夫妻店',
-					shopId: '10333',
-					hm: "1231231231233",
-					lx: 2,
-					ye: 12,
-					xb: "男",
-					sfz: "430033123123",
-					list: [{
-						pp: '奔驰',
-						ks: 'suv',
-						cp: '浙A123',
-						pz: '四驱',
-						ys: '黑色',
-						cd: '美国'
-					}]
-				}, {
-					id: '12987122',
-					name: '好滋好味鸡蛋仔',
-					category: '江浙小吃、小吃零食',
-					desc: '荷兰优质淡奶，奶香浓而不腻',
-					address: '上海市普陀区真北路',
-					shop: '王小虎夫妻店',
-					shopId: '10333',
-					hm: "1231231231233",
-					lx: 1,
-					ye: 0,
-					list: [{
-						pp: '奔驰',
-						ks: 'suv',
-						cp: '浙A123',
-						pz: '四驱',
-						ys: '黑色',
-						cd: '美国'
-					}]
-				}],
-				leixi: false,
-				xruleForm: {},
-				huiyuanleix: [{
-					label: "普通",
-					value: 1
-				}, {
-					label: "会员",
-					value: 2
-				}]
+				pageInfo: [],
+				isshow1: false,
+				chonzhiyve:'',
+				objects:''
 			},
 			methods: {
-				/*验证是否选中*/
-				code() {
-					if(this.radio == "") {
-						this.$message({
-							message: '警告哦，请选择要修改的数据',
-							type: 'warning'
-						});
-						return true;
-					}
-					return false;
-				},
-				/*车辆添加*/
-				clAdd() {
-					this.title = "客户车辆添加";
-					if(this.code()) {
-						return
-					}
-					this.fullscreenLoading = true;
-					this.dialogVisible2 = true;
-					setTimeout(() => {
-						sessionStorage.setItem("khzlclAdd", JSON.stringify(this.xruleForm));
-						$("#cnt").load("员工卡片打开.html");
-					}, "700")
-
-				},
-				submitForm(formName) {
-					let _this = this;
-					this.$refs[formName].validate((valid) => {
-						if(valid) {
-							_this.resetForm(formName)
-							_this.dialogVisible = false;
-							alert('submit!');
-						} else {
-							console.log('error submit!!');
-							return false;
+				querenchongzhi(){
+					var this_=this;
+					if (this.chonzhiyve=="") {
+						alert("请输入余额")
+					}else{
+						var suns=parseInt(JSON.stringify(this_.objects.cmoneyk))+parseInt(this_.chonzhiyve);
+						this.objects.cmoneyk=suns;
+						$.ajax(`http://127.0.0.1:8080/CqqCustomerAction/api/update`, {
+						type: "post",
+						contentType: "application/json",
+						data: JSON.stringify(this_.objects),
+						dataType: "json",
+						success(date) {
+							if(date > 0) {
+								alert("充值成功")
+								this.objects='';
+								this_.isshow1=false;
+							} else {
+								alert("充值不成功")
+							}
 						}
 					});
+					}
 				},
-				xsubmitForm(formName) {
+				chongzhi(id) {
+					this.objects=id;
+					this.isshow1 = true;
+				},
+				goToPage(n, s) {
 					let _this = this;
-					this.$refs[formName].validate((valid) => {
-						if(valid) {
-							_this.dialogVisible2 = false;
-							alert('submit!');
-						} else {
-							_this.xruleForm = _this.byruleForm;
-							console.log('error submit!!');
-							return false;
-						}
+					$.getJSON(`http://127.0.0.1:8080/CqqCustomerAction/api/${n}/${s}`, function(date) {
+						_this.pageInfo = date;
 					});
-				},
-				xiugaiquxiao(formName) {
-					this.radio = "";
-					this.resetForm(formName);
-					this.dialogVisible = false;
-					this.dialogVisible2 = false;
-				},
-				resetForm(formName) {
-					this.$refs[formName].resetFields();
-				},
-				/*车辆填写信息移除*/
-				clxxRemove(index) {
-					this.ruleForm.list.splice(index, 1);
-				},
-				addcl() {
-					this.ruleForm.list.splice(0, 0, {
-						pp: '',
-						ks: '',
-						cp: '',
-						pz: '',
-						ys: '',
-						cd: ''
-					});
-				},
-				/*车辆信息添加*/
-				clxxAdd() {
-					let _this = this;
-					if(_this.ruleForm.list.length == 0) {
-						_this.addcl();
-						return
-					}
-					let bool = true;
-					$.each(_this.ruleForm.list, function(i, obj) {
-						if(obj.cp == "" && obj.pp == "") {
-							_this.$message({
-								showClose: true,
-								message: '车牌号和品牌不能为空！',
-								type: 'error'
-							});
-							bool = false;
-						} else if(obj.cp == "") {
-							_this.$message({
-								showClose: true,
-								message: '请填写车牌号',
-								type: 'error'
-							});
-							bool = false;
-						} else if(obj.pp == "") {
-							_this.$message({
-								showClose: true,
-								message: '请填写车辆品牌',
-								type: 'error'
-							});
-							bool = false;
-						}
-
-					});
-					if(bool) {
-						_this.addcl()
-					}
-
-				},
-				/*地址联动*/
-				handleChange(value) {
-
-					console.log(value);
-				},
-				/*标签页*/
-				handleClick(tab, event) {
-					console.log(tab, event);
-				},
-				/*是否添加车辆*/
-				checkChange() {
-					/*alert(	this.checked)*/
-				},
-				/*类型选择*/
-				leixiChange() {
-					this.leixi = this.ruleForm.lx == "2" ? true : false;
-					console.log(`this.leixi`)
-				},
-				/*选择*/
-				radiochange(val) {
-					this.leixi = val.lx == 1 ? false : true;
-					this.xruleForm = val;
-					console.log(this.leixi)
-				},
-				/*查看*/
-				queryClick(val) {
-					console.log(`客户名称是:${val}`)
-				},
-				/*添加*/
-				addClick() {
-					this.leixi = false;
-					this.activeName = 'first';
-					this.dialogVisible = true;
-				},
-				/*编辑*/
-				updateClick() {
-					this.title = "资料修改";
-					if(this.code()) {
-						return
-					}
-
-					this.fullscreenLoading = true;
-					this.dialogVisible2 = true;
-					setTimeout(() => {
-						sessionStorage.setItem("khzlxg", JSON.stringify(this.xruleForm));
-						$("#cnt").load("员工卡片打开.html");
-					}, "1000");
-
-				},
-				/*关闭对话框*/
-
-				handleClose(done) {
-					this.$confirm('确认关闭？')
-						.then(_ => {
-							this.radio = "";
-							done();
-						})
-						.catch(_ => {});
 				}
 			},
 			mounted() {
-
+				this.goToPage(1, 3);
 			}
 		})
 	</script>
