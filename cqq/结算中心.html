@@ -15,7 +15,7 @@
 	<body style="background-color: #e6e6e6;">
 		<div id="kehuziliao" style="background-color: white;padding: 2ex;" v-cloak>
 			<h2 style="margin-left: 3ex;padding: 1ex;margin-top: 0px;">结算中心</h2>
-			<span style="display: block;margin-bottom: 3ex;margin-left: 5ex;">会员姓名：
+			<span style="display: block;margin-bottom: 3ex;margin-left: 5ex;">客户姓名：
     <el-input
     	style="width: 200px;"
     	size="mini"
@@ -25,10 +25,13 @@
 </el-input>
 
     <el-button type="primary"size="mini" @click="queryClick(input)"><span class="el-icon-search"  ></span></el-button>
-			<el-button type="success" size="mini" @click="addClick">收银</el-button>
-			<el-button type="warning" size="mini" @click="updateClick">打开单据</el-button>
+			<template>
+				<el-select v-model="value" placeholder="请选择">
+					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+					</el-option>
+				</el-select>
+			</template>
 			<el-button type="success" size="mini" @click="addClick">导出</el-button>
-
 			</span>
 			<template>
 				<el-table max-height="500" :data="pageInfo.list" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
@@ -45,24 +48,29 @@
 					</el-table-column>
 					<el-table-column label="结算方式" width="" prop="wpayment">
 					</el-table-column>
-					<el-table-column label="单据状态" width="" prop="hm">
+					<el-table-column label="维修状态" width="" prop="wstatic">
 					</el-table-column>
 					<el-table-column label="结算状态" width="" prop="lx">
 					</el-table-column>
-					<el-table-column label="结算时间" width="" prop="wenddate">
+					<el-table-column label="付款时间" width="" prop="paymenttirm">
 					</el-table-column>
-					<el-table-column label="结算人" width="" prop="hm">
+					<el-table-column label="结算人" width="" prop="wname">
 					</el-table-column>
-					<el-table-column label="结算金额" width="" prop="hm">
+					<el-table-column label="结算金额" width="" prop="wenddate">
 					</el-table-column>
-					<el-table-column label="业务类型" width="" prop="hm">
+					<el-table-column label="业务类型" width="" prop="wtype">
 					</el-table-column>
-					<el-table-column label="客户名称" width="" prop="hm">
+					<el-table-column label="客户名称" width="" prop="wname">
 					</el-table-column>
-					<el-table-column label="车牌号" width="" prop="hm">
+					<el-table-column label="车牌号" width="" prop="wcarid">
 					</el-table-column>
-					<el-table-column label="车型" width="" prop="hm">
+					<el-table-column label="操作" width="190px">
+						<template slot-scope="temp">
+							<el-button size="mini" type="primary" @click="suppUpdate(temp.row.ghsid)">收银</el-button>
+							<el-button size="mini" type="primary" @click="suppUpdate(temp.row.ghsid)">打开单据</el-button>
+						</template>
 					</el-table-column>
+
 				</el-table>
 			</template>
 		</div>
@@ -76,6 +84,13 @@
 		var gangwei = new Vue({
 			el: "#kehuziliao",
 			data: {
+				options: [{
+					value: '1',
+					label: '以结算'
+				}, {
+					value: '2',
+					label: '未结算'
+				}],
 				pageInfo: [],
 				title: "",
 				fullscreenLoading: true,

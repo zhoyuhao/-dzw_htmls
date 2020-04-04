@@ -57,7 +57,7 @@
 				baocun() {
 					var this_ = this;
 					kehuziliao.isshow1 = false;
-					/*$.ajax(`http://127.0.0.1:8080/CqqSupplierAction/api/add`, {
+					$.ajax(`http://127.0.0.1:8080/CqqSupplierAction/api/add`, {
 						type: "post",
 						contentType: "application/json",
 						data: JSON.stringify(this_.Supplier),
@@ -70,7 +70,7 @@
 								alert("不成功")
 							}
 						}
-					});*/
+					});
 				},
 				handleClose(done) {
 					this.$confirm('确认关闭？').then(_ => {

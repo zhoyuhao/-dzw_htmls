@@ -9,6 +9,9 @@
 			[v-cloak] {
 				display: none;
 			}
+			.el-table--enable-row-hover .el-table__body tr:hover>td {
+  background-color: #CAE1FF;
+}
 		</style>
 	</head>
 
@@ -19,79 +22,139 @@
 			<span style="display: block;margin-bottom: 3ex;margin-left: 5ex;">顾客姓名：
     <el-input
     	style="width: 200px;"
+ 
     	size="mini"
   placeholder="请输入内容"
   v-model="input"
   clearable>
 </el-input>
 
-    <el-button type="primary"size="mini" @click="queryClick(input)"><span class="el-icon-search"  ></span></el-button>
+    <el-button type="primary"size="mini" @click="queryClick"><span class="el-icon-search"  ></span></el-button>
 			<el-button type="success" size="mini" @click="addClick">添加数据</el-button>
 			<el-button type="success" size="mini" @click="clAdd">添加车辆</el-button>
 			<el-button type="warning" size="mini" @click="updateClick">编辑</el-button>
 			</span>
 			<template>
-				<el-table max-height="500" :data="tableData" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
-					<el-table-column type="expand" fixed>
-						<template slot-scope="props">
-							<h4 style="margin-top: 0px;">车辆信息</h4>
-							<el-table :header-cell-style="{background:'#eef1f6'}" :data="props.row.list" style="width:900px">
-
-								<el-table-column size="mini" prop="cp" label="车牌号">
-								</el-table-column>
-
-								<el-table-column prop="cp" label="车辆品牌">
-								</el-table-column>
-
-								<el-table-column prop="cp" label="车辆颜色">
-								</el-table-column>
-								<el-table-column prop="cp" label="配置" width="180">
-								</el-table-column>
-								<el-table-column prop="cp" label="产地">
-								</el-table-column>
-
-								<el-table-column prop="cp" label="车辆款式">
-								</el-table-column>
-							</el-table>
-						</template>
+				<el-table max-height="500" 
+					   	height="340"
+					:row-style="selectedHighlight" 
+					 	    :row-class-name="tableRowClassName"
+					 	  	size="mini"
+					 	  	@row-click="rowClick"
+					 	  	 @row-dblclick="rowdblclick"
+					:data="tableData" border :header-cell-style="{background:'#eef1f6'}"  style="width: 100%">
+				
 					</el-table-column>
 
 					<el-table-column width="180" label="顾客编码">
 						<template slot-scope="temp">
-							<el-radio v-model="radio" :label="temp.$index+1" @change="radiochange(temp.row)">{{temp.row.id}}</el-radio>
+							{{temp.row.cidk}}
 
 						</template>
 					</el-table-column>
-					<el-table-column label="顾客名称" width="180" prop="name">
+					<el-table-column label="顾客名称" width="180" prop="cnamek">
 					</el-table-column>
-					<el-table-column label="地址" width="280" prop="desc">
-					</el-table-column>
-
-					<el-table-column label="性别" width="120" prop="xb">
+					<el-table-column label="地址" width="280" prop="caddressk">
 					</el-table-column>
 
-					<el-table-column label="联系号码" width="280" prop="hm">
+					<el-table-column label="性别" width="120" prop="csexk">
 					</el-table-column>
 
-					<el-table-column label="客户类型" width="280" prop="lx">
+					<el-table-column label="联系号码" width="280" prop="cphonek">
 					</el-table-column>
 
-					<el-table-column label="身份证" width="280" prop="hm">
+					<el-table-column label="客户类型" width="280" prop="ctypek">
 					</el-table-column>
 
-					<el-table-column label="会员卡号" width="280" prop="hm">
+					<el-table-column label="身份证" width="280" prop="cidnumberk">
 					</el-table-column>
 
-					<el-table-column label="累计积分" width="280" prop="hm">
+					<el-table-column label="会员卡号" width="280" prop="ckahaok">
 					</el-table-column>
 
-					<el-table-column label="会员余额" width="280" prop="hm">
+					<el-table-column label="累计积分" width="280" prop="cdoublerk">
+					</el-table-column>
+
+					<el-table-column label="会员余额" width="280" prop="cmoneyk">
 					</el-table-column>
 
 				</el-table>
 			</template>
 
-			<el-dialog title="客服信息填写" :visible.sync="dialogVisible" width="900px" :before-close="handleClose">
+
+
+				<template>
+	
+	<h4>维修记录</h4>
+  <el-table
+  	
+  	size="mini"
+  	:header-cell-style="{background:'#eef1f6'}"
+  	border
+    :data="cheliangList"
+    style="width: 100%">
+    <el-table-column type="expand">
+      <template slot-scope="props">
+        <el-table
+  	size="mini"
+  	:header-cell-style="{background:'#eef1f6'}"
+  	border
+    :data="props.row.list"
+    style="width: 100%">
+    	<el-table-column prop="wcarid" align="center" label="车牌号" width="180">
+
+					</el-table-column>
+
+					<el-table-column align="center" label="开始维修日期" prop="wstatdate" width="180" sortable>
+						<template slot-scope="scope">
+							<i class="el-icon-time"></i>
+							<span style="margin-left: 10px">{{ scope.row.wstatdate }}</span>
+						</template>
+					</el-table-column>
+
+					<el-table-column align="center" label="结束维修日期" prop="wenddate" width="180" sortable>
+						<template slot-scope="scope">
+							<i class="el-icon-time"></i>
+							<span style="margin-left: 10px">{{ scope.row.wenddate }}</span>
+						</template>
+					</el-table-column>
+					<el-table-column align="center" label="维修金额" prop="wsumprice" width="180" sortable>
+						<template slot-scope="scope">
+							￥{{ scope.row.wsumprice }}
+						</template>
+					</el-table-column>
+					<el-table-column label="操作" width="280" align="center">
+						<template slot-scope="scope">
+							<el-button type="text" size="mini"  type="danger" @click="queryXiangxi(scope.$index, scope.row)"><span class="el-icon-zoom-in"></span>维修详细</el-button>
+						</template>
+					</el-table-column>
+    
+       
+       </el-table>
+       
+      </template>
+    </el-table-column>
+   	<el-table-column size="mini" prop="carlicenceplate" label="车牌号">
+								</el-table-column>
+
+								<el-table-column prop="carbrand" label="车辆品牌">
+								</el-table-column>
+
+								<el-table-column prop="carcolor" label="车辆颜色">
+								</el-table-column>
+								<el-table-column prop="carconfigure" label="配置" width="180">
+								</el-table-column>
+								<el-table-column prop="carlocality" label="产地">
+								</el-table-column>
+
+								<el-table-column prop="carmodel" label="车辆款式">
+								</el-table-column>
+  </el-table>
+</template>
+
+
+
+			<el-dialog title="客户信息填写" :visible.sync="dialogVisible" width="900px" :before-close="handleClose">
 
 				<template>
 					<el-tabs v-model="activeName" @tab-click="handleClick">
@@ -101,56 +164,56 @@
 
 								<el-form-item label="顾客编号">
 
-									<el-input v-model="ruleForm.bh" :disabled="true" style="width: 250px;"></el-input>
+									<el-input v-model="ruleForm.cidk" :disabled="true" style="width: 250px;"></el-input>
 
 								</el-form-item>
-								<el-form-item label="顾客姓名" placeholder="请输入姓名" prop="name">
+								<el-form-item label="顾客姓名" placeholder="请输入姓名" prop="cnamek">
 
-									<el-input v-model="ruleForm.name" style="width: 250px;"></el-input>
-
-								</el-form-item>
-
-								<el-form-item label="地址" placeholder="请输入地址">
-									<el-cascader :options="options" @change="handleChange" clearable></el-cascader>
+									<el-input v-model="ruleForm.cnamek" style="width: 250px;"></el-input>
 
 								</el-form-item>
 
-								<el-form-item label="性别" prop="xb">
-									<el-radio-group style="width: 250px;" v-model="ruleForm.xb">
+								<el-form-item label="地址" placeholder="请输入地址" >
+									<el-cascader :options="options" v-model="dz" @change="handleChange" clearable></el-cascader>
+
+								</el-form-item>
+
+								<el-form-item label="性别" prop="csexk">
+									<el-radio-group style="width: 250px;" v-model="ruleForm.csexk">
 										<el-radio label="男"></el-radio>
 										<el-radio label="女"></el-radio>
 									</el-radio-group>
 								</el-form-item>
 
-								<el-form-item label="联系号码" placeholder="请输入号码" prop="hm">
+								<el-form-item label="联系号码" placeholder="请输入号码" prop="cphonek">
 
-									<el-input v-model="ruleForm.hm" style="width: 250px;"></el-input>
+									<el-input v-model="ruleForm.cphonek" style="width: 250px;"></el-input>
 
 								</el-form-item>
 								<el-form-item label="身份证">
 
-									<el-input v-model="ruleForm.name" style="width: 250px;"></el-input>
+									<el-input v-model="ruleForm.cidnumberk" style="width: 250px;"></el-input>
 
 								</el-form-item>
 
-								<el-form-item label="客户类型" placeholder="请选择类型" prop="lx">
-									<el-select style="width: 250px;" v-model="ruleForm.lx" @change="leixiChange" placeholder="请选择类型">
+								<el-form-item label="客户类型" placeholder="请选择类型" prop="ctypek">
+									<el-select style="width: 250px;" v-model="ruleForm.ctypek" @change="leixiChange" placeholder="请选择类型">
 										<el-option v-for="item in huiyuanleix" :key="item.value" :label="item.label" :value="item.value">
 										</el-option>
 									</el-select>
 
 								</el-form-item>
-								<el-form-item label="会员卡号" prop="name" v-if="leixi">
-									<el-input v-model="ruleForm.name" :disabled="true" style="width: 250px;"></el-input>
+								<el-form-item label="会员卡号"  v-if="leixi">
+									<el-input v-model="ruleForm.ckahaok" :disabled="true" style="width: 250px;"></el-input>
 
 								</el-form-item>
 
-								<el-form-item label="累计积分" prop="name" v-if="leixi">
-									<el-input v-model="ruleForm.name" :disabled="true" style="width: 250px;"></el-input>
+								<el-form-item label="累计积分"  v-if="leixi">
+									<el-input v-model="ruleForm.cdoublerk" :disabled="true" style="width: 250px;"></el-input>
 
 								</el-form-item>
 								<el-form-item label="会员余额" v-if="leixi">
-									<el-input maxlength="8" oninput="value=value.replace(/[^\d.]/g,'')" style="width: 250px;" v-model="ruleForm.name" placeholder="请输入价格" clearable></el-input>
+									<el-input maxlength="8" oninput="value=value.replace(/[^\d.]/g,'')" style="width: 250px;" v-model="ruleForm.cmoneyk" placeholder="请输入价格" clearable></el-input>
 								</el-form-item>
 
 								<el-form-item style="margin: 0px auto;width: 700px; text-align: right;">
@@ -175,40 +238,40 @@
 									</el-table-column>
 									<el-table-column label="车牌号">
 										<template slot-scope="scope">
-											<el-input size="mini" placeholder="请输入车牌" v-model="scope.row.cp" clearable>
+											<el-input size="mini" placeholder="请输入车牌" v-model="scope.row.carlicenceplate" clearable>
 											</el-input>
 										</template>
 									</el-table-column>
 									<el-table-column label="车辆品牌">
 										<template slot-scope="scope">
 
-											<el-input size="mini" placeholder="请输入品牌" v-model="scope.row.pp" clearable>
+											<el-input size="mini" placeholder="请输入品牌" v-model="scope.row.carbrand" clearable>
 											</el-input>
 										</template>
 									</el-table-column>
 
 									<el-table-column label="车辆颜色">
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row.ys" clearable>
+											<el-input size="mini" v-model="scope.row.carcolor" clearable>
 											</el-input>
 										</template>
 									</el-table-column>
 
 									<el-table-column label="配置">
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row.pz" clearable>
+											<el-input size="mini" v-model="scope.row.carconfigure" clearable>
 											</el-input>
 										</template>
 									</el-table-column>
 									<el-table-column label="产地">
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row.cd" clearable>
+											<el-input size="mini" v-model="scope.row.carlocality" clearable>
 											</el-input>
 										</template>
 									</el-table-column>
 									<el-table-column label="车辆款式">
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row.ks" clearable>
+											<el-input size="mini" v-model="scope.row.carmodel" clearable>
 											</el-input>
 										</template>
 									</el-table-column>
@@ -242,6 +305,9 @@
 		var gangwei = new Vue({
 			el: "#kehuziliao",
 			data: {
+				dz:null,
+				cheliangList:[],
+				  tableData: [],
 				title: "",
 				fullscreenLoading: true,
 				bb: true,
@@ -277,7 +343,7 @@
 					list: []
 				},
 				rules: {
-					name: [{
+					cnamek: [{
 							required: true,
 							message: '请输入姓名',
 							trigger: 'blur'
@@ -294,7 +360,7 @@
 						message: '请选择部门',
 						trigger: 'change'
 					}],
-					lx: [{
+					ctypek: [{
 						required: true,
 						message: '请选择客户类型',
 						trigger: 'change'
@@ -321,12 +387,12 @@
 						message: '请至少选择一个活动性质',
 						trigger: 'change'
 					}],
-					xb: [{
+					csexk: [{
 						required: true,
 						message: '请选择性别',
 						trigger: 'change'
 					}],
-					hm: [{
+					cphonek: [{
 						required: true,
 						message: '请填写号码',
 						trigger: 'blur'
@@ -341,63 +407,54 @@
 				hasChildren: false,
 				dialogVisible: false,
 				input: '',
-				tableData: [{
-					id: '12987122',
-					name: '好滋好味鸡蛋仔',
-					category: '江浙小吃、小吃零食',
-					desc: '荷兰优质淡奶，奶香浓而不腻',
-					address: '上海市普陀区真北路',
-					shop: '王小虎夫妻店',
-					shopId: '10333',
-					hm: "1231231231233",
-					lx: 2,
-					ye: 12,
-					xb: "男",
-					sfz: "430033123123",
-					list: [{
-						pp: '奔驰',
-						ks: 'suv',
-						cp: '浙A123',
-						pz: '四驱',
-						ys: '黑色',
-						cd: '美国'
-					}]
-				}, {
-					id: '12987122',
-					name: '好滋好味鸡蛋仔',
-					category: '江浙小吃、小吃零食',
-					desc: '荷兰优质淡奶，奶香浓而不腻',
-					address: '上海市普陀区真北路',
-					shop: '王小虎夫妻店',
-					shopId: '10333',
-					hm: "1231231231233",
-					lx: 1,
-					ye: 0,
-					list: [{
-						pp: '奔驰',
-						ks: 'suv',
-						cp: '浙A123',
-						pz: '四驱',
-						ys: '黑色',
-						cd: '美国'
-					}]
-				}],
+				tableData: [],
 				leixi: false,
-				xruleForm: {},
+				xruleForm:null,
 				huiyuanleix: [{
 					label: "普通",
-					value: 1
+					value: "普通"
 				}, {
 					label: "会员",
-					value: 2
-				}]
+					value: "会员"
+				}],
+				getIndex:null
 			},
 			methods: {
+				queryXiangxi(index,obj){
+					this.title="详细信息"
+					this.dialogVisible2=true;
+					this.fullscreenLoading=true;
+					setTimeout(()=>{
+						sessionStorage.setItem("xiangxi",JSON.stringify(obj.list));
+						$("#cnt").load("查看详细订单.html");
+					},"1000")
+				},
+					tableRowClassName ({row, rowIndex}) {
+       //把每一行的索引放进row
+     row.index = rowIndex;
+    },
+    rowClick (row) {
+    	this.xruleForm=null;
+    	this.cheliangList=[];
+       this.getIndex=null;
+    },
+    selectedHighlight({row, rowIndex}) {
+         if ((this.getIndex) === rowIndex ) {
+            return {
+          "background-color": "#CAE1FF"
+       };
+     }
+    },  rowdblclick(row,col,event){
+    this.xruleForm = row;
+     	 this.getIndex=row.index;
+     	this.cheliangList=row.list;
+    },
 				/*验证是否选中*/
 				code() {
-					if(this.radio == "") {
+				
+					if(this.xruleForm ==null) {
 						this.$message({
-							message: '警告哦，请选择要修改的数据',
+							message: '警告哦，请双击你要修改的数据',
 							type: 'warning'
 						});
 						return true;
@@ -422,9 +479,27 @@
 					let _this = this;
 					this.$refs[formName].validate((valid) => {
 						if(valid) {
-							_this.resetForm(formName)
+							console.log(`${JSON.stringify(_this.ruleForm)}`);
+							/*修改状态*/
+					$.ajax(`http://127.0.0.1:8080/zyhCustomerBAction/api/khuAndCar`, {
+						type: "post",
+						dataType: "json",
+						data:JSON.stringify(_this.ruleForm),
+						contentType: "application/json",
+						success: function(data) {
+							if(data > 0) {
+								_this.$message({
+										duration:"1000",
+									type: 'success',
+									message: '操作成功!'
+								});
+								_this.queryClick();
+							}
+						}
+					});
+							
+							_this.resetForm(formName);
 							_this.dialogVisible = false;
-							alert('submit!');
 						} else {
 							console.log('error submit!!');
 							return false;
@@ -459,12 +534,12 @@
 				},
 				addcl() {
 					this.ruleForm.list.splice(0, 0, {
-						pp: '',
-						ks: '',
-						cp: '',
-						pz: '',
-						ys: '',
-						cd: ''
+						carlicenceplate: '',
+						carbrand: '',
+						carcolor: '',
+						carconfigure: '',
+						carlocality: '',
+						carmodel: ''
 					});
 				},
 				/*车辆信息添加*/
@@ -507,8 +582,8 @@
 				},
 				/*地址联动*/
 				handleChange(value) {
-
-					console.log(value);
+					this.ruleForm.caddressk=value[0]+"/"+value[1];
+					console.log(this.ruleForm.caddressk);
 				},
 				/*标签页*/
 				handleClick(tab, event) {
@@ -520,21 +595,25 @@
 				},
 				/*类型选择*/
 				leixiChange() {
-					this.leixi = this.ruleForm.lx == "2" ? true : false;
-					console.log(`this.leixi`)
-				},
-				/*选择*/
-				radiochange(val) {
-					this.leixi = val.lx == 1 ? false : true;
-					this.xruleForm = val;
-					console.log(this.leixi)
+					this.leixi = this.ruleForm.ctypek == "会员" ? true : false;
+					this.ruleForm.ckahaok= this.ruleForm.ctypek == "会员"?this.ruleForm.cidk:'';
+					console.log(`${this.ruleForm.cidk}`)
 				},
 				/*查看*/
-				queryClick(val) {
-					console.log(`客户名称是:${val}`)
+				queryClick() {
+					let _this=this;
+					val=this.input==''?null:this.input;
+					$.getJSON(`http://127.0.0.1:8080/zyhCustomerBAction/api/queryAllOrByName/${val}`, function(data) {
+					_this.tableData=data;
+					
+					});
+					
 				},
 				/*添加*/
 				addClick() {
+					var date=new Date();
+						now=date.getFullYear()+""+(date.getMonth()+1)+""+date.getDate()+""+date.getHours()+""+date.getMinutes()+""+date.getSeconds();
+						this.ruleForm.cidk=now;
 					this.leixi = false;
 					this.activeName = 'first';
 					this.dialogVisible = true;
@@ -566,7 +645,7 @@
 				}
 			},
 			mounted() {
-
+					this.queryClick();
 			}
 		})
 	</script>

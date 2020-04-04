@@ -8,7 +8,7 @@
 		<div id="kfzlclAdd">
 			
 						<template>
-							<h4>客户：{{temp.name}}</h4>
+							<h4>客户：{{temp.cnamek}}</h4>
 								<el-table :data="list" border style="width: 100%">
 								
 									<el-table-column width="50" align="center">
@@ -23,47 +23,47 @@
 									
 									<el-table-column label="车牌号">
 										<template slot-scope="scope" >
-											<el-input size="mini" placeholder="请输入车牌" v-model="scope.row.cp" clearable>
+											<el-input size="mini" placeholder="请输入车牌" v-model="scope.row.carlicenceplate" clearable>
 											</el-input>
 										</template>
 									</el-table-column>
 									<el-table-column label="车辆品牌">
 										<template slot-scope="scope">
 
-											<el-input size="mini" placeholder="请输入品牌" v-model="scope.row.pp" clearable>
+											<el-input size="mini" placeholder="请输入品牌" v-model="scope.row.carbrand" clearable>
 											</el-input>
 										</template>
 									</el-table-column>
 
 									<el-table-column label="车辆颜色">
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row.ys" clearable>
+											<el-input size="mini" v-model="scope.row.carcolor" clearable>
 											</el-input>
 										</template>
 									</el-table-column>
 
 									<el-table-column label="配置">
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row.pz" clearable>
+											<el-input size="mini" v-model="scope.row.carconfigure" clearable>
 											</el-input>
 										</template>
 									</el-table-column>
 									<el-table-column label="产地">
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row.cd" clearable>
+											<el-input size="mini" v-model="scope.row.carlocality" clearable>
 											</el-input>
 										</template>
 									</el-table-column>
 									<el-table-column label="车辆款式">
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row.ks" clearable>
+											<el-input size="mini" v-model="scope.row.carmodel" clearable>
 											</el-input>
 										</template>
 									</el-table-column>
 								</el-table>
 								 
   								<div style="text-align: right;margin-top: 2ex;">
-  									<el-button type="primary" style="width: 150px;" :disabled="bool==true?true:false" @click="cltj">提交</el-button>
+  									<el-button type="primary" style="width: 150px;" :disabled="bool==true?true:false" @click="clxxAdd">提交</el-button>
   									<el-button style="width: 150px;" @click="quxiao">取消</el-button>
   								</div>
 							</template>
@@ -81,55 +81,23 @@
 			},
 			methods: {
 				
-				/*车辆提交*/
-				cltj(){
-					let _this=this;
-					let bool=true;
-						$.each(_this.list, function(i, obj) {
-						if(obj.cp == "" && obj.pp == "") {
-							_this.$message({
-								showClose: true,
-								message: '车牌号和品牌不能为空！',
-								type: 'error'
-							});
-							bool = false;
-						} else if(obj.cp == "") {
-							_this.$message({
-								showClose: true,
-								message: '请填写车牌号',
-								type: 'error'
-							});
-							bool = false;
-						} else if(obj.pp == "") {
-							_this.$message({
-								showClose: true,
-								message: '请填写车辆品牌',
-								type: 'error'
-							});
-							bool =  false;
-						}
-
-					});
-					if(bool){
-						alert("添加成功")
-					clgl.dialogVisible = false;
 				
-					}
-				},
 				/*取消*/
 				quxiao(){
 				
 					clgl.dialogVisible = false;
 				},
 					addcl() {
+						let _this=this;
 						this.bool=false;
 					this.list.splice(0, 0, {
-						pp: '',
-						ks: '',
-						cp: '',
-						pz: '',
-						ys: '',
-						cd: ''
+							cidk:_this.temp.cidk,
+							carlicenceplate: '',
+						carbrand: '',
+						carcolor: '',
+						carconfigure: '',
+						carlocality: '',
+						carmodel: ''
 					});
 				},
 				
@@ -149,22 +117,22 @@
 						return
 					}
 					let bool =true;
-						$.each(_this.list, function(i, obj) {
-						if(obj.cp == "" && obj.pp == "") {
+							$.each(_this.list, function(i, obj) {
+						if(obj.carlicenceplate == "" && obj.carbrand == "") {
 							_this.$message({
 								showClose: true,
 								message: '车牌号和品牌不能为空！',
 								type: 'error'
 							});
 							bool = false;
-						} else if(obj.cp == "") {
+						} else if(obj.carlicenceplate == "") {
 							_this.$message({
 								showClose: true,
 								message: '请填写车牌号',
 								type: 'error'
 							});
 							bool = false;
-						} else if(obj.pp == "") {
+						} else if(obj.carbrand == "") {
 							_this.$message({
 								showClose: true,
 								message: '请填写车辆品牌',
@@ -175,7 +143,26 @@
 
 					});
 					if(bool) {
-						_this.addcl()
+						console.log(JSON.stringify(_this.list))
+							$.ajax(`http://127.0.0.1:8080/zyhCustomerBAction/api/carAdd`, {
+						type: "post",
+						dataType: "json",
+						data:JSON.stringify(_this.list),
+						contentType: "application/json",
+						success: function(data) {
+							if(data > 0) {
+								_this.$message({
+										duration:"1000",
+									type: 'success',
+									message: '操作成功!'
+								});
+								clgl.list=[];
+								clgl.query();
+								clgl.dialogVisible= false;
+							}
+						}
+					});
+					
 					}
 
 				}

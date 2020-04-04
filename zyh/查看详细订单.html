@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="xiangxi">
+				<template>
+					<el-table :data="list" style="width: 100%;margin: 0px auto;margin-top: -2ex;" >
+						<el-table-column label="编号" align="center" width="180">
+								<template slot-scope="scope">
+									{{scope.$index+1}}
+								</template>
+							</el-table-column>
+							<el-table-column prop="sdname" align="center" label="维修项目名称">
+							</el-table-column>
+							<el-table-column align="center" label="单价">
+								<template slot-scope="scope">
+									<label style="">￥{{scope.row.dprice}}</label>
+								</template>
+							</el-table-column>
+							<el-table-column align="center" label="件数">
+								<template slot-scope="scope">
+									<label style="">{{scope.row.sdnumber}}件</label>
+								</template>
+							</el-table-column>
+							<el-table-column align="center" label="总价">
+								<template slot-scope="scope">
+									<label style="">￥{{scope.row.sdprice}}</label>
+								</template>
+							</el-table-column>
+
+					</el-table>
+				
+				</template>
+<div style="height: 60px;">
+		<i style="float: left;margin-left: 5ex;margin-top: 3ex;">总金额：<span style="color: red;">￥{{moneySum}}</span>
+			
+	
+		</i>
+						<span slot="footer" class="dialog-footer" style="float: right;clear: both;">
+    <el-button type="primary" @click="dialogVisiblequxiao">确 定</el-button>
+  </span>
+</div>
+	
+</div>
+	
+			
+		</div>
+		
+	</body>
+	<script>
+		var xiangxi = new Vue({
+			el: "#xiangxi",
+			data: {
+				moneySum:0,
+				list:[],
+				temp:{},
+				bool:true
+			},
+			methods: {
+				dialogVisiblequxiao(){
+					gangwei.dialogVisible2 = false;
+				}
+	
+			},
+			mounted() {
+					
+					this.list=JSON.parse(sessionStorage.getItem("xiangxi"));
+					let money=0;
+					$.each(this.list, function(i, obj) {
+						money += obj.sdprice;
+					})
+					this.moneySum = money;
+					gangwei.fullscreenLoading = false;
+					
+			}
+		})
+	</script>
+</html>

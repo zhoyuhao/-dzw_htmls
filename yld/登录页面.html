@@ -7,14 +7,14 @@
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
 		<script type="text/javascript" src="../js/vue.js"></script>
 		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
-		<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+
 		<style type="text/css">
 			* {
 				text-align: center;
 			}
 			
 			#login {
-				background: url(img/bg.jpg) no-repeat center center;
+				background: url(../images/bg.png) no-repeat center center;
 				background-size: cover;
 				background-attachment: fixed;
 				width: 100%;
@@ -59,6 +59,7 @@
 			</el-container>
 		</div>
 	</body>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
 	<script type="text/javascript" src="../js/index.js"></script>
 	<script type="text/javascript">
 		var login = new Vue({
@@ -70,15 +71,37 @@
 				}
 			},
 			mounted() {
-
+				sessionStorage.clear();
 			},
 			methods: {
-				dologin(){
-					if(this.login.card != '' && this.login.pwd != ''){
-						this.$message({message:'登录成功！',center:true,type:'success'});
-					}else{
-						this.$message.error({message:'请输入账号或密码！',center:true});
+				dologin() {
+					let _this = this;
+					if(this.login.card == '' && this.login.pwd == '') {
+						this.$message.error({
+							message: '请输入账号或密码！',
+							center: true
+						});
+						return
 					}
+					$.getJSON(`http://127.0.0.1:8080/zyhPersonnelAction/api/querylogin/${this.login.card}/${this.login.pwd}`, function(data) {
+						if(data.pid != "") {
+							_this.$message({
+								showClose: true,
+								message: '欢迎使用德召文汽修系统',
+								type: 'success'
+							});
+							/*保存当前登入的用户信息*/
+							sessionStorage.setItem("user", JSON.stringify(data));
+							location.href='/dzw/index.html'
+						} else {
+							_this.$message({
+								showClose: true,
+								message: '用户名或者密码错误！',
+								type: 'error'
+							});
+						}
+					})
+
 				}
 			}
 		})

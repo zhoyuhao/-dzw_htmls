@@ -11,6 +11,9 @@
   background-color: #f19944 !important;
   /* color: #f19944; */  /* 设置文字颜色，可以选择不设置 */
 }
+.el-table--enable-row-hover .el-table__body tr:hover>td {
+  background-color: #CAE1FF;
+}
 [v-cloak]{
 	display: none;
 }
@@ -27,7 +30,7 @@
   v-model="input"
   clearable>
 </el-input></span>
-<el-button type="primary" size="mini">查看</el-button>
+<el-button type="primary" size="mini" @click="query">查看</el-button>
   <el-button type="success" size="mini" @click="cltj">添加车辆</el-button>
   <el-button type="info" size="mini" style="margin-bottom: 2ex;" @click="clshanchu">删除</el-button>
 			<template >
@@ -36,32 +39,33 @@
 					 	    :row-class-name="tableRowClassName"
 					 	  	size="mini"
 					 	  	@row-click="rowClick"
+					 	  	 @row-dblclick="rowdblclick"
     ref="multipleTable"
     :data="list"
-    @row-dblclick="rowdblclick"
     tooltip-effect="dark"
     style="width: 100%"
-    height="400"
+    height="350"
+     v-loading="loading"
     :header-cell-style="{background:'#eef1f6'}"
     @selection-change="handleSelectionChange">
  <el-table-column
       type="selection"
       width="55">
     </el-table-column>
-								<el-table-column size="mini" prop="cp" label="车牌号">
+								<el-table-column size="mini" prop="carlicenceplate" label="车牌号">
 								</el-table-column>
 
-								<el-table-column prop="pp" label="车辆品牌">
+								<el-table-column prop="carbrand" label="车辆品牌">
 								</el-table-column>
 
-								<el-table-column prop="cp" label="车辆颜色">
+								<el-table-column prop="carcolor" label="车辆颜色">
 								</el-table-column>
-								<el-table-column prop="cp" label="配置" width="180">
+								<el-table-column prop="carconfigure" label="配置" width="180">
 								</el-table-column>
-								<el-table-column prop="cp" label="产地">
+								<el-table-column prop="carlocality" label="产地">
 								</el-table-column>
 
-								<el-table-column prop="cp" label="车辆款式">
+								<el-table-column prop="carmodel" label="车辆款式">
 								</el-table-column>
 							</el-table>
 				
@@ -77,32 +81,32 @@
     :data="tableData"
     border
     style="width: 100%">
-   <el-table-column  prop="bh" label="顾客编码">
+   <el-table-column  prop="cidk" label="顾客编码">
 					</el-table-column>
-					<el-table-column label="顾客名称"  prop="name">
+					<el-table-column label="顾客名称"  prop="cnamek">
 					</el-table-column>
-					<el-table-column label="地址"  prop="desc">
-					</el-table-column>
-
-					<el-table-column label="性别"  prop="xb">
+					<el-table-column label="地址"  prop="caddressk">
 					</el-table-column>
 
-					<el-table-column label="联系号码"  prop="hm">
+					<el-table-column label="性别"  prop="csexk">
 					</el-table-column>
 
-					<el-table-column label="客户类型"prop="lx">
+					<el-table-column label="联系号码"  prop="cphonek">
 					</el-table-column>
 
-					<el-table-column label="身份证"prop="hm">
+					<el-table-column label="客户类型"prop="ctypek">
 					</el-table-column>
 
-					<el-table-column label="会员卡号"  prop="hm">
+					<el-table-column label="身份证"prop="cidnumberk">
 					</el-table-column>
 
-					<el-table-column label="累计积分"prop="hm">
+					<el-table-column label="会员卡号"  prop="ckahaok">
 					</el-table-column>
 
-					<el-table-column label="会员余额"  prop="hm">
+					<el-table-column label="累计积分"prop="cdoublerk">
+					</el-table-column>
+
+					<el-table-column label="会员余额"  prop="cmoneyk">
 					</el-table-column>
 
   </el-table>
@@ -133,27 +137,15 @@
 			var clgl = new Vue({
 			el: "#clgl",
 			data: {
+				loading:false,
+				obj:{},
 				fullscreenLoading:false,
 				    dialogVisible: false,
 				getIndex:null,
 				input:'',
+				tabobj:[],
 				tableData:[],
-				list:[{cp:"we",pp:"奔驰",list:[{
-				
-					id: '12987122',
-					name: '好滋好味鸡蛋仔',
-					category: '江浙小吃、小吃零食',
-					desc: '荷兰优质淡奶，奶香浓而不腻',
-					address: '上海市普陀区真北路',
-					shop: '王小虎夫妻店',
-					shopId: '10333',
-					hm:"1231231231233",
-					lx:2,
-					ye:12,
-					xb:"男",
-					sfz:"430033123123"
-				}
-				]},{cp:"we",pp:"奔驰",list:[{bh:"123",name:"李四"}]},{cp:"we",pp:"奔驰",list:[{bh:"123",name:"李四"}]}],
+				list:[],
 				multipleSelection:[]
 			},
 			/*return { "background-color": "#FFDDAA" }*/
@@ -192,8 +184,38 @@
 				clshanchu(){
 					if(this.multipleSelection.length==0){
 					this.open3("请勾选中你要删除的车辆")
+					return
 					}
-					console.log(`删除的数据${JSON.stringify(this.multipleSelection)}`)
+					let array=[];
+					this.multipleSelection.forEach(row=>{
+						array.push(
+							row.carid
+						)
+					});
+					let _this=this;
+					$.ajax(`http://127.0.0.1:8080/zyhCustomerBAction/api/deleteByCarId`, {
+						type: "delete",
+						dataType: "json",
+						data:JSON.stringify(array),
+						contentType: "application/json",
+						success: function(data) {
+							if(data > 0) {
+								_this.$message({
+										duration:"1000",
+									type: 'success',
+									message: '操作成功!'
+								});
+							_this.loading=true;
+							setTimeout(()=>{
+								_this.tableData=[];
+									_this.list=[];
+									_this.query();
+								_this.loading=false;
+							},"1000");
+							}
+						}
+					});
+					console.log(`删除的数据${JSON.stringify(array)}`)
 				},
 				/*车辆添加*/
 				cltj(){
@@ -211,14 +233,42 @@
         this.multipleSelection = val;
      },
      rowdblclick(row,col,event){
-     	sessionStorage.setItem("khzlclAdd",JSON.stringify(row.list[0]));
+     	sessionStorage.setItem("khzlclAdd",JSON.stringify(row.obj));
      	 this.getIndex=row.index;
-     	this.tableData=row.list;
+     	this.tableData.push(row.obj);
+     },
+     query(){
+     	let _this=this;
+     	val=this.input==''?null:this.input;
+     	$.getJSON(`http://127.0.0.1:8080/zyhCustomerBAction/api/queryAllOrByName/${val}`, function(data) {
+					_this.tabobj=data;
+					
+					for(var i=0;i<_this.tabobj.length;i++){
+						for(var j=0;j<_this.tabobj[i].list.length;j++){
+						_this.list.push({
+							carlicenceplate:_this.tabobj[i].list[j].carlicenceplate,
+							carid:_this.tabobj[i].list[j].carid,
+							carbrand:_this.tabobj[i].list[j].carbrand,
+							carcolor:_this.tabobj[i].list[j].carcolor,
+							carconfigure:_this.tabobj[i].list[j].carconfigure,
+							carlocality:_this.tabobj[i].list[j].carlocality,
+							carmodel:_this.tabobj[i].list[j].carmodel,
+							obj:_this.tabobj[i]
+						}
+						);
+					}
+					}
+					});
+				
      }
 				
 			},
-			mounted() {}
+			mounted() {
+				this.query();
+				
+			}
 		})
 		
 	</script>
+	
 </html>

@@ -16,7 +16,12 @@
  	</h4>
 			<div style="box-shadow: 0px 0px 5px #000000;padding-bottom: 3ex;">
 
-				<el-tree ref="tree" :data="data" show-checkbox node-key="id" :getCurrentKey="w" :default-expanded-keys="chekArray" :default-checked-keys="chekArray" :props="defaultProps">
+				<el-tree ref="tree" :data="data" 
+					show-checkbox node-key="id" 
+					:getCurrentKey="w" 
+					:default-expanded-keys="chekArray"
+					 :default-checked-keys="chekArray"
+					  :props="defaultProps">
 				</el-tree>
 
 				<div style="clear: both;margin: 0px auto;margin-top: 3ex;text-align: center;">
@@ -43,41 +48,115 @@
           id: 1,
           label: '前台管理',
           children: [{
-            id: 4,
+            id: 11,
             label: '结算中心',
             fid:1
           },{
-            id: 2,
-            label: '会员卡',
-             fid:1
-          },{
-            id: 3,
-            label: '会卡重置',
+            id: 12,
+            label: '会员卡充值管理',
              fid:1
           }]
         },{
-          id: 9,
-          label: '权限管理',
+          id: 2,
+          label: '人事管理',
           children: [{
-            id: 6,
-            label: '角色管理',
-             fid:9
+            id: 21,
+            label: '员工管理',
+             fid:2
           },{
-            id: 7,
-            label: '使用管理',
-                         fid:9
+            id: 22,
+            label: '离职管理',
+                         fid:2
           },{
-            id: 5,
-            label: '用户管理',
-                         fid:9
+            id: 23,
+            label: '岗位管理',
+                         fid:2
+          },{
+            id: 24,
+            label: '通讯录管理',
+                         fid:2
+          },{
+            id: 25,
+            label: '技工管理',
+                         fid:2
+          },{
+            id: 26,
+            label: '外勤车辆管理',
+                         fid:2
           }]
-        }],
-				quanxians: [1, 2],
+        },
+        {
+          id: 3,
+          label: '系统管理',
+            disabled: true,
+          children: []
+        },
+        {
+          id: 4,
+          label: '维修管理',
+          children: [{
+            id: 41,
+            label: '维修接单',
+             fid:4
+          },
+          {
+            id: 42,
+            label: '竣工操作',
+             fid:4
+          }]
+        },{
+          id: 5,
+          label: '客户管理',
+          children: [{
+            id: 51,
+            label: '客户资料管理',
+             fid:5
+          },
+          {
+            id: 52,
+            label: '车辆管理',
+             fid:5
+          }]
+        },
+        {
+          id: 6,
+          label: '数据管理',
+          children: [{
+            id: 61,
+            label: '发动机品牌管理',
+             fid:6
+          },
+          {
+            id: 62,
+            label: '车型档案管理',
+             fid:6
+          },
+           {
+            id: 63,
+            label: '商品资料管理',
+             fid:6
+          },
+           {
+            id: 64,
+            label: '供货单位',
+             fid:6
+          },
+          {
+            id: 65,
+            label: '维修项目管理',
+             fid:6
+          }
+           
+          ]
+        }
+        
+        ],
+				quanxians: [11, 12, 22,31],
 				titles: ["未授权", "已授权"],
 				qxgh: "",
 				qxyh: "",
 				qxjs: '',
-				chekArray: [2, 4, 7]
+				chekArray: [11, 12, 22,31]
 
 			},
 			methods: {
@@ -91,24 +170,16 @@
 				w() {
 					let _this = this;
 					let arry = this.$refs.tree.getCheckedNodes(false, true);
-					let arr = this.$refs.tree.getCheckedNodes(false, true);
-
-					$.each(arry, function(j, obj2) {
+					$.each(arry, function(j, obj1) {
 						$.each(_this.data, function(i, obj) {
-
-							if(obj.id == obj2.id) {
-								console.log(`每页 ${obj.id} ||${obj2.id} ${j}条`);
-								arr = arr.filter(i => {
-									return i != obj2
+							if(obj.id == obj1.id) {
+								arry = arry.filter(row => {
+									return row != obj1
 								})
-								//arr.splice(j,1)
-
 							}
-
 						})
 					});
-					//console.log(` ${JSON.stringify(arry)}`);
-					console.log(` ${JSON.stringify(arr)}`);
+					console.log(` ${JSON.stringify(arry)}`);
 
 				},
 				qxxiugaiOk() {
