@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>维修项目</title>
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<script type="text/javascript" src="../js/vue.js"></script>
+		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+		<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+		<style type="text/css">
+			* {
+				text-align: center;
+			}
+			
+			.winput {
+				width: 200px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="serviceitem">
+			<el-container>
+				<el-main>
+					<el-tabs value="1" style="margin: 0px auto;margin-top: 20px;width: 90%;">
+						<el-tab-pane label="维修材料信息" name="1">
+							<el-form label-width="70px" :inline="true" size="mini" style="margin-top:10px;">
+								<el-form-item label="名称：">
+									<el-input v-model="formdata1.goodsname" clearable></el-input>
+								</el-form-item>
+								<el-form-item label="类型：">
+									<el-select @change="getFixGoodsData(1)" v-model="formdata1.goodstype" clearable placeholder="请选择">
+										<el-option v-for="item in fixgoodsitem" :key="item.xmid" :label="item.xnames" :value="item.xmid">
+										</el-option>
+									</el-select>
+								</el-form-item>
+								<el-form-item>
+									<el-button @click="getFixGoodsData(1)" style="width: 100px;">查 询</el-button>
+								</el-form-item>
+							</el-form>
+							<el-table :data="fixgoods.list" size="mini">
+								<el-table-column label="编号" type="index" align="center">
+								</el-table-column>
+								<el-table-column label="维修材料" prop="gname" align="center">
+								</el-table-column>
+								<el-table-column label="材料价格" prop="gprice" align="center">
+								</el-table-column>
+								<el-table-column label="材料数量" prop="gnumber" align="center">
+								</el-table-column>
+								<el-table-column label="材料简介" align="center">
+									<template slot-scope="temp">
+										{{temp.row.gdescribe == ''?'暂无介绍':temp.row.gdescribe}}
+									</template>
+								</el-table-column>
+								<el-table-column label="操作" prop="" align="center">
+									<template slot-scope="temp">
+										<el-button @click="openupdateGoodsdialog(temp.row)" circle size="mini" icon="el-icon-setting"></el-button>
+									</template>
+								</el-table-column>
+							</el-table>
+							<div style="margin: 20px 0px;">
+								<el-button @click="getFixGoodsData(fixgoods.navigateFirstPage)" type="primary" size="mini">首页</el-button>
+								<el-button @click="getFixGoodsData(fixgoods.prePage)" v-if="fixgoods.hasPreviousPage" type="primary" size="mini">上一页</el-button>
+								<el-button @click="getFixGoodsData(fixgoods.nextPage)" v-if="fixgoods.hasNextPage" type="primary" size="mini">下一页</el-button>
+								<el-button @click="getFixGoodsData(fixgoods.navigateLastPage)" type="primary" size="mini">尾页</el-button>
+							</div>
+						</el-tab-pane>
+						<el-tab-pane label="维修项目类型" name="2">
+							<el-form label-width="70px" :inline="true" size="mini" style="margin-top:10px;">
+								<el-form-item label="名称：">
+									<el-input v-model="formdata2.typename" clearable></el-input>
+								</el-form-item>
+								<el-form-item>
+									<el-button @click="getFixGoodsItemDataPage(1)">查询</el-button>
+									<el-button @click="agoodsitemdialog = true" type="primary">添加维修类型</el-button>
+								</el-form-item>
+							</el-form>
+							<el-table :data="fixgoodsitempage.list" size="mini">
+								<el-table-column label="编号" type="index" align="center">
+								</el-table-column>
+								<el-table-column label="类型名称" prop="xnames" align="center">
+								</el-table-column>
+								<el-table-column label="子项目数" prop="icount" align="center">
+								</el-table-column>
+								<el-table-column label="操作" prop="" align="center">
+									<template slot-scope="temp">
+										<el-button @click="openupdateGoodItemsdialog(temp.row)" circle size="mini" icon="el-icon-setting"></el-button>
+										<el-button @click="deleteGoodsItem(temp.row.xmid,temp.row.icount)" circle size="mini" icon="el-icon-close"></el-button>
+									</template>
+								</el-table-column>
+							</el-table>
+							<div style="margin: 20px 0px;">
+								<el-button @click="getFixGoodsItemDataPage(fixgoodsitempage.navigateFirstPage)" type="primary" size="mini">首页</el-button>
+								<el-button @click="getFixGoodsItemDataPage(fixgoodsitempage.prePage)" v-if="fixgoodsitempage.hasPreviousPage" type="primary" size="mini">上一页</el-button>
+								<el-button @click="getFixGoodsItemDataPage(fixgoodsitempage.nextPage)" v-if="fixgoodsitempage.hasNextPage" type="primary" size="mini">下一页</el-button>
+								<el-button @click="getFixGoodsItemDataPage(fixgoodsitempage.navigateLastPage)" type="primary" size="mini">尾页</el-button>
+							</div>
+						</el-tab-pane>
+					</el-tabs>
+					<el-dialog width="30%" title="商品信息修改" :visible.sync="ugoodsdialog" center :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
+						<el-form label-width="100px" size="small" label-position="top" style="width: 80%;margin: 0px auto;">
+							<el-form-item label="维修材料：">
+								<el-input v-model="updategoodsdata.gname"></el-input>
+							</el-form-item>
+							<el-form-item label="材料价格：">
+								<el-input v-model.number="updategoodsdata.gprice">
+									<template slot="append">元/个</template>
+								</el-input>
+							</el-form-item>
+							<el-form-item label="材料简介：">
+								<el-input v-model="updategoodsdata.gdescribe" type="textarea" autosize>
+								</el-input>
+							</el-form-item>
+							<el-form-item label="所属类型：">
+								<el-select v-model="updategoodsdata.gtype" clearable placeholder="请选择" style="width: 100%;">
+									<el-option v-for="item in fixgoodsitem" :key="item.xmid" :label="item.xnames" :value="item.xmid">
+									</el-option>
+								</el-select>
+							</el-form-item>
+						</el-form>
+						<span slot="footer" class="dialog-footer">
+							<el-button @click="ugoodsdialog = false" size="medium">取 消</el-button>
+						  	<el-button type="primary" @click="updateGoods" size="medium">保 存</el-button>
+						</span>
+					</el-dialog>
+					<el-dialog width="30%" title="维修项目添加" :visible.sync="agoodsitemdialog" center :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
+						<el-form label-width="100px" size="small" label-position="top" style="width: 80%;margin: 0px auto;">
+							<el-form-item label="项目名称：">
+								<el-input v-model="addgoodsitemdata.xnames"></el-input>
+							</el-form-item>
+						</el-form>
+						<span slot="footer" class="dialog-footer">
+							<el-button @click="agoodsitemdialog = false" size="medium">取 消</el-button>
+						  	<el-button type="primary" @click="addGoodsItem" size="medium">保 存</el-button>
+						</span>
+					</el-dialog>
+					<el-dialog width="30%" title="维修项目修改" :visible.sync="ugoodsitemdialog" center :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
+						<el-form label-width="100px" size="small" label-position="top" style="width: 80%;margin: 0px auto;">
+							<el-form-item label="项目名称：">
+								<el-input v-model="ugoodsitemdata.xnames"></el-input>
+							</el-form-item>
+						</el-form>
+						<span slot="footer" class="dialog-footer">
+							<el-button @click="ugoodsitemdialog = false" size="medium">取 消</el-button>
+						  	<el-button type="primary" @click="updateGoodsItem" size="medium">保 存</el-button>
+						</span>
+					</el-dialog>
+				</el-main>
+			</el-container>
+		</div>
+	</body>
+
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript">
+		var serviceitem = new Vue({
+			el: '#serviceitem',
+			data: {
+				ugoodsdialog: false,
+				agoodsitemdialog: false,
+				ugoodsitemdialog: false,
+				fixgoods: {},
+				fixgoodsitem: {},
+				fixgoodsitempage: {},
+				formdata1: {
+					goodsname: '',
+					goodstype: '',
+				},
+				formdata2: {
+					typename: ''
+				},
+				updategoodsdata: {
+
+				},
+				ugoodsitemdata: {},
+				addgoodsitemdata: {
+					xnames:''
+				},
+			},
+			methods: {
+				openupdateGoodsdialog(temp) {
+					this.ugoodsdialog = true;
+					this.updategoodsdata = JSON.parse(JSON.stringify(temp));
+				},
+				openupdateGoodItemsdialog(temp){
+					this.ugoodsitemdialog = true;
+					this.ugoodsitemdata = JSON.parse(JSON.stringify(temp));
+				},
+				getFixGoodsData(page) {
+					let _this = this;
+					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryAllGoods", {
+							page: page,
+							name: _this.formdata1.goodsname,
+							type: _this.formdata1.goodstype
+						},
+						function(msg) {
+							_this.fixgoods = msg;
+							console.info(msg);
+						});
+				},
+				getFixGoodsItemData() {
+					let _this = this;
+					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryAllGoodsItem",
+						function(msg) {
+							_this.fixgoodsitem = msg;
+							console.info(msg);
+						});
+				},
+				getFixGoodsItemDataPage(page) {
+					let _this = this;
+					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryAllGoodsItemPage", {
+							page: page,
+							name: _this.formdata2.typename
+						},
+						function(msg) {
+							_this.fixgoodsitempage = msg;
+							console.info(msg);
+						});
+				},
+				updateGoods() {
+					let _this = this;
+					$.ajax('http://127.0.0.1:8080/yldaction/api/updateGoods', {
+						type: 'post',
+						dataType: 'json',
+						contentType: 'application/json',
+						data: JSON.stringify(_this.updategoodsdata),
+						success: function(msg) {
+							if(msg == "ok") {
+								_this.$message({
+									message: '修改成功！',
+									center: true,
+									type: 'success'
+								});
+								_this.getFixGoodsData(1);
+								_this.ugoodsdialog = false;
+							} else {
+								_this.$message({
+									message: '修改失败！',
+									center: true,
+									type: 'error'
+								});
+							}
+						}
+					});
+				},
+				addGoodsItem(){
+					let _this = this;
+					$.ajax('http://127.0.0.1:8080/yldaction/api/insertGoodsItem',{
+					    type:'post',
+					    dataType:'json',
+					    contentType:'application/json',
+					    data:JSON.stringify(_this.addgoodsitemdata),
+					    success:function(msg){
+					        if(msg == "ok") {
+								_this.$message({
+									message: '添加成功！',
+									center: true,
+									type: 'success'
+								});
+								_this.getFixGoodsItemDataPage(1);
+								_this.getFixGoodsItemData();
+								_this.agoodsitemdialog = false;
+								_this.addgoodsitemdata.xnames = '';
+							} else {
+								_this.$message({
+									message: '添加失败！',
+									center: true,
+									type: 'error'
+								});
+							}
+					    }
+					});
+				},
+				updateGoodsItem(){
+					let _this = this;
+					$.ajax('http://127.0.0.1:8080/yldaction/api/updateGoodsItem',{
+					    type:'put',
+					    dataType:'json',
+					    contentType:'application/json',
+					    data:JSON.stringify(_this.ugoodsitemdata),
+					    success:function(msg){
+					        if(msg == "ok") {
+								_this.$message({
+									message: '添加成功！',
+									center: true,
+									type: 'success'
+								});
+								_this.getFixGoodsItemDataPage(1);
+								_this.getFixGoodsItemData();
+								_this.ugoodsitemdialog = false;
+							} else {
+								_this.$message({
+									message: '添加失败！',
+									center: true,
+									type: 'error'
+								});
+							}
+					    }
+					});
+				},
+				deleteGoodsItem(index,count){
+					let _this = this;
+					this.$confirm('是否要删除这条数据？', '提示', {
+				      confirmButtonText: '确定',
+				      cancelButtonText: '取消',
+				      type: 'warning',
+				      center:true
+				    }).then(() => {
+				      if(count == 0){
+				      	$.ajax('http://127.0.0.1:8080/yldaction/api/deleteGoodsItem',{
+					    type:'delete',
+					    data:{id:index},
+					    success:function(msg){
+					        if(msg == "ok") {
+								_this.$message({
+									message: '删除成功！',
+									center: true,
+									type: 'success'
+								});
+								_this.getFixGoodsItemDataPage(1);
+								_this.getFixGoodsItemData();
+								_this.ugoodsitemdialog = false;
+							} else {
+								_this.$message({
+									message: '删除失败！',
+									center: true,
+									type: 'error'
+								});
+							}
+					    }
+					});
+				      }else{
+				      	_this.$message({message:'无法删除带有子项目的！',center:true,type:'error'});
+				      }
+				    }).catch(() => {});
+				}
+			},
+			mounted() {
+				this.getFixGoodsData(1);
+				this.getFixGoodsItemDataPage(1);
+				this.getFixGoodsItemData();
+			}
+		});
+	</script>
+
+</html>
