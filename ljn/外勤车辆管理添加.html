@@ -6,6 +6,7 @@
 		<title></title>
 		<link href="../css/style.css" rel="stylesheet" type="text/css">
 		<link rel="stylesheet" href="../css/index.css" />
+		<script type="text/javascript" src="../js/xadmin.js"></script>
 	</head>
 
 	<body>
@@ -13,30 +14,22 @@
 			<h2 style="text-align: center;">外勤车辆管理添加</h2>
 			<el-form style="width: 70%;margin: 0 auto;" :inline="true" label-position="left" label-width="100px" :model="bill" style="text-align: center;">
 				<el-form-item label="车牌号：">
-					<el-input v-model="bill.categoryid"></el-input>
+					<el-input v-model="bill.platenumber"></el-input>
 				</el-form-item>
 				<el-form-item label="品牌:">
-					<el-input v-model="bill.title"></el-input>
+					<el-input v-model="bill.brand"></el-input>
 				</el-form-item>
-				<el-form-item label="车型：">
-					<el-input v-model="bill.summary"></el-input>
+				<el-form-item label="车辆状态：">
+					<el-select v-model="bill.state" placeholder="未出车">
+						<el-option label="未出车" value="未出车" selected="selected"></el-option>
+						<el-option label="已出车" value="已出车"></el-option>
+						<el-option label="维修中" value="维修中"></el-option>
+					</el-select>
 				</el-form-item>
-				<el-form-item label="当前里程：">
-					<el-input v-model="bill.summary"></el-input>
-				</el-form-item>
-				<el-form-item label="当前里程：">
-	<el-select v-model="bill.createdate" placeholder="当前里程">
-      <el-option label="区域一" value="shanghai"></el-option>
-      <el-option label="区域二" value="beijing"></el-option>
-    </el-select></el-form-item>
-				<el-form-item label="状态：">
-					<el-input v-model="bill.summary"></el-input>
-				</el-form-item>
-			</el-form>
-			<div style="text-align: right;">
-				<el-button @click="addBill">保存</el-button>
-				<el-button @click="gotoHt">取消</el-button>
-			</div>
+				<div style="text-align: right;">
+					<el-button @click="add">保存</el-button>
+					<el-button onclick="xadmin.close()">取消</el-button>
+				</div>
 		</div>
 
 		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
@@ -48,16 +41,33 @@
 			var app = new Vue({
 				data: {
 					bill: {
-						id:'',
-						categoryid: '',
-						title: '',
-						summary: '',
-						uploaduser: '',
-						createdate:'',
+						platenumber: '',
+						brand: '',
+						state: '未出车',
 					},
 					activeName: 'first'
 				},
-			
+				methods: {
+					//新增外勤车辆信息
+					add() {
+						let _this = this;
+						$.ajax({
+							type: "POST",
+							contentType: "application/json",
+							data: JSON.stringify(_this.bill),
+							url: `http://127.0.0.1:8080/ljn/api/ljnlegworkAction/insert`,
+							success: function(res) {
+								if(res != 0) {
+									alert("新增成功");
+									xadmin.close();
+									legworkApp.query(1,"未出车");
+								}
+							}
+						});
+
+					},
+				},
+
 			}).$mount("#addApp");
 		</script>
 	</body>
