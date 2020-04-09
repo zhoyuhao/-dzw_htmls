@@ -127,7 +127,7 @@
 				},
 				lizhi(objctes) {
 					let _this = this;
-					objctes.pstatic = 2;
+					objctes.pstatic = 1;
 					if(confirm("是否离职"))
 						$.ajax(`http://127.0.0.1:8080/CqqPersonnelAction/api/update`, {
 							type: "post",
@@ -188,7 +188,7 @@
 				},
 				goToPage(n, s) {
 					let _this = this;
-					$.getJSON(`http://127.0.0.1:8080/CqqPersonnelAction/api/${n}/${s}/1`, function(date) {
+					$.getJSON(`http://127.0.0.1:8080/CqqPersonnelAction/api/${n}/${s}/0`, function(date) {
 						_this.pageInfo = date;
 					});
 				}
