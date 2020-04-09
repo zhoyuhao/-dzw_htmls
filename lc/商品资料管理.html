@@ -13,75 +13,115 @@
 		<script type="text/javascript" src="../js/xadmin.js"></script>
 
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<style>
+			.demo-table-expand {
+				font-size: 0;
+			}
+			
+			.demo-table-expand label {
+				width: 90px;
+				color: #99a9bf;
+			}
+			
+			.demo-table-expand .el-form-item {
+				margin-right: 0;
+				margin-bottom: 0;
+				width: 50%;
+			}
+		</style>
 	</head>
 
 	<body>
-	
 		<div class="layui-fluid" id="yggl">
 			<div class="layui-row layui-col-space15">
 				<div class="layui-col-md12">
 					<div class="layui-card">
 						<div class="layui-card-body ">
-							<el-form :inline="true" :model="tableData" class="demo-form-inline" align="center">
-							<el-form-item label="徳召文商品管理">
-								<el-input v-model="tableData.name" placeholder='商品名称 '></el-input>
+							<el-form :inline="true" :model="goods" class="demo-form-inline" align="center">
+								<el-form-item label="徳召文商品管理">
+									<el-input v-model="goods.gname" placeholder='商品名称 '></el-input>
 
-							</el-form-item>
-							<el-form-item>
-								<div class="layui-inline layui-show-xs-block">
-									<el-row>
-										<el-button type="primary">查询信息</el-button>
-										<el-button type="success" onclick="xadmin.open('添加商品信息','./商品添加.html',600,500)">新增信息</el-button>
-									</el-row>
-								</div>
+								</el-form-item>
+								<el-form-item>
+									<div class="layui-inline layui-show-xs-block">
+										<el-row>
+											<el-button type="primary" @click="names">查询信息</el-button>
+											<el-button type="success" onclick="xadmin.open('添加商品信息','./商品添加.html',600,500)">新增信息</el-button>
+										</el-row>
+									</div>
 
-							</el-form-item>
-						</el-form>
-					</div>
-					<div class="layui-card-body layui-table-body layui-table-main">
-						<el-table :data="tableData" style="width: 100%; ">
-				<el-table-column label="商品资料管理"  align="center">
-					<el-table-column prop="id"  align="center" label="商品编号" width="120">
-					</el-table-column>
-					<el-table-column prop="name"  align="center" label="商品名称" width="120">
-					</el-table-column>
-					<el-table-column prop="date"  align="center" label="出产日器" width="120">
-					</el-table-column>
-					<el-table-column prop="pp"  align="center" label="商品品牌" width="120">
-					</el-table-column>
-					<el-table-column prop="drive"  align="center" label="适用车辆" width="120">
-					</el-table-column>
-					<el-table-column prop="price"  align="center" label="商品价格" width="120">
-					</el-table-column>
-					<el-table-column prop="classify"  align="center" label="商品分类" width="120">
-					</el-table-column>
-					<el-table-column prop="desc"  align="center" label="商品简介" width="180">
-					</el-table-column>
-					<el-table-column label="操作"  align="center">
-						<template slot-scope="temp">
-												<i class="el-icon-s-tools" onclick="xadmin.open('修改商品信息','./商品添加.html',600,500)"></i>&nbsp;&nbsp;
-												<i class="el-icon-delete"></i>
-											</template>
-					</el-table-column>
-	
-				</el-table-column>
-			</el-table>
+								</el-form-item>
+							</el-form>
+						</div>
+						<div class="layui-card-body layui-table-body layui-table-main">
+							<el-table :data="pageInfo.list" style="width: 100%; ">
+								<el-table-column label="商品资料管理" align="center">
+									<el-table-column type="expand">
+										<template slot-scope="props">
+											<el-form label-position="left" inline class="demo-table-expand">
+												<el-form-item label="供应商编号">
+													<span>{{ props.row.lcSupplier.ghsId}}</span>
+												</el-form-item>
+												<el-form-item label="供应商名称">
+													<span>{{ props.row.lcSupplier.ghsname}}</span>
+												</el-form-item>
+												<el-form-item label="供货商地址">
+													<span>{{ props.row.lcSupplier.ghsaddress}}</span>
+												</el-form-item>
+												<el-form-item label="联系电话">
+													<span>{{ props.row.lcSupplier.ghsphone}}</span>
+												</el-form-item>
+												<el-form-item label="联系人">
+													<span>{{ props.row.lcSupplier.ghsuser}}</span>
+												</el-form-item>
+												<el-form-item label="打款账号">
+													<span>{{ props.row.lcSupplier.ghsaccount}}</span>
+												</el-form-item>
+											</el-form>
+										</template>
+									</el-table-column>
 
-					</div>
-					<div class="layui-card-body ">
-						<div style="text-align: center;">
-							<template>
-								<div class="block">
+									<el-table-column prop="gid" align="center" label="商品编号" width="120">
+									</el-table-column>
+									<el-table-column prop="gname" align="center" label="商品名称" width="120">
+									</el-table-column>
+									<el-table-column prop="gtime" align="center" label="出产日器" width="120">
+									</el-table-column>
+									<el-table-column prop="gbrand" align="center" label="商品品牌" width="120">
+									</el-table-column>
+									<el-table-column prop="gsuitable" align="center" label="适用车辆" width="120">
+									</el-table-column>
+									<el-table-column prop="gprice" align="center" label="商品价格" width="120">
+									</el-table-column>
+									<el-table-column prop="gtype" align="center" label="商品分类" width="120">
+									</el-table-column>
+									<el-table-column prop="gdescribe" align="center" label="商品简介" width="180">
+									</el-table-column>
+									<el-table-column label="操作" align="center">
+										<template slot-scope="temp">
+											<i class="el-icon-s-tools" @click="xiugai(temp.row.gid)"></i>&nbsp;&nbsp;
+											<i class="el-icon-delete" @click="shanchu(temp.row.gid)"></i>
+										</template>
+									</el-table-column>
 
-									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
-									</el-pagination>
-								</div>
-							</template>
+								</el-table-column>
+							</el-table>
+
+						</div>
+						<div class="layui-card-body ">
+							<div style="text-align: center;">
+								<template>
+									<div class="block">
+
+										<el-pagination v-if="pageInfo.total!=0" :background="true" :pager-count="4" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.pageNum" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[3,6]" layout="total, sizes, prev, pager, next, jumper">
+										</el-pagination>
+									</div>
+								</template>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
 		</div>
 
 	</body>
@@ -93,46 +133,95 @@
 		var yggl = new Vue({
 			el: "#yggl",
 			data: {
+				goods: {
+					gname: null
+				},
 				currentPage4: 4,
+				lcgotopage: {},
+				pageInfo: [],
 				tableData: [{
-					id: 1,
-					date: '2016-05-02',
-					name: '电瓶/72',
-					drive: '卡车',
-					classify: '发动机',
-					price: 1
-				}, {
-					id: 2,
-					date: '2016-05-04',
-					name: '电瓶/72',
-					department: '卡车',
-					classify: '发动机',
-					price: 1
 
-				}, {
-					id: 3,
-					date: '2016-05-01',
-					name: '王小虎',
-					department: '洗车部',
-					position: '普通员工',
-					address: '湖南'
-				}, {
-					id: 4,
-					date: '2016-05-03',
-					name: '王小虎',
-					department: '洗车部',
-					position: '普通员工',
-					address: '湖南'
+					gid: '',
+					ghsId: '',
+					gname: '',
+					gtime: '',
+					gprice: '',
+					gbrand: '',
+					gsuitable: '',
+					gtype: '',
+					gdescribe: '',
+					gnumber: '',
+					lcSupplier: []
 				}]
 			},
 			methods: {
+				names() {
+					this.lcgoTopage(1, 2, this.goods.gname);
+				},
 				handleSizeChange(val) {
-					console.log(`每页 ${val} 条`);
+
+					this.lcgoTopage(this.pageInfo.pageNum, val, this.goods.gname);
+
 				},
 				handleCurrentChange(val) {
-					console.log(`当前页: ${val}`);
-				}
+					this.lcgoTopage(val, this.pageInfo.pageSize, this.goods.gname);
+				},
+				lcgoTopage(p, s, gname) {
+					let _this = this;
+
+					if(gname == "") {
+						gname = null;
+						$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/${p}/${s}/${gname}`, function(page) {
+							_this.pageInfo = page;
+						});
+					} else {
+						$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/${p}/${s}/${gname}`, function(page) {
+							_this.pageInfo = page;
+						});
+					}
+
+			},
+			shanchu(pid) {
+				let _this = this;
+				this.$confirm('是否移除商品信息?', '系统提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					$.ajax(`http://127.0.0.1:8080/lc/api/Goods/shanchu/${pid}`, {
+						type: "delete",
+						dataType: "json",
+						success(data) {
+							if(data.code == "500") {
+								_this.$message(data.msg);
+							} else {
+								_this.$message({
+									type: 'success',
+									message: '删除成功!'
+								});
+								_this.showView('商品资料管理.html');
+							}
+						}
+					});
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消删除'
+					});
+				});
+			},
+			showView(url) {
+				window.location.href = url;
+			},
+			xiugai(gid) {
+				xadmin.open('修改商品信息', './商品修改.html', 600, 500);
+				sessionStorage.setItem('iss', gid);
 			}
+		},
+		mounted() {
+			let _this = this; //非常重要
+			_this.lcgoTopage(1, 2, this.goods.gname);
+		}
 		})
 	</script>
 
