@@ -21,83 +21,182 @@
 
 	<body>
 		<div id="emp" style="padding-top: 40px;">
-			<el-table :data="fixempgroup" size="small" style="width: 45%; display: inline-block;">
-				<el-table-column label="技工组数据" align="center" height="250">
-					<el-table-column label="编号" prop="gid" align="center" show-overflow-tooltip>
-					</el-table-column>
-					<el-table-column label="组名" prop="gname" align="center" show-overflow-tooltip>
-					</el-table-column>
-					<el-table-column label="人数" prop="gcount" align="center" show-overflow-tooltip>
-					</el-table-column>
-					<el-table-column label="操作" align="center" show-overflow-tooltip>
-						<template slot-scope="temp">
-							<el-button circle size="mini" icon="el-icon-setting"></el-button>
-							<el-button circle size="mini" icon="el-icon-close"></el-button>
-						</template>
-					</el-table-column>
-				</el-table-column>
-			</el-table>
-			<el-table :data="fixemp" size="small" style="width: 45%; display: inline-block;">
-				<el-table-column label="技工数据" align="center" height="250">
-					<el-table-column label="工号" prop="eid" align="center" show-overflow-tooltip>
-					</el-table-column>
-					<el-table-column label="姓名" prop="ename" align="center" show-overflow-tooltip>
-					</el-table-column>
-					<el-table-column label="岗位" prop="post" align="center" show-overflow-tooltip>
-					</el-table-column>
-					<el-table-column label="工作组" prop="group" align="center" show-overflow-tooltip>
-					</el-table-column>
-					<el-table-column label="操作" align="center" show-overflow-tooltip>
-						<template slot-scope="temp">
-							<el-button circle size="mini" icon="el-icon-setting"></el-button>
-							<el-button circle size="mini" icon="el-icon-close"></el-button>
-						</template>
-					</el-table-column>
-				</el-table-column>
-			</el-table>
-			<el-divider content-position="center">
-				<h4>技工组添加</h4>
-			</el-divider>
-			<div style="margin: 10px 0px;">
-				<el-form label-width="100px" :inline="true" size="mini">
-					<el-form-item label="工组编号：">
-						<el-input class="winput" disabled></el-input>
+			<el-tabs value="first" style="margin: 0px auto;margin-top: 20px;width: 90%;">
+				<el-tab-pane label="技工数据" name="first">
+					<el-form label-width="100px" :inline="true" size="mini">
+						<el-form-item label="班组名称：">
+							<el-input class="winput" v-model="form.bzname"></el-input>
+						</el-form-item>
+						<el-form-item label-width="0px">
+							<el-button @click="getEmpGroupWoker(1)" type="defulat">查询</el-button>
+							<el-button @click="bzdialog = true" type="primary">添加班组</el-button>
+						</el-form-item>
+					</el-form>
+					<el-table :data="fixempgroup.list" size="small">
+						<el-table-column label="技工组数据" align="center" height="250">
+							<el-table-column label="编号" type="index" align="center" show-overflow-tooltip>
+							</el-table-column>
+							<el-table-column label="组名" prop="agname" align="center" show-overflow-tooltip>
+							</el-table-column>
+							<el-table-column label="人数" prop="agnumber" align="center" show-overflow-tooltip>
+							</el-table-column>
+							<el-table-column label="操作" align="center" show-overflow-tooltip>
+								<template slot-scope="temp">
+									<el-button circle size="mini" icon="el-icon-setting"></el-button>
+									<el-button circle size="mini" icon="el-icon-close"></el-button>
+								</template>
+							</el-table-column>
+						</el-table-column>
+					</el-table>
+					<div style="margin: 20px 0px;">
+						<el-button @click="getEmpGroupWoker(1)" type="primary" size="mini">首页</el-button>
+						<el-button @click="getEmpGroupWoker(fixempgroup.prePage)" v-if="fixempgroup.hasPreviousPage" type="primary" size="mini">上一页</el-button>
+						<el-button @click="getEmpGroupWoker(fixempgroup.nextPage)" v-if="fixempgroup.hasNextPage" type="primary" size="mini">下一页</el-button>
+						<el-button @click="getEmpGroupWoker(fixempgroup.navigateLastPage)" type="primary" size="mini">尾页</el-button>
+					</div>
+				</el-tab-pane>
+				<el-tab-pane label="技工数据" name="second">
+					<el-form :inline="true" label-width="120px" size="mini">
+						<el-form-item label="星级/工作组：">
+							<el-select @change="getEmpdata(1)" v-model="form.bzid" clearable placeholder="请选择">
+								<el-option v-for="item in workdata" :key="item.bzid" :label="item.bzname" :value="item.bzid">
+								</el-option>
+							</el-select>
+						</el-form-item>
+						<el-form-item label="技工姓名：">
+							<el-input v-model="form.name" clearable></el-input>
+						</el-form-item>
+						<el-form-item label-width="0px">
+							<el-button @click="getEmpdata(1)" type="default">查询</el-button>
+						</el-form-item>
+					</el-form>
+					<el-table :data="fixemp.list" size="small">
+						<el-table-column label="技工数据" align="center" height="250">
+							<el-table-column label="工号" prop="aid" align="center" show-overflow-tooltip>
+							</el-table-column>
+							<el-table-column label="姓名" prop="name" align="center" show-overflow-tooltip>
+							</el-table-column>
+							<el-table-column label="岗位" prop="postName" align="center" show-overflow-tooltip>
+							</el-table-column>
+							<el-table-column label="星级/工作组" prop="groupName" align="center" show-overflow-tooltip>
+								<template slot-scope="temp" v-if="temp.row.groupName != null">
+									{{temp.row.groupName|changeGroup}}
+								</template>
+							</el-table-column>
+							<el-table-column label="操作" align="center" show-overflow-tooltip>
+								<template slot-scope="temp">
+									<el-button @click="openuempgroup(temp.row)" circle size="mini" icon="el-icon-setting"></el-button>
+								</template>
+							</el-table-column>
+						</el-table-column>
+					</el-table>
+					<div style="margin: 20px 0px;">
+						<el-button @click="getdata(fixemp.navigateFirstPage)" type="primary" size="mini">首页</el-button>
+						<el-button @click="getdata(fixemp.prePage)" v-if="fixemp.hasPreviousPage" type="primary" size="mini">上一页</el-button>
+						<el-button @click="getdata(fixemp.nextPage)" v-if="fixemp.hasNextPage" type="primary" size="mini">下一页</el-button>
+						<el-button @click="getdata(fixemp.navigateLastPage)" type="primary" size="mini">尾页</el-button>
+					</div>
+				</el-tab-pane>
+				<el-tab-pane label="技工星级" name="three">
+					<el-form :inline="true" label-width="120px" size="mini">
+						<el-form-item label="星级名称：">
+							<el-input v-model="form.wname" clearable></el-input>
+						</el-form-item>
+						<el-form-item label-width="0px">
+							<el-button @click="getworkdata(1)" type="default">查询</el-button>
+							<el-button @click="empdialog = true" type="primary">添加技工等级</el-button>
+						</el-form-item>
+					</el-form>
+					<el-table :data="workpagedata.list" size="small">
+						<el-table-column label="星级数据" align="center">
+							<el-table-column label="编号" type="index" align="center" show-overflow-tooltip>
+							</el-table-column>
+							<el-table-column label="级别名称" prop="bzname" align="center" show-overflow-tooltip>
+							</el-table-column>
+							<el-table-column label="提成(小时/元)" prop="hmoney" align="center" show-overflow-tooltip>
+							</el-table-column>
+							<el-table-column label="操作" align="center" show-overflow-tooltip>
+								<template slot-scope="temp">
+									<el-button @click="openupdate(temp.row)" circle size="mini" icon="el-icon-setting"></el-button>
+									<el-button @click="deleteempdata(temp.row.bzid)" circle size="mini" icon="el-icon-close"></el-button>
+								</template>
+							</el-table-column>
+							</template>
+						</el-table-column>
+					</el-table>
+					<div style="margin: 20px 0px;">
+						<el-button @click="getworkdata(workpagedata.navigateFirstPage)" type="primary" size="mini">首页</el-button>
+						<el-button @click="getworkdata(workpagedata.prePage)" v-if="workpagedata.hasPreviousPage" type="primary" size="mini">上一页</el-button>
+						<el-button @click="getworkdata(workpagedata.nextPage)" v-if="workpagedata.hasNextPage" type="primary" size="mini">下一页</el-button>
+						<el-button @click="getworkdata(workpagedata.navigateLastPage)" type="primary" size="mini">尾页</el-button>
+					</div>
+				</el-tab-pane>
+			</el-tabs>
+			<el-dialog width="30%" title="技工星级添加" :visible.sync="empdialog" center :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
+				<el-form label-width="100px" size="small" label-position="top" style="width: 80%;margin: 0px auto;">
+					<el-form-item label="名称：">
+						<el-input v-model="empdata.bzname"></el-input>
 					</el-form-item>
-					<el-form-item label="技工组名：">
-						<el-input class="winput"></el-input>
-					</el-form-item>
-					<el-form-item label-width="0px">
-						<el-button size="mini" type="success">添加</el-button>
-						<el-button type="primary">修改</el-button>
+					<el-form-item label="收费：">
+						<el-input v-model="empdata.hmoney">
+							<template slot="append">小时/元</template>
+						</el-input>
 					</el-form-item>
 				</el-form>
-			</div>
-			<el-divider content-position="center">
-				<h4>技工添加</h4>
-			</el-divider>
-			<div style="margin: 10px 0px;">
-				<el-form label-width="100px" :inline="true" size="mini">
-					<el-form-item label="技工工号：" disabled>
-						<el-input class="winput"></el-input>
+				<span slot="footer" class="dialog-footer">
+					<el-button @click="empdialog = false" size="medium">取 消</el-button>
+				  	<el-button type="primary" @click="addempdata" size="medium">保 存</el-button>
+				</span>
+			</el-dialog>
+			<el-dialog width="30%" title="技工星级修改" :visible.sync="uempdialog" center :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
+				<el-form label-width="100px" size="small" label-position="top" style="width: 80%;margin: 0px auto;">
+					<el-form-item label="名称：">
+						<el-input v-model="uempdate.bzname"></el-input>
 					</el-form-item>
-					<el-form-item label="技工姓名：">
-						<el-input class="winput"></el-input>
-					</el-form-item>
-					<el-form-item label="技工性别：">
-						<el-input class="winput"></el-input>
-					</el-form-item>
-					<el-form-item label="电话号码：">
-						<el-input class="winput"></el-input>
-					</el-form-item>
-					<el-form-item label="录用岗位：">
-						<el-input class="winput"></el-input>
-					</el-form-item>
-					<el-form-item label-width="0px">
-						<el-button type="success">添加</el-button>
-						<el-button type="primary">修改</el-button>
+					<el-form-item label="收费：">
+						<el-input v-model="uempdate.hmoney">
+							<template slot="append">小时/元</template>
+						</el-input>
 					</el-form-item>
 				</el-form>
-			</div>
+				<span slot="footer" class="dialog-footer">
+					<el-button @click="uempdialog = false" size="medium">取 消</el-button>
+				  	<el-button type="primary" @click="updateEmpdata" size="medium">保 存</el-button>
+				</span>
+			</el-dialog>
+			<el-dialog width="30%" title="技工星级修改" :visible.sync="uempgroupdialog" center :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
+				<el-form label-width="100px" size="small" label-position="top" style="width: 80%;margin: 0px auto;">
+					<el-form-item label="姓名：">
+						<el-input v-model="uempgroup.name" disabled></el-input>
+					</el-form-item>
+					<el-form-item label="星级/工作组：">
+						<el-select @change="alert(uempgroup.bzid)" v-model="uempgroup.bzid" clearable placeholder="请选择">
+								<el-option v-for="item in workdata" :key="item.bzid" :label="item.bzname" :value="item.bzid">
+								</el-option>
+							</el-select>
+					</el-form-item>
+				</el-form>
+				<span slot="footer" class="dialog-footer">
+					<el-button @click="uempgroupdialog = false" size="medium">取 消</el-button>
+				  	<el-button type="primary" @click="updateEmpGroupData" size="medium">保 存</el-button>
+				</span>
+			</el-dialog>
+			<el-dialog width="30%" title="班组添加" :visible.sync="bzdialog" center :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
+				<el-form label-width="100px" size="small" label-position="top" style="width: 80%;margin: 0px auto;">
+					<el-form-item label="班组名称：">
+						<el-input v-model="empgroup.bzname"></el-input>
+					</el-form-item>
+					<el-form-item label="收费：">
+						<el-input v-model.number="empgroup.hmoney">
+							<template slot="append">小时/元</template>
+						</el-input>
+					</el-form-item>
+				</el-form>
+				<span slot="footer" class="dialog-footer">
+					<el-button @click="bzdialog = false" size="medium">取 消</el-button>
+				  	<el-button type="primary" @click="addEmpGroupWoker" size="medium">保 存</el-button>
+				</span>
+			</el-dialog>
 		</div>
 	</body>
 
@@ -106,51 +205,198 @@
 		var emp = new Vue({
 			el: '#emp',
 			data: {
-				//工作组
-				fixempgroup:[
-					{
-						gid:'20200512001',
-						gname:'临时技工组',
-						gcount:'5'
-					},
-					{
-						gid:'20200512001',
-						gname:'机电组',
-						gcount:'3'
-					},
-					{
-						gid:'20200512001',
-						gname:'美容组',
-						gcount:'4'
-					}
-				],
-				//技工
-				fixemp:[
-					{
-						eid:'20200324001',
-						ename:'张三',
-						post:'机电工',
-						group:'临时技工组'
-					},
-					{
-						eid:'20200324001',
-						ename:'李四',
-						post:'美容工',
-						group:'临时技工组'
-					},
-					{
-						eid:'20200324001',
-						ename:'王五',
-						post:'喷漆工',
-						group:'临时技工组'
-					}
-				]
+				empdialog: false,
+				uempdialog: false,
+				uempgroupdialog:false,
+				bzdialog:false,
+				fixempgroup: {},
+				fixemp: {},
+				empdata: {
+					bzname: '',
+					hmoney: '',
+					type: '2'
+				},
+				uempdate:{},
+				empgroup: {
+					bzname:'',
+					hmoney:'',
+					type:'1'
+				},
+				uempgroup:{
+					aid:'',
+					bzid:''
+				},
+				workdata: [],
+				workpagedata: {},
+				form: {
+					bzid: '',
+					name: '',
+					wname: '',
+					bzname:''
+				}
+			},
+			computed: {
+				/*unsigns () {
+			       return this.workpagedatas.filter(item => item.type == '2')
+			    }*/
+			},
+			filters: {
+				changeGroup(val) {
+					return val == '' ? '暂未加入' : val;
+				}
 			},
 			methods: {
-
+				openupdate(temp){
+					this.uempdialog = true;
+					this.uempdate = JSON.parse(JSON.stringify(temp));
+				},
+				openuempgroup(temp){
+					this.uempgroupdialog = true;
+					this.uempgroup = JSON.parse(JSON.stringify(temp));
+					console.info(this.uempgroup);
+				},
+				addempdata() {
+					let _this = this;
+					$.ajax('http://127.0.0.1:8080/yldaction/api/insertewgroup', {
+						type: 'post',
+						dataType: 'json',
+						contentType: 'application/json',
+						data: JSON.stringify(_this.empdata),
+						success: function(msg) {
+							if(msg == "ok") {
+								_this.$message({
+									message: '添加成功！',
+									center: true,
+									type: 'success',
+								});
+								_this.empdata.bzname = '';
+								_this.empdata.hmoney = '';
+								_this.getworkdata(1);
+							} else {
+								_this.$message({
+									message: '添加失败！',
+									center: true,
+									type: 'error'
+								});
+							}
+						}
+					});
+					_this.empdialog = false;
+				},
+				deleteempdata(id){
+					let _this = this;
+					this.$confirm('此操作将永久删除这条数据，是否继续？', '提示', {
+					      confirmButtonText: '确定',
+					      cancelButtonText: '取消',
+					      type: 'warning',
+					      center:true
+					    }).then(() => {
+					    	$.ajax('http://127.0.0.1:8080/yldaction/api/deleteewgroup',{
+							    type:'delete',
+							    data:{id:id},
+							    success:function(msg){
+							        if(msg == "ok"){
+							        	_this.$message({message:'删除成功！',center:true,type:'success'});
+							        	_this.getworkdata(1);
+							        }else{
+							        	_this.$message({message:'删除失败！',center:true,type:'error'});
+							        }
+							    }
+							});
+					    	
+					    }).catch(() => {});
+				},
+				updateEmpdata(){
+					let _this = this;
+					$.ajax('http://127.0.0.1:8080/yldaction/api/updateewgroup',{
+					    type:'put',
+					    dataType:'json',
+					    contentType:'application/json',
+					    data:JSON.stringify(_this.uempdate),
+					    success:function(msg){
+					        if(msg == "ok"){
+					        	_this.$message({message:'修改成功！',center:true,type:'success'});
+					        	_this.getworkdata(1);
+					        }else{
+					        	_this.$message({message:'修改失败！',center:true,type:'error'});
+					        }
+					    }
+					});
+					_this.uempdialog = false;
+				},
+				updateEmpGroupData(){
+					let _this = this;
+					$.ajax('http://127.0.0.1:8080/yldaction/api/updatepreson',{
+					    type:'post',
+					    data:{pid:_this.uempgroup.aid,bzid:_this.uempgroup.bzid},
+					    success:function(msg){
+					    	if(msg == "ok"){
+					    		_this.$message({message:'修改成功！',center:true,type:'success'});
+					    		_this.getEmpdata(1);
+					    		_this.uempgroupdialog = false;
+					    	}else{
+					    		_this.$message({message:'修改失败！',center:true,type:'error'});
+					    	}
+					    }
+					});
+				},
+				getEmpdata(page) {
+					let _this = this;
+					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryartisan", {
+							c: page,
+							bzid: _this.form.bzid,
+							name: _this.form.name
+						},
+						function(msg) {
+							_this.fixemp = msg;
+							console.info(msg);
+						});
+				},
+				getworkdata(page) {
+					let _this = this;
+					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryWork", function(msg) {
+						_this.workdata = msg;
+					});
+					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryPageWork", {
+							page: page,
+							name: _this.form.wname
+						},
+						function(msg) {
+							_this.workpagedata = msg;
+							console.info(msg);
+						});
+				},
+				getEmpGroupWoker(page){
+					let _this = this;
+					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryartisangroup",
+					{c:page,name:_this.form.bzname},function(msg){
+						_this.fixempgroup = msg;
+						console.info(msg);
+					})
+				},
+				addEmpGroupWoker(){
+					let _this = this;
+					$.ajax('http://127.0.0.1:8080/yldaction/api/addworker',{
+					    type:'post',
+					    dataType:'json',
+					    contentType:'application/json',
+					    data:JSON.stringify(_this.empgroup),
+					    success:function(msg){
+					        if(msg == "ok"){
+					        	_this.$message({message:'添加成功！',center:true,type:'success'});
+					        	_this.getEmpGroupWoker(1);
+					        	_this.bzdialog = false;
+					        }else{
+					        	_this.$message({message:'添加失败！',center:true,type:'error'});
+					        }
+					    }
+					});
+				}
 			},
 			mounted() {
-
+				this.getworkdata(1);
+				this.getEmpdata(1);
+				this.getEmpGroupWoker(1);
 			}
 		});
 	</script>
