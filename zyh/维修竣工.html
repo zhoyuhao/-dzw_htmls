@@ -81,7 +81,7 @@
 									<template slot-scope="scope">
 
 										<el-button type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)">竣工检验</el-button>
-										<el-button type="success" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row.list)">维修详细</el-button>
+										<el-button type="success" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row.list,scope.row)">维修详细</el-button>
 									</template>
 								</el-table-column>
 							</el-table>
@@ -151,7 +151,7 @@
 								</el-table-column>
 								<el-table-column label="操作" width="280" align="center">
 									<template slot-scope="scope">
-										<el-button type="success" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row.list)">维修详细</el-button>
+										<el-button type="success" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row.list,scope.row)">维修详细</el-button>
 									</template>
 								</el-table-column>
 							</el-table>
@@ -180,9 +180,9 @@
 									<label style="">￥{{scope.row.dprice}}</label>
 								</template>
 							</el-table-column>
-							<el-table-column align="center" label="件数">
+							<el-table-column align="center" label="(件数/小时)">
 								<template slot-scope="scope">
-									<label style="">{{scope.row.sdnumber}}件</label>
+									<label style="">{{scope.row.sdnumber}}</label>
 								</template>
 							</el-table-column>
 							<el-table-column align="center" label="总价">
@@ -192,7 +192,11 @@
 							</el-table-column>
 
 						</el-table>
-						<i style="float: left;margin-left: 5ex;margin-top: 3ex;">总金额：<span style="color: red;">￥{{moneySum}}</span></i>
+						<i style="float: left;margin-left: 5ex;margin-top: 3ex;">
+							<span style="color: red;margin-right: 1ex;"  >作业单位：{{danwei}} —— 工时费：￥{{gf}}(1h)</span>
+							
+								<br />
+							<span style="color: red;float: left;">总金额：￥{{moneySum}} </span></i>
 					</template>
 
 					<span slot="footer" class="dialog-footer">
@@ -277,6 +281,11 @@
 		var zhnanei = new Vue({
 			el: "#juegong",
 			data: {
+				hsmoney:0,
+				gf:0,
+				type:0,
+				danwei:'',
+				shjian:'',
 				weixiuTable: [],
 				value: null,
 				weixiu: [],
@@ -300,7 +309,8 @@
 				tableData: [],
 				tableData2: [],
 				id: '',
-				shuliang: 1
+				shuliang: 1,
+				sjObj:{}
 			},
 			methods: {
 				/*刪除返工维修的项目*/
@@ -386,7 +396,7 @@
 					});
 
 				},
-				statucUpdate() {
+				statucUpdate(obj,row) {
 
 					let _this = this;
 					if(_this.id == '' || _this.radio2 == '') {
@@ -406,9 +416,16 @@
 							contentType: "application/json"
 						});
 					}
-
 					/*修改状态*/
-					$.ajax(`http://127.0.0.1:8080/zyhServiceAction/api/updateByWidToStatuc/${_this.radio2}/${_this.id}`, {
+					let  date=new Date();
+					let startDate=new Date(this.sjObj.wstatdate);
+					let ms = date.getTime() - startDate.getTime();
+            		if (ms < 0) return 0;
+           			this.shjian=parseFloat(ms/1000/60/60).toFixed(2);//工时
+           			this.gf=this.sjObj.hmoney;
+           			let gsf=parseInt((this.gf/60).toFixed(2)*(this.shjian*60).toFixed(2));
+				
+					$.ajax(`http://127.0.0.1:8080/zyhServiceAction/api/updateByWidToStatuc/${_this.radio2}/${_this.id}/${date}/${this.shjian}/${gsf}` ,{
 						type: "put",
 						dataType: "json",
 						contentType: "application/json",
@@ -466,6 +483,7 @@
 						enddate = this.dates[1];
 
 					}
+					
 					$.getJSON(`http://127.0.0.1:8080/zyhServiceAction/api/queryStatucBy1Or2/${wcarid}/${statdate}/${enddate}/${n}/${s}/${statuc1}/${statuc2}`, function(data) {
 
 						if(statuc2 == 0) {
@@ -498,20 +516,35 @@
 				},
 				/*竣工操作*/
 				handleEdit(index, row) {
+					this.sjObj=row;
 					this.dialogVisible2 = true;
 					this.id = row.wid;
 					console.log(index, row);
 				},
 				/*维修详细*/
-				handleDelete(index, row) {
+				handleDelete(index, row,obj) {
+					var endDate=new Date(obj.wenddate);
+					var startDate=new Date(obj.wstatdate);
+					    var ms = endDate.getTime() - startDate.getTime();
+            			if (ms < 0) return 0;
+           			this.shjian=parseInt(ms/1000/60/60);
+           			this.type=obj.type;
+           			this.danwei=obj.type==1?obj.bzname:obj.wjname+'  ('+obj.bzname+')';
+           			this.gf=obj.hmoney;
+           			/*算出多少分钟 * 一分钟多少钱 */
+           		
+           			
 					let _this = this;
-					let money = 0;
+					let money = 0.0;
 					this.dialogVisible = true;
 					this.xiangXiData = row;
 					$.each(this.xiangXiData, function(i, obj) {
-						money += obj.sdprice;
-					})
-					this.moneySum = money;
+						money +=parseInt(obj.sdprice);
+					});
+				/*	console.log(parseFloat(this.shjian)*60, this.gf/60);
+					this.hsmoney=((parseInt(this.shjian)*60)*parseFloat(this.gf/60));
+					money=parseInt(money+(parseInt(this.shjian)*60)*parseFloat(this.gf/60))*/
+					this.moneySum =money;
 					console.log(index, row);
 				},
 				/*详细信息关闭*/
