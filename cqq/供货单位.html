@@ -21,9 +21,8 @@
     	size="mini"
   placeholder="请输入内容"
   v-model="input"
-  clearable>
+  >
 </el-input>
-
     <el-button type="primary"size="mini" @click="queryClick(input)"><span class="el-icon-search"  ></span></el-button>
 			<el-button type="success" size="mini" @click="addClick">添加</el-button>
 			<el-button type="success" size="mini" @click="daochu">导出</el-button>
@@ -54,6 +53,11 @@
 					</el-table-column>
 				</el-table>
 			</template>
+			<template>
+				<el-pagination background layout="prev, pager, next" :total="100">
+				</el-pagination>
+			</template>
+
 			<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="添加供货单位" :visible.sync="isshow1" width="66%" :before-close="handleClose">
 				<div id="cnt1"></div>
 			</el-dialog>
@@ -73,10 +77,15 @@
 			data: {
 				pageInfo: [],
 				isshow1: false,
-				isshow2: false
-
+				isshow2: false,
+				input: ''
 			},
 			methods: {
+				queryClick(input) {
+					if(input == '')
+						input = null;
+					this.goToPage(1, 3, input);
+				},
 				handlerOpen1() {
 					$("#cnt1").load('供货单位添加.html'); //ajax读取页面
 				},
@@ -106,17 +115,16 @@
 							}
 						});
 					}
-
 				},
-				goToPage(n, s) {
+				goToPage(n, s, name) {
 					let _this = this;
-					$.getJSON(`http://127.0.0.1:8080/CqqSupplierAction/api/${n}/${s}`, function(date) {
+					$.getJSON(`http://127.0.0.1:8080/CqqSupplierAction/api/${n}/${s}/${name}`, function(date) {
 						_this.pageInfo = date;
 					});
 				}
 			},
 			mounted() {
-				this.goToPage(1, 3);
+				this.goToPage(1, 3, null);
 			}
 		})
 	</script>

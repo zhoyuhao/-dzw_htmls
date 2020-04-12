@@ -19,10 +19,10 @@
 
 	<body>
 		<div id="sss">
-			<el-form :model="staff" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
+			<el-form :model="staff" ref="ruleForm" label-width="120px" class="demo-ruleForm">
 				<el-form-item label="商品编号" prop="gid">
 					<el-col :span="12">
-						<el-input v-model="staff.gid" placeholder="请输入"></el-input>
+						<el-input v-model="staff.gid" :disabled="true" placeholder="请输入"></el-input>
 					</el-col>
 				</el-form-item>
 				<el-form-item label="商品姓名" prop="gname">
@@ -55,12 +55,6 @@
 						</el-form-item>
 					</el-col>
 				</el-form-item>
-				<el-form-item label="商品分类" class="gtype">
-					<el-select v-model="staff.gtype" placeholder="请选择">
-						<el-option label="发动机" value="发动机"></el-option>
-						<el-option label="车身" value="车身"></el-option>
-					</el-select>
-				</el-form-item>
 				<el-form-item label="商品品牌" class="gbrand">
 					<el-select v-model="staff.gbrand" placeholder="请选择">
 						<el-option label="通用汽车用品品牌" value="通用汽车用品品牌"></el-option>
@@ -71,6 +65,13 @@
 					<el-select v-model="staff.gsuitable" placeholder="请选择">
 						<el-option label="上海大众" value="上海大众"></el-option>
 						<el-option label="红旗" value="红旗"></el-option>
+					</el-select>
+				</el-form-item>
+
+				<el-form-item label="商品分类" class="gtype">
+					<el-select v-model="staff.gtype" placeholder="请选择">
+						<el-option label="发动机" value="发动机"></el-option>
+						<el-option label="车身" value="车身"></el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item label="商品数量" prop="gnumber">
@@ -114,106 +115,60 @@
 					gtype: '',
 					gdescribe: '',
 					gnumber: '',
-				},
-				rules: {
-					gid: [{
-						required: true,
-						message: '请输入商品编号',
-						trigger: 'blur'
-					}],
-					ghsid: [{
-						required: true,
-						message: '请选择',
-						trigger: 'change'
-					}],
-
-					gname: [{
-						required: true,
-						message: '请输入商品名称',
-						trigger: 'blur'
-					}],
-					gtype: [{
-						required: true,
-						message: '请选择',
-						trigger: 'change'
-					}],
-					gtime: [{
-						type: 'date',
-						required: true,
-						message: '请选择日期',
-						trigger: 'change'
-					}],
-					gsuitable: [{
-						required: true,
-						message: '请填写',
-						trigger: 'blur'
-					}],
-					gprice: [{
-							required: true,
-							message: '请填写价格',
-							trigger: 'blur'
-						}/*,
-						{
-							type: 'number',
-							message: '必须为数字值'
-						}*/
-					]
 				}
 			},
 
 			methods: {
 				goodsByid() {
 					let _this = this;
-			
+
 					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/ids/${_this.gid}`, function(date) {
 						_this.staff = date;
 					});
 				},
 				submitForm() {
 					let _this = this;
-						this.$refs['ruleForm'].validate(valid => {
-							if(valid) {
-								//验证通过
-								//自定义加载块
-								const loading = this.$loading({
-									lock: true,
-									text: '努力更新中....',
-									spinner: 'el-icon-loading',
-									background: 'rgba(0, 0, 0, 0.5)'
-								});
-								//延迟2秒，模拟网络延迟
-								setTimeout(() => {
-									$.ajax('http://localhost:8080/lc/api/Goods/addGoods', {
-										type: 'post',
-										data: JSON.stringify(this.staff),
-										dataType: 'json',
-										contentType: 'application/json',
-										success(msg) {
-											if(msg.code == "200") {
-												loading.close(); //关闭加载块【非常重要】
-												_this.$message({
-													type: 'success',
-													message: '新增成功'
-												});
-												_this.clearData(); //清除数据
-											}
-										}
-									});
-								}, 2000);
+
+					$.ajax(`http://127.0.0.1:8080/lc/api/Goods/modeil`, {
+						type: "put",
+						contentType: "application/json",
+						data: JSON.stringify(_this.staff),
+						dataType: "json",
+						success(date) {
+							if(date.code == "200") {
+								_this.$message(date.msg);
+
 							} else {
-								//验证失败
-								this.$alert('请按格式正确填写信息', '系统提示');
+								_this.$message(date.msg);
 							}
-						});
-				
+						}
+					});
 				},
 				resetForm(formName) {
 					this.$refs[formName].resetFields();
+				},
+				gysid() {
+					let _this = this;
+					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sup`, function(data) {
+						console.info(data);
+						_this.ssh = data;
+						/*$.each(data, function(i,obj) {
+							var a=$("#sel").html();
+							alert(a);
+							  $("#sel").append('<option value="' + obj.ghsid + '">' + obj.ghsid + '</option>')
+								
+						});*/
+					})
 				}
 			},
 			mounted() {
-			
-			
+				let _this = this; //非常重要
+				_this.gysid();
+				_this.gid = sessionStorage.getItem('iss');
+				sessionStorage.setItem('iss', null);
+				if(_this.gid != null) {
+					this.goodsByid();
+				}
 
 			}
 		})

@@ -26,7 +26,7 @@
 
     <el-button type="primary"size="mini" @click="queryClick(input)"><span class="el-icon-search"  ></span></el-button>
 			<el-button type="success" size="mini" @click="lizhidj">离职</el-button>
-			<el-button type="success" size="mini" @click="daochu">导出</el-button>
+			<el-button type="success" size="mini" @click="">导出</el-button>
 			</span>
 			<template>
 				<el-table max-height="500" :data="pageInfo.list" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
@@ -77,10 +77,15 @@
 			data: {
 				pageInfo: [],
 				isshow1: false,
-				isshow2: false
-
+				isshow2: false,
+				input: ''
 			},
 			methods: {
+				queryClick(input) {
+					if(input == "") input = null;
+					this.goToPage(1, 3, input);
+
+				},
 				shanchu(id) {
 					let _this = this;
 					if(confirm("是否删除")) {
@@ -89,8 +94,8 @@
 							dataType: "json",
 							success(data) {
 								if(data > 0) {
-									alert("成功");
-									_this.goToPage(1, 3);
+									_this.$alert("成功");
+									_this.goToPage(1, 3,null);
 								} else {
 									alert("不成功")
 								}
@@ -100,7 +105,7 @@
 				},
 				fuzhi(objctes) {
 					let _this = this;
-					objctes.pstatic = 1;
+					objctes.pstatic = 0;
 					if(confirm("是否复职"))
 						$.ajax(`http://127.0.0.1:8080/CqqPersonnelAction/api/update`, {
 							type: "post",
@@ -109,8 +114,8 @@
 							dataType: "json",
 							success(date) {
 								if(date > 0) {
-									alert("成功")
-									_this.goToPage(1, 3);
+									_this.$alert("成功");
+									_this.goToPage(1, 3,null);
 								} else {
 									alert("不成功")
 								}
@@ -149,8 +154,8 @@
 							dataType: "json",
 							success(data) {
 								if(data > 0) {
-									alert("成功");
-									_this.goToPage(1, 3);
+									_this.$alert("成功");
+									_this.goToPage(1, 3,null);
 								} else {
 									alert("不成功")
 								}
@@ -159,15 +164,15 @@
 					}
 
 				},
-				goToPage(n, s) {
+				goToPage(n, s, name) {
 					let _this = this;
-					$.getJSON(`http://127.0.0.1:8080/CqqPersonnelAction/api/${n}/${s}/2`, function(date) {
+					$.getJSON(`http://127.0.0.1:8080/CqqPersonnelAction/api/${n}/${s}/1/${name}`, function(date) {
 						_this.pageInfo = date;
 					});
 				}
 			},
 			mounted() {
-				this.goToPage(1, 3);
+				this.goToPage(1, 3, null);
 			}
 		})
 	</script>

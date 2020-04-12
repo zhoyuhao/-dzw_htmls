@@ -113,14 +113,27 @@
 			},
 
 			methods: {
-			
+				goodsByid() {
+					let _this = this;
+					$.getJSON(`http://127.0.0.1:8080/lc/api/lcpersonnels/${_this.pid}`, function(date) {
+						_this.staff = date;
+						
+						
+					});
+					//查询技工
+					$.getJSON(`http://127.0.0.1:8080/lc/api/lcpersonnels/sss/ssh`, function(date) {
+						console.info(date);
+	
+					});
+					
+				},
 				submitForm(formName) {
 					let _this=this;
 					alert(11);
 					this.$refs[formName].validate((valid) => {
 						if(valid) {
-							$.ajax(`http://127.0.0.1:8080/lc/api/lcpersonnels/addGoods`, {
-						type: "post",
+							$.ajax(`http://127.0.0.1:8080/lc/api/lcpersonnels/modeil`, {
+						type: "put",
 						contentType: "application/json",
 						data: JSON.stringify(_this.staff),
 						dataType: "json",
@@ -144,7 +157,12 @@
 				}
 			},
 			mounted() {
-		
+				let _this = this; //非常重要
+				_this.pid = sessionStorage.getItem('iss');
+				if(_this.pid != null) {
+					this.goodsByid();
+				}
+
 			}
 		});
 	</script>
