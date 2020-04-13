@@ -19,10 +19,12 @@
 				<el-form-item label="品牌:">
 					<el-input v-model="bill.brand"></el-input>
 				</el-form-item>
+				<el-form-item label="技工:">
+					<el-input v-model="bill.artisan"></el-input>
+				</el-form-item>
 				<el-form-item label="车辆状态：">
 					<el-select v-model="bill.state" placeholder="未出车">
 						<el-option label="未出车" value="未出车" selected="selected"></el-option>
-						<el-option label="已出车" value="已出车"></el-option>
 						<el-option label="维修中" value="维修中"></el-option>
 					</el-select>
 				</el-form-item>
@@ -40,7 +42,8 @@
 			var myDate = new Date();
 			var app = new Vue({
 				data: {
-					bill:JSON.parse(window.sessionStorage.getItem("legwork")),
+					bill: JSON.parse(window.sessionStorage.getItem("legwork")),
+					a: '',
 					activeName: 'first'
 				},
 				methods: {
@@ -56,7 +59,7 @@
 								if(res != 0) {
 									alert("修改成功");
 									xadmin.close();
-									legworkApp.query(1, "未出车");
+									legworkApp.query(1, 9, "未出车");
 								}
 							}
 						});

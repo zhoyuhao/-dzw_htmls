@@ -19,32 +19,20 @@
 	</head>
 
 	<body>
-		<div class="x-nav">
-			<span class="layui-breadcrumb">
-                <a href="">首页</a>
-                <a href="">演示</a>
-                <a>
-                    <cite>导航元素</cite></a>
-            </span>
-			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
-				<i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
-			</a>
-		</div>
 		<div class="layui-fluid" id="personApp">
 			<div class="layui-row layui-col-space15">
 				<div class="layui-col-md12">
 					<div class="layui-card">
 						<div class="layui-card-body " style="text-align: center;">
+							<span style="margin-right: 3ex;">请输入员工姓名：</span>
 							<div class="layui-input-inline layui-show-xs-block">
 								<input type="text" v-model="pname" name="username" placeholder="请输入员工姓名" autocomplete="off" class="layui-input"></div>
 							<div class="layui-input-inline layui-show-xs-block">
-								<button class="layui-btn" @click="queryid(pname)">
-                                        <i class="layui-icon">&#xe615;</i></button>
+								<el-button type="primary" size="mini" @click="queryid(pname)">查看</el-button>
+								<el-button icon="el-icon-edit" size="mini" type="primary" onclick="xadmin.open('添加通讯录','通讯录添加.html',800,500)">添加</el-button>
 							</div>
 						</div>
-						<div class="layui-card-header">
-							<button class="layui-btn" onclick="xadmin.open('添加用户','通讯录添加.html',800,600)">
-                                <i class="layui-icon"></i>添加</button></div>
+
 						<template>
 							<el-table :data="this.page.list" style="width: 100%">
 								<el-table-column type="expand">
@@ -76,7 +64,7 @@
 								</el-table-column>
 								<el-table-column label="通讯编号" prop="txlid">
 								</el-table-column>
-								<el-table-column label="通讯编号" prop="pid">
+								<el-table-column label="员工编号" prop="pid">
 								</el-table-column>
 								<el-table-column label="名称" prop="txlname">
 								</el-table-column>
@@ -90,35 +78,39 @@
 								</el-table-column>
 							</el-table>
 						</template>
-						<div style="text-align:right;padding-right: 200px;">
-							<el-button size="mini" @click="handleCurrentChange(1)">第一页</el-button>
-							<el-button size="mini" v-if="page.hasPreviousPage" @click="handleCurrentChange(page.prePage)">上一页</el-button>
-							<el-button size="mini" v-if="page.hasNextPage" @click="handleCurrentChange(page.nextPage)">下一页</el-button>
-							<el-button size="mini" @click="handleCurrentChange(page.pages)">最后页</el-button>
-							<span>第{{page.pageNum}}页/共{{page.pages}}页</span>
+						<div class="block" style="text-align: center;margin-top: 3ex;">
+							<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[9,6,3]" :page-size="9" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
+							</el-pagination>
 						</div>
-
 					</div>
 
 				</div>
 			</div>
-		</div>
+
 		</div>
 	</body>
+		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
 	<script type="text/javascript" src="../js/index.js"></script>
-	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+
 	<script>
 		var personApp = new Vue({
 			el: '#personApp',
 			data: {
+				currentPage4: 1,
 				page: [],
 				pname: "",
 			},
 			methods: {
 				//查询根据条件分页查询通讯录信息
-				query(pageNum, pname) {
+				query(pageNum, pageSize, pname) {
+					if(pname == "") {
+						pname = "null";
+					}
 					let _this = this;
-					$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/query/${pageNum}/${pname}`, function(res) {
+					$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/query/${pageNum}/${pageSize}/${pname}`, function(res) {
+						_this.currentPage4 = res.pageNum;
 						_this.page = res;
 					});
 				},
@@ -130,31 +122,41 @@
 				//根据姓名查询通讯录信息
 				queryid(pname) {
 					let _this = this;
-					_this.query(1, pname);
+					_this.query(1, this.page.pageSize, pname);
 				},
 				//根据编号删除通讯录信息
-				delInfo(id){
+				delInfo(id) {
 					let _this = this;
-					if(confirm("是否删除")){
-					$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/remove/${id}`, function(res) {
-						if(res>0){
-							alert("删除成功")
-							_this.query(1, "null");
-						}
-					});
+					if(confirm("是否删除")) {
+						$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/remove/${id}`, function(res) {
+							if(res > 0) {
+								alert("删除成功")
+								_this.query(1,9, "null");
+							}
+						});
 					}
 				},
 				//查询需要编辑的通讯录信息
-				showView(txlid){
+				showView(txlid) {
 					$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/queryid/${txlid}`, function(res) {
-					window.sessionStorage.setItem('us', JSON.stringify(res));
-					xadmin.open('修改用户','通讯录修改.html',800,600);
-				})
+						window.sessionStorage.setItem('us', JSON.stringify(res));
+						xadmin.open('修改用户', '通讯录修改.html', 800, 500);
+					})
 				},
+				handleSizeChange(val) {
+					let _this = this;
+					_this.currentPage4 = 1;
+					this.query(1, val, "null");
+					console.log(`每页 ${val} 条`);
+				},
+				handleCurrentChange(val) {
+					this.query(val, this.page.pageSize, "null");
+					console.log(`当前页: ${val}`);
+				}
 			},
 			mounted() {
 				let _this = this;
-				_this.query(1, "null");
+				_this.query(1, 9, "null");
 			},
 		})
 	</script>

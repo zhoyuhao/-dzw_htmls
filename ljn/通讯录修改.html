@@ -3,71 +3,85 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<link rel="stylesheet" href="../css/bootstrap.min.css" />
-		<title>欢迎页面-X-admin2.2</title>
+		<title></title>
+		<link href="../css/style.css" rel="stylesheet" type="text/css">
 		<link rel="stylesheet" href="../css/index.css" />
-		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
-	 	<script type="text/javascript" src="../js/vue.js"></script>
-		<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
-		<meta name="renderer" content="webkit">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
-		<link rel="stylesheet" href="../css/font.css">
-		<link rel="stylesheet" href="../css/xadmin.css">
-		<script type="text/javascript" src="../lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../js/xadmin.js"></script>
-		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
-		<!--[if lt IE 9]>-->
-            <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
-            <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]
 	</head>
-	<div class="layui-fluid" id="personUpdate" style="text-align: center;">
-		<el-form ref="form" label-width="center">
-			<span style="font-size:25px">员工编号:</span>
-			<el-input v-model="form.txlid" style="width:50%"></el-input><br />
-			<span style="font-size:25px">员工名称:</span>
-			<el-input v-model="form.txlname" style="width:50%"></el-input><br />
-			<span style="font-size:25px">联系电话:</span>
-			<el-input v-model="form.txlphone" style="width:50%"></el-input><br />
-			<el-form-item size="large">
-				<el-button type="primary" @click="update">修改</el-button>
+	<div id="personUpdate" style="width: 70%;margin: 0 auto;">
+		<h2 style="text-align: center;">通讯录修改</h2>
+		<el-form style="width: 70%;margin: 0 auto;" :inline="true" label-position="left" label-width="100px" :model="bill" style="text-align: center;">
+			<el-form-item label="员工编号">
+				<el-select v-model="form.pid" placeholder="请选择">
+					<el-option v-for="item in id" :label="item.pid" :value="item.pid"></el-option>
+				</el-select>
 			</el-form-item>
-		</el-form>
-
+			<el-form-item label="员工名称:">
+				<el-input v-model="form.txlname"></el-input>
+			</el-form-item>
+			<el-form-item label="联系电话:">
+				<el-input v-model="form.txlphone"></el-input>
+			</el-form-item>
+			<div style="text-align: right;">
+				<el-button @click="update">保存</el-button>
+				<el-button onclick="xadmin.close()">取消</el-button>
+			</div>
 	</div>
 
 	<body>
+		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+		<script type="text/javascript" src="../js/vue.js"></script>
 		<script type="text/javascript" src="../js/index.js"></script>
-		<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
 		<script>
 			var personUpdate = new Vue({
 				el: '#personUpdate',
 				data: {
-				form: JSON.parse(window.sessionStorage.getItem("us")),
+					form: JSON.parse(window.sessionStorage.getItem("us")),
+					id: [],
+					qid: "",
 				},
 				methods: {
 					//修改通讯录信息
 					update() {
-					let _this = this;
-						$.ajax({
-							type: "POST",
-							contentType: "application/json",
-							data: JSON.stringify(_this.form),
-							url: `http://127.0.0.1:8080/ljn/api/ljnUserphoneAction/update`,
-							success: function(res) {
-							if(res!=0){
-							alert("修改成功");
-						/*	personApp.query(1,"null");*/
-						console.log($("#personApp"));
-						/*	xadmin.close();*/
+						let _this = this;
+						//查询员工编号是否存在
+						$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/count/${_this.form.pid}`, function(res) {
+							if(res > 0 && _this.form.pid != _this.qid) {
+								_this.$message({
+									duration: "3000",
+									type: 'success',
+									message: '员工编号已存在!'
+								});
+							} else {
+								$.ajax({
+									type: "POST",
+									contentType: "application/json",
+									data: JSON.stringify(_this.form),
+									url: `http://127.0.0.1:8080/ljn/api/ljnUserphoneAction/update`,
+									success: function(res) {
+										if(res != 0) {
+											alert("修改成功");
+											xadmin.close();
+											personApp.query(1, 9, "null");
+										}
+									}
+								});
 							}
-							}
-						});
-					
+						})
+					},
+					//查询员工编号
+					query() {
+						let _this = this;
+						$.getJSON(`http://localhost:8080/ljn/api/ljnPersonnelAction/query`, function(res) {
+							_this.id = res;
+						})
 					},
 				},
-				mounted(){
+				mounted() {
+					let _this = this;
+					_this.qid = _this.form.pid;
+					_this.query();
 				}
 			})
 		</script>
