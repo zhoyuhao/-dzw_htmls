@@ -72,7 +72,7 @@
 										</el-table-column>
 										<el-table-column label="操作" width="300px">
 											<template slot-scope="temp">
-												<el-button icon="el-icon-edit" size="mini" type="primary" @click="hai(temp.row.legworkid)">完成接车</el-button>
+												<el-button icon="el-icon-edit" size="mini" type="primary" @click="hai(temp.row.legworkid,temp.row.wid)">完成接车</el-button>
 												<el-button icon="el-icon-edit" size="mini" type="primary" @click="showView(temp.row.legworkid)">编辑</el-button>
 												<el-button icon="el-icon-delete" size="mini" type="danger" @click="delInfo(temp.row.legworkid)">删除</el-button>
 											</template>
@@ -177,9 +177,15 @@
 					})
 				},
 				//完成接车任务
-				hai(legworkid) {
+				hai(legworkid,wid) {
 					let _this = this;
 					if(confirm("是否确定接车成功")) {
+					//修改维修信息
+					$.getJSON(`http://localhost:8080/ljn/api/ljnServiceAction/update/${wid}`, function(res) {
+						
+					})
+						
+						
 						_this.bill.legworkid = legworkid;
 						_this.bill.state = "未出车",
 							$.ajax({
