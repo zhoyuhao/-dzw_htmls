@@ -12,29 +12,31 @@
 		<script type="text/javascript" src="../js/xadmin.js"></script>
 		<link rel="stylesheet" href="../css/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+		</style>
 	</head>
 
 	<body>
 
-		<div class="layui-fluid" id="yggl">
+		<div class="layui-fluid" id="yggl" v-cloak>
 			<div class="layui-row layui-col-space15">
 				<div class="layui-col-md12">
-
 					<div class="layui-card">
-
 						<el-form :inline="true" :model="goods" class="demo-form-inline" align="center">
-							<el-form-item label="徳召文员工管理">
-								<el-input v-model="goods.pname" placeholder='商品名称 '></el-input>
+							<el-form-item label="徳召文员工管理" style="margin-left: 10ex;">
+								<el-input v-model="goods.pname" size="mini" placeholder='商品名称 '></el-input>
 
 							</el-form-item>
 							<el-form-item>
 								<div class="layui-inline layui-show-xs-block">
 									<el-row>
-										<el-button type="primary" @click="names">查询信息</el-button>
-										<el-button type="success" onclick="xadmin.open('添加员工信息','./员工管理添加.html',600,500)">新增信息</el-button>
+										<el-button type="primary" size="mini" @click="names">查询信息</el-button>
+										<el-button type="success" size="mini" @click="addyg">新增信息</el-button>
 									</el-row>
 								</div>
-
 							</el-form-item>
 						</el-form>
 					</div>
@@ -83,6 +85,12 @@
 								</template>
 							</div>
 						</div>
+						<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="商品资料添加" :visible.sync="isshow1" width="900px" :before-close="handleClose">
+							<div id="cnt1"></div>
+						</el-dialog>
+							<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="商品资料修改" :visible.sync="isshow2" width="900px" :before-close="handleClose">
+							<div id="cnt2"></div>
+						</el-dialog>
 					</div>
 				</div>
 			</div>
@@ -98,6 +106,8 @@
 		var yggl = new Vue({
 			el: "#yggl",
 			data: {
+				isshow1: false,
+				isshow2:false,
 				goods:{
 					pname:null
 			         },
@@ -107,6 +117,10 @@
 				multipleSelection: []
 			},
 			methods: {
+				//添加员工
+				addyg(){
+					this.isshow1 = true;
+				},	
 				names(){
 					this.lcgoTopage(1, 2,this.goods.pname);
 				},
@@ -165,10 +179,16 @@
 					});
 				},
 				xiugai(gid) {
-				xadmin.open('修改员工信息','./员工管理修改.html',600,500);
+				this.isshow2 = true;
 				sessionStorage.setItem('iss', gid);
 				
-			}
+			},
+				handlerOpen1() {
+					$("#cnt1").load('员工管理添加.html'); //ajax读取页面
+				},
+				handlerOpen2() {
+					$("#cnt2").load('员工管理修改.html'); //ajax读取页面
+				},
 			},
 			mounted() {
 				let _this = this; //非常重要

@@ -19,72 +19,73 @@
 
 	<body>
 		<div id="sss">
-			<el-form :model="staff" ref="ruleForm" label-width="120px" class="demo-ruleForm">
+
+				
+
+			
+			<el-form :model="staff" :inline="true" ref="ruleForm" label-width="100px" class="demo-form-inline">
 				<el-form-item label="商品编号" prop="gid">
-					<el-col :span="12">
-						<el-input v-model="staff.gid" :disabled="true" placeholder="请输入"></el-input>
-					</el-col>
+
+						<el-input v-model="staff.gid" :disabled="true" placeholder="请输入" style="width: 250px;"></el-input>
+				
 				</el-form-item>
 				<el-form-item label="商品姓名" prop="gname">
-					<el-col :span="12">
-						<el-input v-model="staff.gname" placeholder="请输入"></el-input>
-					</el-col>
+					
+						<el-input v-model="staff.gname" placeholder="请输入" style="width: 250px;"></el-input>
+					
 				</el-form-item>
-				<el-form-item label="商品价格" prop="ghsid">
-					<el-col :span="12">
+				<el-form-item label="供应商编号" prop="ghsid">
+					
 
 						<el-select v-model="staff.ghsid">
-							<el-option v-for="item in ssh" :key="item.ghsid" :value="item.ghsid">
+							<el-option v-for="item in ssh" :key="item.ghsid" :value="item.ghsid" style="width: 250px;">
 							</el-option>
 						</el-select>
 
-					</el-col>
+					
 				</el-form-item>
 
 				<el-form-item label="商品价格" prop="gprice">
 
-					<el-col :span="12">
-						<el-input v-model="staff.gprice" placeholder="请输入商品型号"></el-input>
-					</el-col>
+						<el-input v-model="staff.gprice" placeholder="请输入商品型号" style="width: 250px;"></el-input>
+					
 				</el-form-item>
 
 				<el-form-item label="商品出产日期" required>
-					<el-col :span="12">
+				
 						<el-form-item prop="gtime">
-							<el-date-picker type="date" placeholder="请输入商品出产日期" v-model="staff.gtime" style="width: 100%;"></el-date-picker>
+							<el-date-picker type="date" placeholder="请输入商品出产日期" v-model="staff.gtime" style="width: 250px;"></el-date-picker>
 						</el-form-item>
-					</el-col>
+					
 				</el-form-item>
 				<el-form-item label="商品品牌" class="gbrand">
-					<el-select v-model="staff.gbrand" placeholder="请选择">
+					<el-select v-model="staff.gbrand" placeholder="请选择" style="width: 250px;">
 						<el-option label="通用汽车用品品牌" value="通用汽车用品品牌"></el-option>
 						<el-option label="得力工具自营品牌" value="通用汽车用品品牌"></el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item label="适用车辆" class="gsuitable">
-					<el-select v-model="staff.gsuitable" placeholder="请选择">
+					<el-select v-model="staff.gsuitable" placeholder="请选择" style="width: 250px;">
 						<el-option label="上海大众" value="上海大众"></el-option>
 						<el-option label="红旗" value="红旗"></el-option>
 					</el-select>
 				</el-form-item>
 
 				<el-form-item label="商品分类" class="gtype">
-					<el-select v-model="staff.gtype" placeholder="请选择">
+					<el-select v-model="staff.gtype" placeholder="请选择" style="width: 250px;">
 						<el-option label="发动机" value="发动机"></el-option>
 						<el-option label="车身" value="车身"></el-option>
 					</el-select>
 				</el-form-item>
-				<el-form-item label="商品数量" prop="gnumber">
-					<el-col :span="12">
+				<el-form-item label="商品数量" prop="gnumber" style="width: 250px;">
 						<el-input v-model.number="staff.gnumber"></el-input>
-					</el-col>
 				</el-form-item>
 				</el-form-item>
 
 				<el-form-item label="商品简介" prop="gdescribe">
-					<el-col :span="12">
+					
 						<el-input type="textarea" v-model="staff.gdescribe"></el-input>
-					</el-col>
+				
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="submitForm()">立即创建</el-button>

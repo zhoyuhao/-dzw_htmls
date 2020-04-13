@@ -27,8 +27,12 @@
 			p {
 				size: b5;
 			}
-			[v-cloak]{
+			
+			[v-cloak] {
 				display: none;
+			}
+			aa{
+				box-shadow: 0 2px 4px rgba（0，0，0，.12），0 0 6px rgba（0，0，0，.04）;
 			}
 		</style>
 	</head>
@@ -37,22 +41,45 @@
 		<div class="layui-fluid" id="welcome" v-cloak>
 			<div class="layui-row layui-col-space15">
 
-					<div class="layui-card">
-					
-						<div class="layui-card-body ">
-							<ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+				<div class="layui-card">
+
+					<div class="layui-card-body ">
+						
+							<el-table :data="sy" style="width: 100%; ">
+								<ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+								<el-table-column type="expand">
+									<template slot-scope="props">
+										<el-form label-position="left" inline class="demo-table-expand">
+											<el-form-item>
+												<li class="layui-col-md3 layui-col-xs8">
+													<a href="javascript:;" class="x-admin-backlog-body">
+														<h3>站内维修</h3>
+														<p>
+															<cite>11</cite></p>
+													</a>
+												</li>
+											</el-form-item>
+
+										</el-form>
+									</template>
+								</el-table-column>
+								</ul>
+							</el-table>
+						
+
+						<!--	<ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
 								<li class="layui-col-md3 layui-col-xs8">
 									<a href="javascript:;" class="x-admin-backlog-body">
-										<h3>接车次数</h3>
+										<h3>站内维修</h3>
 										<p>
-											<cite></cite></p>
+											<cite>{{props.row.sy.aa}}</cite></p>
 									</a>
 								</li>
 								<li class="layui-col-md3 layui-col-xs8">
 									<a href="javascript:;" class="x-admin-backlog-body">
 										<h3>今日在修台次</h3>
 										<p>
-											<cite id="zj"></cite></p>
+											<cite></cite></p>
 									</a>
 								</li>
 								<li class="layui-col-md3 layui-col-xs8">
@@ -71,26 +98,27 @@
 									</a>
 								</li>
 
-							</ul>
-						</div>
-					</div>
-				</div>
-				<div class="layui-col-sm14 layui-col-md6">
-					<div class="layui-card">
-						<div class="layui-card-header">站内维修统计
-							<span class="layui-badge layui-bg-cyan layuiadmin-badge">周</span></div>
-						<div id="main" style="width: 100%;height:400px;"></div>
-					</div>
-				</div>
-				<div class="layui-col-sm14 layui-col-md6">
-					<div class="layui-card">
-						<div class="layui-card-header">周收入
-							<span class="layui-badge layui-bg-cyan layuiadmin-badge">周</span></div>
-						<div id="main1" style="width: 100%;height:400px;"></div>
-					</div>
-				</div>
+							</ul>-->
 
+					</div>
+				</div>
 			</div>
+			<div class="layui-col-sm14 layui-col-md6">
+				<div class="layui-card">
+					<div class="layui-card-header">站内维修统计
+						<span class="layui-badge layui-bg-cyan layuiadmin-badge">周</span></div>
+					<div id="main" style="width: 100%;height:400px;"></div>
+				</div>
+			</div>
+			<div class="layui-col-sm14 layui-col-md6">
+				<div class="layui-card">
+					<div class="layui-card-header">周收入
+						<span class="layui-badge layui-bg-cyan layuiadmin-badge">周</span></div>
+					<div id="main1" style="width: 100%;height:400px;"></div>
+				</div>
+			</div>
+
+		</div>
 		</div>
 	</body>
 	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
@@ -101,21 +129,27 @@
 	<script>
 		var welcome = new Vue({
 			el: "#welcome",
-			data: {},
+			data: {
+				sy: []
+			},
 			methods: {
 				test() {
 					window.setInterval(() => {
-						$("#jc").html("");
+						//站内维修
+						$("#zn").html("");
 						$.ajax({
-							url: 'http://127.0.0.1:8080/lc/api/services',
+							url: 'http://127.0.0.1:8080/lc/api/services/zn',
+							timeout: 60000,
 							async: true,
 							type: 'get',
 							success: function(data) {
-								var a = data.aa;
-								$("#jc").append(a);
+								console.info(data);
+								this.sy = data;
+								console.info(this.sy);
 							}
 						});
-						$("#xj").html("");
+						/*$("#xj").html("");
+						//站外维修
 						$.ajax({
 
 							url: 'http://127.0.0.1:8080/lc/api/services/xianjin',
@@ -136,9 +170,9 @@
 								var a = data.cc;
 								$("#zj").append(a);
 							}
-						});
+						});*/
 
-					}, 10000);
+					}, 2000);
 				}
 			},
 			mounted() {

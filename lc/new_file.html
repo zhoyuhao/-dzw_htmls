@@ -4,40 +4,29 @@
 	<head>
 		<meta charset="utf-8">
 		<title>获取当前时间所在周的日期</title>
-		<script>
-			function getMonDate() {
-				var d = new Date(),
-					day = d.getDay(),
-					date = d.getDate();
-				if(day == 1)
-					return d;
-				if(day == 0)
-					d.setDate(date - 6);
-				else
-					d.setDate(date - day + 1);
-				return d;
+			<link rel="stylesheet" href="../css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<style>
+			div{
+				width: 200px;
+				height: 100px;
+				border: 1px solid rgb(255,0,0);
 			}
-			// 0-6转换成中文名称
-			function getDayName(day) {
-				var day = parseInt(day);
-				if(isNaN(day) || day < 0 || day > 6)
-					return false;
-				var weekday = ["星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-				return weekday[day];
-			}
-			// d是当前星期一的日期对象
-			var d = getMonDate();
-			var arr = [];
-			for(var i = 0; i < 7; i++) {
-				arr.push(d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日 （' + getDayName(d.getDay()) + '）');
-				d.setDate(d.getDate() + 1);
-			}
-			alert(arr);
-		</script>
+		</style>
 	</head>
 
-	<body οnlοad="displayDate02()">
+	<body>
 		
+		
+		<div >
+			
+		</div>
 	</body>
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+	<script type="text/javascript" src="../js/dialog.js"></script>
+	
 
 </html>
