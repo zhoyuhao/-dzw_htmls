@@ -22,6 +22,9 @@
 				<el-form-item label="技工:">
 					<el-input v-model="bill.artisan"></el-input>
 				</el-form-item>
+				<el-form-item label="救援价格:">
+					<el-input v-model="bill.momey"></el-input>
+				</el-form-item>
 				<el-form-item label="车辆状态：">
 					<el-select v-model="bill.state" placeholder="未出车">
 						<el-option label="未出车" value="未出车" selected="selected"></el-option>
@@ -48,6 +51,7 @@
 						brand: '',
 						state: '未出车',
 						artisan: '',
+						momey: '',
 					},
 					activeName: 'first'
 				},
