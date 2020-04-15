@@ -355,7 +355,7 @@
 						},
 						(msg) => {
 							_this.fixdata = msg;
-							console.info(msg);
+							console.info(msg+"12");
 						});
 				},
 				getServiceStatusData() {
@@ -363,7 +363,7 @@
 					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryAllServiceStatus",
 						(msg) => {
 							_this.fixStatusData = msg;
-							console.info(msg);
+							console.info(msg+"1");
 						});
 				},
 				getServiceItem() {
@@ -371,7 +371,7 @@
 					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryAllGoodsItem",
 						function(msg) {
 							_this.fixgoodsitem = msg;
-							console.info(msg);
+							console.info(msg+"33");
 						});
 				},
 				getServiceGoodsData() {
@@ -382,7 +382,7 @@
 						},
 						(msg) => {
 							_this.fixgoods = msg;
-							console.info(msg);
+							console.info(msg+"11");
 						});
 				},
 				getServiceMaxWid(){

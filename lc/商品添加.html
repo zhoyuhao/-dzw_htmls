@@ -6,8 +6,6 @@
 		<title></title>
 
 		<link rel="stylesheet" href="../css/bootstrap.min.css" />
-		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
-		<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
 
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
 		<style>
@@ -19,77 +17,75 @@
 
 	<body>
 		<div id="sss">
-			<el-form :model="staff" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-				<el-form-item label="商品编号" prop="gid">
-					<el-col :span="12">
-						<el-input v-model="staff.gid" placeholder="请输入"></el-input>
-					</el-col>
-				</el-form-item>
-				<el-form-item label="商品姓名" prop="gname">
-					<el-col :span="12">
-						<el-input v-model="staff.gname" placeholder="请输入"></el-input>
-					</el-col>
-				</el-form-item>
-				<el-form-item label="商品价格" prop="ghsid">
-					<el-col :span="12">
 
-						<el-select v-model="staff.ghsid">
-							<el-option v-for="item in ssh" :key="item.ghsid" :value="item.ghsid">
+			<el-form :model="staff" :inline="true" :rules="rules" ref="ruleForm" label-width="100px" class="demo-form-inline">
+				<el-form-item label="商品编号">
+					<el-input v-model="staff.gid" style="width: 250px;"></el-input>
+				</el-form-item>
+				<el-form-item label="商品姓名" placeholder="请输入姓名" prop="gname">
+
+					<el-input v-model="staff.gname" style="width: 250px;"></el-input>
+
+				</el-form-item>
+
+				<el-form-item label="出产日期" required>
+
+					<el-form-item prop="gtime">
+						<el-date-picker type="date" placeholder="请输入" v-model="staff.gtime" style="width: 240px;"></el-date-picker>
+					</el-form-item>
+
+				</el-form-item>
+
+				<el-form-item label="商品型号" prop="gprice">
+
+					<el-input v-model="staff.gprice" placeholder="请输入商品型号" style="width: 250px;"></el-input>
+
+				</el-form-item>
+				<el-form-item label="供货商编号" prop="ghsid">
+
+					<el-select v-model="staff.ghsid">
+							<el-option v-for="item in ssh" :label="item.ghsname" :value="item.ghsid" style="width: 250px;">
 							</el-option>
 						</el-select>
 
-					</el-col>
 				</el-form-item>
 
-				<el-form-item label="商品价格" prop="gprice">
-
-					<el-col :span="12">
-						<el-input v-model="staff.gprice" placeholder="请输入商品型号"></el-input>
-					</el-col>
-				</el-form-item>
-
-				<el-form-item label="商品出产日期" required>
-					<el-col :span="12">
-						<el-form-item prop="gtime">
-							<el-date-picker type="date" placeholder="请输入商品出产日期" v-model="staff.gtime" style="width: 100%;"></el-date-picker>
-						</el-form-item>
-					</el-col>
-				</el-form-item>
 				<el-form-item label="商品分类" class="gtype">
-					<el-select v-model="staff.gtype" placeholder="请选择">
+					<el-select v-model="staff.gtype" placeholder="请选择" style="width: 250px;">
 						<el-option label="发动机" value="发动机"></el-option>
 						<el-option label="车身" value="车身"></el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item label="商品品牌" class="gbrand">
-					<el-select v-model="staff.gbrand" placeholder="请选择">
+					<el-select v-model="staff.gbrand" placeholder="请选择" style="width: 250px;">
 						<el-option label="通用汽车用品品牌" value="通用汽车用品品牌"></el-option>
 						<el-option label="得力工具自营品牌" value="通用汽车用品品牌"></el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item label="适用车辆" class="gsuitable">
-					<el-select v-model="staff.gsuitable" placeholder="请选择">
+					<el-select v-model="staff.gsuitable" placeholder="请选择" style="width: 250px;">
 						<el-option label="上海大众" value="上海大众"></el-option>
 						<el-option label="红旗" value="红旗"></el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item label="商品数量" prop="gnumber">
-					<el-col :span="12">
-						<el-input v-model.number="staff.gnumber"></el-input>
-					</el-col>
+
+					<el-input v-model.number="staff.gnumber" style="width: 250px;"></el-input>
+
 				</el-form-item>
 				</el-form-item>
 
 				<el-form-item label="商品简介" prop="gdescribe">
-					<el-col :span="12">
-						<el-input type="textarea" v-model="staff.gdescribe"></el-input>
-					</el-col>
+
+					<el-input type="textarea" v-model="staff.gdescribe" style="width: 250px;"></el-input>
+
 				</el-form-item>
-				<el-form-item>
-					<el-button type="primary" @click="submitForm()">立即创建</el-button>
-					<el-button @click="resetForm('ruleForm')">重置</el-button>
+				<el-form-item style="margin: 0px auto;width: 700px; text-align: right;">
+					<el-button style="width: 150px;" type="primary" @click="submitForm()">立即创建</el-button>
+					<el-button style="width: 150px;" @click="resetForm('ruleForm')">重置</el-button>
 				</el-form-item>
 			</el-form>
+
 		</div>
 
 	</body>
@@ -132,11 +128,11 @@
 						message: '请输入商品名称',
 						trigger: 'blur'
 					}],
-					gtype: [{
+					/*gtype: [{
 						required: true,
 						message: '请选择',
 						trigger: 'change'
-					}],
+					}],*/
 					gtime: [{
 						type: 'date',
 						required: true,
@@ -152,68 +148,83 @@
 							required: true,
 							message: '请填写价格',
 							trigger: 'blur'
-						}/*,
-						{
-							type: 'number',
-							message: '必须为数字值'
-						}*/
+						}
+						/*,
+												{
+													type: 'number',
+													message: '必须为数字值'
+												}*/
 					]
 				}
 			},
 
 			methods: {
+				gysid() {
+					let _this = this;
+					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sup`, function(data) {
+						console.info(data);
+						_this.ssh = data;
+						/*$.each(data, function(i,obj) {
+							var a=$("#sel").html();
+							alert(a);
+							  $("#sel").append('<option value="' + obj.ghsid + '">' + obj.ghsid + '</option>')
+								
+						});*/
+					})
+				},
 				goodsByid() {
 					let _this = this;
-			
+
 					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/ids/${_this.gid}`, function(date) {
 						_this.staff = date;
+						console.info(date);
 					});
 				},
 				submitForm() {
 					let _this = this;
-						this.$refs['ruleForm'].validate(valid => {
-							if(valid) {
-								//验证通过
-								//自定义加载块
-								const loading = this.$loading({
-									lock: true,
-									text: '努力更新中....',
-									spinner: 'el-icon-loading',
-									background: 'rgba(0, 0, 0, 0.5)'
-								});
-								//延迟2秒，模拟网络延迟
-								setTimeout(() => {
-									$.ajax('http://localhost:8080/lc/api/Goods/addGoods', {
-										type: 'post',
-										data: JSON.stringify(this.staff),
-										dataType: 'json',
-										contentType: 'application/json',
-										success(msg) {
-											if(msg.code == "200") {
-												loading.close(); //关闭加载块【非常重要】
-												_this.$message({
-													type: 'success',
-													message: '新增成功'
-												});
-												_this.clearData(); //清除数据
-											}
+					this.$refs['ruleForm'].validate(valid => {
+						if(valid) {
+							//验证通过
+							//自定义加载块
+							const loading = this.$loading({
+								lock: true,
+								text: '努力更新中....',
+								spinner: 'el-icon-loading',
+								background: 'rgba(0, 0, 0, 0.5)'
+							});
+							//延迟2秒，模拟网络延迟
+							setTimeout(() => {
+								$.ajax('http://localhost:8080/lc/api/Goods/addGoods', {
+									type: 'post',
+									data: JSON.stringify(this.staff),
+									dataType: 'json',
+									contentType: 'application/json',
+									success(msg) {
+										if(msg.code == "200") {
+											loading.close(); //关闭加载块【非常重要】
+											_this.$message({
+												type: 'success',
+												message: '新增成功'
+											});
+											_this.clearData(); //清除数据
 										}
-									});
-								}, 2000);
-							} else {
-								//验证失败
-								this.$alert('请按格式正确填写信息', '系统提示');
-							}
-						});
-				
+									}
+								});
+							}, 2000);
+						} else {
+							//验证失败
+							this.$alert('请按格式正确填写信息', '系统提示');
+						}
+					});
+
 				},
 				resetForm(formName) {
 					this.$refs[formName].resetFields();
 				}
 			},
 			mounted() {
-			
-			
+			let _this=this;
+			_this.gysid();
 
 			}
 		})
