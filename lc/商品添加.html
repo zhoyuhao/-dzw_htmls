@@ -20,18 +20,18 @@
 
 			<el-form :model="staff" :inline="true" :rules="rules" ref="ruleForm" label-width="100px" class="demo-form-inline">
 				<el-form-item label="商品编号">
-					<el-input v-model="staff.gid" style="width: 250px;"></el-input>
+					<el-input v-model="staff.gid"  :disabled="true" style="width: 250px;"></el-input>
 				</el-form-item>
-				<el-form-item label="商品姓名" placeholder="请输入姓名" prop="gname">
+				<el-form-item label="商品名称" placeholder="请输入姓名" prop="gname">
 
 					<el-input v-model="staff.gname" style="width: 250px;"></el-input>
 
 				</el-form-item>
 
-				<el-form-item label="出产日期" required>
+				<el-form-item label="出产日期" required >
 
-					<el-form-item prop="gtime">
-						<el-date-picker type="date" placeholder="请输入" v-model="staff.gtime" style="width: 240px;"></el-date-picker>
+					<el-form-item prop="gtime" style="width: 242px;">
+						<el-date-picker type="date" placeholder="请输入" v-model="staff.gtime" style="width: 250px;"></el-date-picker>
 					</el-form-item>
 
 				</el-form-item>
@@ -41,9 +41,10 @@
 					<el-input v-model="staff.gprice" placeholder="请输入商品型号" style="width: 250px;"></el-input>
 
 				</el-form-item>
-				<el-form-item label="供货商编号" prop="ghsid">
+				<el-form-item label="供货商名称" prop="ghsid">
 
-					<el-select v-model="staff.ghsid">
+					<el-select v-model="staff.ghsid"  style="width: 250px;">
+						
 							<el-option v-for="item in ssh" :label="item.ghsname" :value="item.ghsid" style="width: 250px;">
 							</el-option>
 						</el-select>
@@ -51,16 +52,18 @@
 				</el-form-item>
 
 				<el-form-item label="商品分类" class="gtype">
-					<el-select v-model="staff.gtype" placeholder="请选择" style="width: 250px;">
+					<el-select v-model="staff.gtype" placeholder="请选择" @change="typechange" style="width: 250px;">
 						<el-option label="发动机" value="发动机"></el-option>
-						<el-option label="车身" value="车身"></el-option>
+						<el-option label="其他" value="其他"></el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item label="商品品牌" class="gbrand">
-					<el-select v-model="staff.gbrand" placeholder="请选择" style="width: 250px;">
+				
+					<el-select v-if="bool" v-model="staff.gbrand" placeholder="请选择" style="width: 250px;">
 						<el-option label="通用汽车用品品牌" value="通用汽车用品品牌"></el-option>
 						<el-option label="得力工具自营品牌" value="通用汽车用品品牌"></el-option>
 					</el-select>
+					<el-input v-if="bool==true?false:true" v-model.number="staff.gbrand" style="width: 250px;"></el-input>
 				</el-form-item>
 				<el-form-item label="适用车辆" class="gsuitable">
 					<el-select v-model="staff.gsuitable" placeholder="请选择" style="width: 250px;">
@@ -86,8 +89,7 @@
 				</el-form-item>
 			</el-form>
 
-		</div>
-
+	</div>
 	</body>
 	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
 	<script type="text/javascript" src="../js/vue.js"></script>
@@ -97,6 +99,7 @@
 		var yggl = new Vue({
 			el: "#sss",
 			data: {
+				bool:true,
 				gid: null,
 				ssh: [],
 				staff: {
@@ -159,6 +162,11 @@
 			},
 
 			methods: {
+				//判断否是发动机添加
+				typechange(val){
+					this.staff.gbrand="";
+					this.bool=val=="其他"?false:true;
+				},
 				gysid() {
 					let _this = this;
 					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sup`, function(data) {
@@ -213,7 +221,7 @@
 							}, 2000);
 						} else {
 							//验证失败
-							this.$alert('请按格式正确填写信息', '系统提示');
+							//this.$alert('请按格式正确填写信息', '系统提示');
 						}
 					});
 
