@@ -24,7 +24,7 @@
 					<el-input v-model="summary"></el-input>
 				</el-form-item>
 			</el-form>
-			<div style="text-align: right;">
+			<div style="text-align: center;">
 				<el-button @click="addBill">保存</el-button>
 				<el-button @click="qu">取消</el-button>
 			</div>
@@ -79,7 +79,7 @@
 							url: `http://127.0.0.1:8080/ljn/api/ljnlegworkAction/update`,
 							success: function(res) {
 								if(res != 0) {
-									alert("接车成功");
+									_this.$alert("接车成功");
 									legworkApp.query(1, 9, "未出车");
 									legworkApp.isshow3 = false;
 								}

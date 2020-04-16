@@ -8,7 +8,6 @@
 		<link rel="stylesheet" href="../css/index.css" />
 		<script type="text/javascript" src="../js/xadmin.js"></script>
 	</head>
-
 	<body>
 		<div id="personAdd" style="width: 70%;margin: 0 auto;">
 			<el-form style="width: 70%;margin: 0 auto;" :inline="true" label-position="left" label-width="100px" style="text-align: center;">
@@ -23,7 +22,7 @@
 				<el-form-item label="联系电话:">
 					<el-input v-model="pphone"></el-input>
 				</el-form-item>
-				<div style="text-align: right;">
+				<div style="text-align:  center;">
 					<el-button @click="add(pid,pname,pphone)">保存</el-button>
 					<el-button @click="qu">取消</el-button>
 				</div>
@@ -56,7 +55,7 @@
 							//新增员工信息
 							$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/add/${pid}/${pname}/${pphone}`, function(res) {
 								if(res > 0) {
-									alert("新增成功")
+									_this.$alert("新增成功");
 									legworkApp.isshow1 = false;
 									legworkApp.query(1, 9, "null");
 								}

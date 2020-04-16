@@ -132,7 +132,7 @@
 					if(confirm("是否删除")) {
 						$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/remove/${id}`, function(res) {
 							if(res > 0) {
-								alert("删除成功")
+								_this.$alert("删除成功")
 								_this.query(1,this.page.pageSize, "null");
 							}
 						});
