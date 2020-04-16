@@ -21,7 +21,8 @@
 				<el-form-item label="员工编号" prop="pId" :disabled="true">
 						<el-input v-model="staff.pId" placeholder="请输入" style="width: 250px;"></el-input>
 				</el-form-item>
-				<el-form-item label="技工班组" prop="bzId">
+				<!--修改-->
+				<el-form-item label="岗位" prop="bzId">
 					<el-select v-model="staff.bzId">
 							<el-option v-for="item in jg" :label="item.bzname" :value="item.bzId" style="width: 250px;">
 							</el-option>
@@ -42,6 +43,7 @@
 					<el-form-item label="员工联系号码" prop="pphone">
 						<el-input v-model="staff.pphone" style="width: 250px;"></el-input>
 				</el-form-item>
+				<!--客户增加 角色和岗位-->
 				<el-form-item label="员工地址" prop="paddress">
 						<el-input v-model="staff.paddress" style="width: 250px;"></el-input>
 				</el-form-item>

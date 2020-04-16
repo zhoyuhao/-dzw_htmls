@@ -4,22 +4,46 @@
 	<head>
 		<meta charset="utf-8">
 		<title>获取当前时间所在周的日期</title>
-			<link rel="stylesheet" href="../css/bootstrap.min.css" />
+		<link rel="stylesheet" href="../css/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
 		<style>
-			div{
+			div {
 				width: 200px;
 				height: 100px;
-				border: 1px solid rgb(255,0,0);
+				border: 1px solid rgb(255, 0, 0);
 			}
 		</style>
 	</head>
 
 	<body>
-		
-		
-		<div >
-			
+
+		<div id="sl">
+			<el-form :model="form" :rules="formRules" ref="form">
+				<el-form-item label="类型">
+					<el-select v-model="form.typeChanges">
+						<el-option label="表结构变更" value="tableChange"></el-option>
+						<el-option label="接口变更" value="interfaceChange"></el-option>
+						<el-option label="软件升级" value="softChange"></el-option>
+						<el-option label="其他" value="otherChange"></el-option>
+					</el-select>
+				</el-form-item>
+				<!--//判断条件一：当下拉选中【表结构变更】，即显示以下界面-->
+				<div v-if="form.typeChanges=='tableChange'">
+					<el-form-item label="表名：">
+						<el-input v-model="form.tableName" class="col-sm-8"></el-input>
+					</el-form-item>
+					<el-form-item label="建表SQL：">
+						<el-input type="textarea" v-model="form.createSql" class="col-sm-8"></el-input>
+					</el-form-item>
+				</div>
+				<!--//判断条件二：当下拉选中【接口变更】，即显示以下界面-->
+				<div v-if="form.typeChanges=='interfaceChange'">
+					<el-form-item label="接口名：">
+						<el-input v-model="form.interfaceName" class="col-sm-8"></el-input>
+					</el-form-item>
+				</div>
+			</el-form>
+
 		</div>
 	</body>
 	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
@@ -27,6 +51,22 @@
 	<script type="text/javascript" src="../js/index.js"></script>
 	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
 	<script type="text/javascript" src="../js/dialog.js"></script>
-	
+	<script>
+		var sl = new Vue({
+			el: "#sl",
+			data: {
+				form: {
+					typeChanges: '',
+					tableName: '',
+					interfaceName: '',
+					createSql: '',
+				},
+				//表单验证规则
+				formRules: {
+
+				}
+			}
+		})
+	</script>
 
 </html>
