@@ -68,7 +68,7 @@
 							url: `http://127.0.0.1:8080/ljn/api/ljnCustomercarAction/add`,
 							success: function(res) {
 							if(res!=0){
-							alert("新增成功");
+							_this.$alert("新增成功");
 							xadmin.close();
 							carApp.query(1, "null");
 							}

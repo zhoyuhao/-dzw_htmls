@@ -79,7 +79,7 @@
 							url: `http://127.0.0.1:8080/ljn/api/ljnlegworkAction/update`,
 							success: function(res) {
 								if(res != 0) {
-									alert("接车成功");
+									_this.$alert("接车成功");
 									legworkApp.query(1, 9, "未出车");
 									legworkApp.isshow3 = false;
 								}

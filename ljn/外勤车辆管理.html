@@ -150,7 +150,7 @@
 					if(confirm("是否删除")) {
 						$.getJSON(`http://localhost:8080/ljn/api/ljnlegworkAction/delete/${legworkid}`, function(res) {
 							if(res > 0) {
-								alert("删除成功")
+								_this.$alert("删除成功")
 								_this.query(1, _this.page.pageSize, _this.activeName)
 							}
 						});
@@ -188,7 +188,7 @@
 								url: `http://127.0.0.1:8080/ljn/api/ljnlegworkAction/update`,
 								success: function(res) {
 									if(res != 0) {
-										alert("还车成功");
+										_this.$alert("还车成功");
 										_this.query(1, _this.page.pageSize, "已出车");
 									}
 								}

@@ -72,7 +72,7 @@
 							url: `http://127.0.0.1:8080/ljn/api/ljnlegworkAction/insert`,
 							success: function(res) {
 								if(res != 0) {
-									alert("新增成功");
+									_this.$alert("新增成功");
 									legworkApp.query(1, 9, "未出车");
 									legworkApp.isshow1 = false;
 								}

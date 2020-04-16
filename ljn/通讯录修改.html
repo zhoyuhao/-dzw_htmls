@@ -58,7 +58,7 @@
 									url: `http://127.0.0.1:8080/ljn/api/ljnUserphoneAction/update`,
 									success: function(res) {
 										if(res != 0) {
-											alert("修改成功");
+											_this.$alert("修改成功");
 											personApp.isshow2 = false;
 											personApp.query(1, 9, "null");
 										}
