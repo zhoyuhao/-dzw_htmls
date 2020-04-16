@@ -26,8 +26,8 @@
 				<div class="layui-col-md12">
 					<div class="layui-card">
 						<el-form :inline="true" :model="goods" class="demo-form-inline" align="center">
-							<el-form-item label="徳召文员工管理" style="margin-left: 10ex;">
-								<el-input v-model="goods.pname" size="mini" placeholder='商品名称 '></el-input>
+							<el-form-item label="请输入员工名称" style="margin-left: 10ex;">
+								<el-input v-model="goods.pname" size="mini" placeholder='员工名称 '></el-input>
 
 							</el-form-item>
 							<el-form-item>
@@ -52,15 +52,13 @@
 										</el-table-column>
 										<el-table-column prop="pname" align="center" label="员工姓名" width="120">
 										</el-table-column>
-										<el-table-column prop="gangwei" align="center" label="所属部门" width="120">
-										</el-table-column>
 										<el-table-column prop="psex" align="center" label="性别" width="120">
 										</el-table-column>
 										<el-table-column prop="peducational" align="center" label="学历" width="120">
 										</el-table-column>
 										<el-table-column prop="pphone" align="center" label="联系电话" width="180">
 										</el-table-column>
-										<el-table-column prop="juesename" align="center" label="员工角色" width="180">
+										<el-table-column prop="cname" align="center" label="员工角色" width="180">
 										</el-table-column>
 										<el-table-column label="操作" align="center">
 											<template slot-scope="temp">
@@ -78,8 +76,7 @@
 							<div style="text-align: center;">
 								<template>
 									<div class="block">
-
-										<el-pagination v-if="pageInfo.total!=0" :background="true" :pager-count="4" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[6,3,2]" layout="total, sizes, prev, pager, next, jumper">
+										<el-pagination v-if="pageInfo.total!=0" :background="true" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[6,3,2]" layout="total, sizes, prev, pager, next, jumper">
 										</el-pagination>
 									</div>
 								</template>
@@ -88,7 +85,7 @@
 						<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="商品资料添加" :visible.sync="isshow1" width="900px" :before-close="handleClose">
 							<div id="cnt1"></div>
 						</el-dialog>
-							<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="商品资料修改" :visible.sync="isshow2" width="900px" :before-close="handleClose">
+						<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="商品资料修改" :visible.sync="isshow2" width="900px" :before-close="handleClose">
 							<div id="cnt2"></div>
 						</el-dialog>
 					</div>
@@ -107,49 +104,41 @@
 			el: "#yggl",
 			data: {
 				isshow1: false,
-				isshow2:false,
-				goods:{
-					pname:null
-			         },
+				isshow2: false,
+				goods: {
+					pname: null
+				},
 				pageInfo: [],
 				currentPage4: 1,
-				
+
 				multipleSelection: []
 			},
 			methods: {
 				//添加员工
-				addyg(){
+				addyg() {
 					this.isshow1 = true;
-				},	
-				names(){
-					this.lcgoTopage(1, 2,this.goods.pname);
+				},
+				names() {
+					this.lcgoTopage(1, this.pageInfo.pageSize, this.goods.pname);
 				},
 				handleSizeChange(val) {
-
-					this.lcgoTopage(this.pageInfo.pageNum,val,this.goods.pname);
+					this.currentPage4=1;
+					this.lcgoTopage(this.currentPage4, val, this.goods.pname);
 
 				},
 				handleCurrentChange(val) {
-					this.lcgoTopage(val, this.pageInfo.pageSize,this.goods.pname);
+					this.lcgoTopage(val, this.pageInfo.pageSize, this.goods.pname);
 				},
-				lcgoTopage(p, s,pname) {
+				lcgoTopage(p, s, pname) {
 					let _this = this;
-					if(pname==""){
-						pname=null;
-					$.getJSON(`http://127.0.0.1:8080/lc/api/lcpersonnels/${p}/${s}/${pname}`, function(page) {
-						_this.pageInfo = page;
-						console.info(page);
-						});
-					}else{
+					pname=pname==""?'null':pname;
 						$.getJSON(`http://127.0.0.1:8080/lc/api/lcpersonnels/${p}/${s}/${pname}`, function(page) {
-						_this.pageInfo = page;
-						console.info(page);
+							_this.pageInfo = page;
+							_this.currentPage4=page.pageNum;
+							
 						});
-					}
-
-					
 				},
-				shanchu(pId){
+				shanchu(pId) {
 					let _this = this;
 					this.$confirm('是否移除商品信息?', '系统提示', {
 						confirmButtonText: '确定',
@@ -167,7 +156,7 @@
 										type: 'success',
 										message: '删除成功!'
 									});
-									_this.lcgoTopage(1,2,_this.goods.pname);
+									_this.lcgoTopage(1, 2, _this.goods.pname);
 								}
 							}
 						});
@@ -179,10 +168,10 @@
 					});
 				},
 				xiugai(gid) {
-				this.isshow2 = true;
-				sessionStorage.setItem('iss', gid);
-				
-			},
+					this.isshow2 = true;
+					sessionStorage.setItem('iss', gid);
+
+				},
 				handlerOpen1() {
 					$("#cnt1").load('员工管理添加.html'); //ajax读取页面
 				},
@@ -192,7 +181,7 @@
 			},
 			mounted() {
 				let _this = this; //非常重要
-				_this.lcgoTopage(1, 2,_this.goods.pname);
+				_this.lcgoTopage(1, 2, _this.goods.pname);
 			}
 		})
 	</script>

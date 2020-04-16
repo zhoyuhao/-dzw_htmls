@@ -5,8 +5,6 @@
 		<meta charset="UTF-8">
 		<title>商品资料管理</title>
 		<meta name="renderer" content="webkit">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
 		<link rel="stylesheet" href="../css/font.css">
 		<link rel="stylesheet" href="../css/xadmin.css">
 		<script src="../lib/layui/layui.js" charset="utf-8"></script>
@@ -117,23 +115,86 @@
 								<template>
 									<div class="block">
 
-										<el-pagination v-if="pageInfo.total!=0" :background="true"
-											  @size-change="handleSizeChange" 
-											  @current-change="handleCurrentChange" 
-											  :current-page="currentPage4" 
-											  :page-size="pageInfo.pageSize" 
-											  :total="pageInfo.total"
-											   :page-sizes="[6,3,2]" layout="total, sizes, prev, pager, next, jumper">
+										<el-pagination v-if="pageInfo.total!=0" :background="true" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[6,3,2]" layout="total, sizes, prev, pager, next, jumper">
 										</el-pagination>
 									</div>
 								</template>
 							</div>
 						</div>
 
-						<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="商品资料添加" :visible.sync="isshow1" width="900px" :before-close="handleClose">
-							<div id="cnt1"></div>
+						<el-dialog title="商品资料添加" :visible.sync="isshow1" width="900px" :before-close="handleClose">
+							<template>
+								<el-form :model="staff" :inline="true" :rules="rules" ref="ruleForm" label-width="100px" class="demo-form-inline">
+									<el-form-item label="商品编号">
+										<el-input v-model="staff.gid" :disabled="true" style="width: 250px;"></el-input>
+									</el-form-item>
+									<el-form-item label="商品名称" placeholder="请输入姓名" prop="gname">
+
+										<el-input v-model="staff.gname" style="width: 250px;"></el-input>
+
+									</el-form-item>
+
+									<el-form-item label="出产日期" required>
+
+										<el-form-item prop="gtime" style="width: 242px;">
+											<el-date-picker type="date" placeholder="请输入" v-model="staff.gtime" style="width: 250px;"></el-date-picker>
+										</el-form-item>
+
+									</el-form-item>
+
+									<el-form-item label="商品价格" prop="gprice">
+
+										<el-input v-model.number="staff.gprice" placeholder="请输入价格" style="width: 250px;"></el-input>
+
+									</el-form-item>
+									<el-form-item label="供货商名称" prop="ghsid">
+
+										<el-select v-model="staff.ghsid" style="width: 250px;">
+
+											<el-option v-for="item in ssh" :label="item.ghsname" :value="item.ghsid" style="width: 250px;">
+											</el-option>
+										</el-select>
+
+									</el-form-item>
+
+									<el-form-item label="商品分类" class="gtype">
+										<el-select v-model="staff.gtype" placeholder="请选择" @change="typechange" style="width: 250px;">
+											<el-option label="发动机" value="发动机"></el-option>
+											<el-option label="其他" value="其他"></el-option>
+										</el-select>
+									</el-form-item>
+									<el-form-item label="商品品牌" class="gbrand">
+
+										<el-select v-if="bool" v-model="staff.gbrand" placeholder="请选择" style="width: 250px;">
+											<el-option v-for="item in pp" :label="item.ename" :value="item.eid" style="width: 250px;">
+											</el-option>
+										</el-select>
+										<el-input v-if="bool==true?false:true" v-model="staff.ename" style="width: 250px;"></el-input>
+									</el-form-item>
+
+									<el-form-item label="适用车辆" class="gsuitable">
+										<el-select v-model="staff.gsuitable" placeholder="请选择" style="width: 250px;">
+											<el-option label="上海大众" value="上海大众"></el-option>
+											<el-option label="红旗" value="红旗"></el-option>
+										</el-select>
+									</el-form-item>
+									<el-form-item label="商品数量" prop="gnumber">
+
+										<el-input v-model.number="staff.gnumber" style="width: 250px;"></el-input>
+
+									</el-form-item>
+
+									<el-form-item label="商品简介" prop="gdescribe">
+										<el-input type="textarea" v-model="staff.gdescribe" style="width: 250px;"></el-input>
+									</el-form-item>
+									<el-form-item style="margin: 0px auto;width: 700px; text-align: right;">
+										<el-button style="width: 150px;" type="primary" @click="submitForm()">立即创建</el-button>
+										<el-button style="width: 150px;" @click="resetForm()">取消</el-button>
+									</el-form-item>
+								</el-form>
+							</template>
 						</el-dialog>
-							<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="商品资料修改" :visible.sync="isshow2" width="900px" :before-close="handleClose">
+						<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="商品资料修改" :visible.sync="isshow2" width="900px" :before-close="handleClose">
 							<div id="cnt2"></div>
 						</el-dialog>
 
@@ -152,9 +213,70 @@
 		var yggl = new Vue({
 			el: "#yggl",
 			data: {
+				bool: true,
+				gid: null,
+				pp: [],
+				ssh: [],
+				staff: {
+					gid: '',
+					ghsid: '',
+					gname: '',
+					gtime: '',
+					gprice: '',
+					gbrand: "",
+					gsuitable: '',
+					gtype: '',
+					gdescribe: '',
+					gnumber: '',
+				},
+				rules: {
+					gid: [{
+						required: true,
+						message: '请输入商品编号',
+						trigger: 'blur'
+					}],
+					ghsid: [{
+						required: true,
+						message: '请选择',
+						trigger: 'change'
+					}],
+
+					gname: [{
+						required: true,
+						message: '请输入商品名称',
+						trigger: 'blur'
+					}],
+					/*gtype: [{
+						required: true,
+						message: '请选择',
+						trigger: 'change'
+					}],*/
+					gtime: [{
+						type: 'date',
+						required: true,
+						message: '请选择日期',
+						trigger: 'change'
+					}],
+					gsuitable: [{
+						required: true,
+						message: '请填写',
+						trigger: 'blur'
+					}],
+					gprice: [{
+							required: true,
+							message: '请填写价格',
+							trigger: 'blur'
+						}
+						/*,
+												{
+													type: 'number',
+													message: '必须为数字值'
+												}*/
+					]
+				},
 				activeName: "first",
 				isshow1: false,
-				isshow2:false,
+				isshow2: false,
 				goods: {
 					gname: ''
 				},
@@ -175,12 +297,124 @@
 					gnumber: '',
 					lcSupplier: []
 				}]
-				
+
 			},
 			methods: {
+				
+				goodsByid() {
+					let _this = this;
 
+					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/ids/${_this.gid}`, function(date) {
+						_this.staff = date;
+					});
+				},
+				submitForm() {
+					let _this = this;
+
+					$.ajax(`http://127.0.0.1:8080/lc/api/Goods/modeil`, {
+						type: "put",
+						contentType: "application/json",
+						data: JSON.stringify(_this.staff),
+						dataType: "json",
+						success(date) {
+							if(date.code == "200") {
+								_this.$message(date.msg);
+
+							} else {
+								_this.$message(date.msg);
+							}
+						}
+					});
+				},
 				resetForm(formName) {
 					this.$refs[formName].resetFields();
+				},
+				gysid() {
+					let _this = this;
+					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sup`, function(data) {
+						console.info(data);
+						_this.ssh = data;
+						/*$.each(data, function(i,obj) {
+							var a=$("#sel").html();
+							alert(a);
+							  $("#sel").append('<option value="' + obj.ghsid + '">' + obj.ghsid + '</option>')
+								
+						});*/
+					})
+				},
+				//查询所有发动机品牌
+				ss() {
+					let _this = this;
+					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sss`, function(data) {
+						_this.pp = data;
+					});
+				},
+				//判断否是发动机添加
+				typechange(val) {
+					this.staff.gbrand = "";
+					this.bool = val == "其他" ? false : true;
+				},
+				gysid() {
+					let _this = this;
+					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sup`, function(data) {
+						console.info(data);
+						_this.ssh = data;
+						/*$.each(data, function(i,obj) {
+							var a=$("#sel").html();
+							alert(a);
+							  $("#sel").append('<option value="' + obj.ghsid + '">' + obj.ghsid + '</option>')
+								
+						});*/
+					})
+				},
+				goodsByid() {
+					let _this = this;
+
+					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/ids/${_this.gid}`, function(date) {
+						_this.staff = date;
+						console.info(date);
+					});
+				},
+				submitForm() {
+					let _this = this;
+
+					this.$refs['ruleForm'].validate(valid => {
+						if(valid) {
+							//验证通过
+							//自定义加载块
+							const loading = this.$loading({
+								lock: true,
+								text: '努力更新中....',
+								spinner: 'el-icon-loading',
+								background: 'rgba(0, 0, 0, 0.5)'
+							});
+							//延迟2秒，模拟网络延迟
+							setTimeout(() => {
+								$.ajax('http://localhost:8080/lc/api/Goods/addGoods', {
+									type: 'post',
+									data: JSON.stringify(this.staff),
+									dataType: 'json',
+									contentType: 'application/json',
+									success(msg) {
+										if(msg.code == "200") {
+											loading.close(); //关闭加载块【非常重要】
+											_this.$message({
+												type: 'success',
+												message: '新增成功'
+											});
+											_this.clearData(); //清除数据
+										}
+									}
+								});
+							}, 2000);
+						} else {
+							//验证失败
+							//this.$alert('请按格式正确填写信息', '系统提示');
+						}
+					});
+				},
+				resetForm(formName) {
+					this.isshow1=false;
 				},
 				addgoods() {
 					this.isshow1 = true;
@@ -189,7 +423,7 @@
 					this.lcgoTopage(1, this.pageInfo.pageSize, this.goods.gname);
 				},
 				handleSizeChange(val) {
-					this.currentPage4=1;
+					this.currentPage4 = 1;
 					this.lcgoTopage(this.currentPage4, val, this.goods.gname);
 
 				},
@@ -198,12 +432,12 @@
 				},
 				lcgoTopage(p, s, gname) {
 					let _this = this;
-						gname=gname==""?'null':gname;
-						$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/${p}/${s}/${gname}`, function(page) {
-							_this.pageInfo = page;
-							_this.currentPage4=page.pageNum;
-						});
-					
+					gname = gname == "" ? 'null' : gname;
+					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/${p}/${s}/${gname}`, function(page) {
+						_this.pageInfo = page;
+						_this.currentPage4 = page.pageNum;
+					});
+
 				},
 				shanchu(pid) {
 					let _this = this;
@@ -251,17 +485,19 @@
 						})
 						.catch(_ => {});
 				},
-				handlerOpen1() {
-					$("#cnt1").load('商品添加.html'); //ajax读取页面
-				},
+
 				handlerOpen2() {
 					$("#cnt2").load('商品修改.html'); //ajax读取页面
 				},
 			},
 			mounted() {
 				let _this = this; //非常重要
+				_this.gysid();
+				_this.ss();
+				var date = new Date();
+					now = date.getFullYear() + "" + (date.getMonth() + 1) + "" + date.getDate() + "" + date.getHours() + "" + date.getMinutes() + "" + date.getSeconds();
+					_this.staff.gid=now;
 				_this.lcgoTopage(1, 6, this.goods.gname);
-				
 
 			}
 		})

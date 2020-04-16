@@ -18,15 +18,12 @@
 	<body>
 		<div id="ygadd">
 			<el-form :model="staff" :inline="true" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm.inline">
-				<el-form-item label="员工编号" prop="pId" :disabled="true">
-						<el-input v-model="staff.pId" placeholder="请输入" style="width: 250px;"></el-input>
+				<el-form-item label="员工编号"   prop="pId" >
+						<el-input v-model="staff.pId" :disabled="true" placeholder="请输入" style="width: 250px;"></el-input>
 				</el-form-item>
-				<!--修改-->
-				<el-form-item label="岗位" prop="bzId">
-					<el-select v-model="staff.bzId">
-							<el-option v-for="item in jg" :label="item.bzname" :value="item.bzId" style="width: 250px;">
-							</el-option>
-						</el-select>
+				<!--修改为岗位-->
+				<el-form-item label="岗位" prop="gwname">
+						<el-input v-model="staff.gwname" placeholder="请输入" style="width: 250px;"></el-input>
 				</el-form-item>
 				<el-form-item label="员工名称" prop="pname">
 						<el-input v-model="staff.pname" placeholder="请输入" style="width: 250px;"></el-input>
@@ -38,14 +35,26 @@
 					</el-radio-group>
 				</el-form-item>
 					<el-form-item label="员工学历" prop="peducational">
-						<el-input v-model="staff.peducational" style="width: 250px;"></el-input>
+						<el-select v-model="staff.peducational"style="width: 250px;">
+							<el-option label="本科" value="本科" >
+							</el-option>
+							<el-option label="专科" value="专科">
+							</el-option>
+						</el-select>
+						
 				</el-form-item>
-					<el-form-item label="员工联系号码" prop="pphone">
+					<el-form-item label="联系号码" prop="pphone">
 						<el-input v-model="staff.pphone" style="width: 250px;"></el-input>
 				</el-form-item>
 				<!--客户增加 角色和岗位-->
 				<el-form-item label="员工地址" prop="paddress">
 						<el-input v-model="staff.paddress" style="width: 250px;"></el-input>
+				</el-form-item>
+				<el-form-item label="角色" prop="cid" >
+					<el-select v-model="staff.cid" style="width: 250px;">
+							<el-option v-for="item in js" :label="item.cname" :value="item.cid">
+							</el-option>
+						</el-select>
 				</el-form-item>
 				<el-form-item label="员工密码" prop="ppwd">
 						<el-input v-model="staff.ppwd" style="width: 250px;"></el-input>
@@ -63,7 +72,7 @@
 				</el-form-item>-->
 				<el-form-item style="margin: 0px auto;width: 700px; text-align: right;">
 					<el-button style="width: 150px;" type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-					<el-button style="width: 150px;" @click="resetForm('ruleForm')">重置</el-button>
+					<el-button style="width: 150px;" @click="resetForm('ruleForm')">取消</el-button>
 				</el-form-item>
 			</el-form>
 
@@ -79,6 +88,7 @@
 			el: "#ygadd",
 			data: {
 				jg:[],
+				js:[],
 				pid:null,
 				staff: {
 					pId: '',
@@ -92,7 +102,10 @@
 					pidcard:'',
 					pstatic:'',
 					ppwd:'',
-					ppost:''
+					ppost:'',
+					gwname:'',
+					cid:''
+
 				},
 				rules: {
 					pId: [{
@@ -117,7 +130,7 @@
 			methods: {
 				submitForm(formName) {
 					let _this=this;
-					alert(_this.jg.bzId);
+					_this.staff.ppost=_this.staff.cid;
 					this.$refs[formName].validate((valid) => {
 						if(valid) {
 							$.ajax(`http://127.0.0.1:8080/lc/api/lcpersonnels/addGoods`, {
@@ -146,19 +159,21 @@
 				//提供的班组和职位
 				jgbz(){
 					let _this=this;
-					$.getJSON(`http://127.0.0.1:8080/lc/api/workergroups`, function(date) {
-						_this.jg = date;
-						console.info(_this.jg);
-		
-					});
+	
 					$.getJSON(`http://127.0.0.1:8080/lc/api/workergroups/zw`, function(date) {
 						_this.jg = date;
 					});
-			
+					$.getJSON(`http://127.0.0.1:8080/lc/api/lcRoles/ssb`, function(date) {
+						_this.js = date;
+					});
+
 				}
 			},
 			mounted() {
 				let _this=this;
+				var date = new Date();
+					now = date.getFullYear() + "" + (date.getMonth() + 1) + "" + date.getDate() + "" + date.getHours() + "" + date.getMinutes() + "" + date.getSeconds();
+					_this.staff.pId=now;
 				_this.jgbz();
 			}
 		});
