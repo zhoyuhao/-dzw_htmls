@@ -6,37 +6,36 @@
 		<title></title>
 		<link href="../css/style.css" rel="stylesheet" type="text/css">
 		<link rel="stylesheet" href="../css/index.css" />
+		<script type="text/javascript" src="../js/xadmin.js"></script>
 	</head>
 
 	<body>
-		<div id="addApp" style="width: 80%;margin: 0 auto;">
-			<h2 style="text-align: center;">车辆信息添加</h2>
+		<div id="updateApp" style="width: 80%;margin: 0 auto;">
 			<el-form style="width: 70%;margin: 0 auto;" :inline="true" label-position="left" label-width="100px" :model="bill" style="text-align: center;">
-				<el-form-item label="车辆车牌：">
-					<el-input v-model="bill.carlicenceplate"></el-input>
+				<el-form-item label="车牌号：">
+					<el-input v-model="bill.platenumber"></el-input>
 				</el-form-item>
-				<el-form-item label="车辆品牌:">
-					<el-input v-model="bill.carbrand"></el-input>
+				<el-form-item label="品牌:">
+					<el-input v-model="bill.brand"></el-input>
 				</el-form-item>
-				<el-form-item label="车辆颜色：">
-					<el-input v-model="bill.carcolor"></el-input>
+				<el-form-item label="技工:">
+					<el-input v-model="bill.artisan"></el-input>
 				</el-form-item>
-				<el-form-item label="车辆配置：">
-					<el-input v-model="bill.carconfigure"></el-input>
+				<el-form-item label="车辆状态：">
+					<el-select v-model="bill.state" placeholder="未出车">
+						<el-option label="未出车" value="未出车" selected="selected"></el-option>
+						<el-option label="维修中" value="维修中"></el-option>
+					</el-select>
 				</el-form-item>
-				<el-form-item label="车辆产地：">
-					<el-input v-model="bill.carlocality"></el-input>
+				<el-form-item label="救援价格:">
+					<el-input v-model="bill.momey"></el-input>
 				</el-form-item>
-				<el-form-item label="车辆款式：">
-					<el-input v-model="bill.carmodel"></el-input>
-				</el-form-item>
-				
-			</el-form>
-			<div style="text-align: right;">
-				<el-button @click="add">保存</el-button>
-				<el-button onclick="xadmin.close()">取消</el-button>
-			</div>
+				<div style="text-align: center;">
+					<el-button @click="update">保存</el-button>
+					<el-button @click="qu">取消</el-button>
+				</div>
 		</div>
+
 		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
 		<script type="text/javascript" src="../js/vue.js"></script>
 		<script type="text/javascript" src="../js/index.js"></script>
@@ -45,18 +44,42 @@
 			var myDate = new Date();
 			var app = new Vue({
 				data: {
-					bill: {
-					carlicenceplate:'',
-					carbrand:'',
-					carcolor:'',
-					carconfigure:'',
-					carlocality:'',
-					carmodel:'',
-					},
+					bill: JSON.parse(window.sessionStorage.getItem("legwork")),
+					a: '',
 					activeName: 'first'
 				},
-			
-			}).$mount("#addApp");
+				methods: {
+					//修改外勤车辆信息
+					update() {
+							let _this = this;
+						if(_this.bill.platenumber==""||_this.bill.brand==""||_this.bill.artisan==""||_this.bill.momey=="") {
+							_this.$message({
+								showClose: true,
+								message: '请填写信息！',
+								type: 'error'
+							});
+						}else{
+						$.ajax({
+							type: "POST",
+							contentType: "application/json",
+							data: JSON.stringify(_this.bill),
+							url: `http://127.0.0.1:8080/ljn/api/ljnlegworkAction/update`,
+							success: function(res) {
+								if(res != 0) {
+									alert("修改成功");
+									legworkApp.query(1, 9, "未出车");
+									legworkApp.isshow2 = false;
+								}
+							}
+						});
+						}
+					},
+					qu() {
+						legworkApp.isshow2 = false;
+					},
+				},
+
+			}).$mount("#updateApp");
 		</script>
 	</body>
 

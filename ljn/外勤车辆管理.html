@@ -19,15 +19,12 @@
 	</head>
 
 	<body>
-		<div class="layui-row layui-col-space15" id="legworkApp">
-			<div class="layui-col-md12">
+		<div class="layui-fluid" id="legworkApp" >
+			<div class="layui-col-md12" >
 				<div class="layui-card">
 					<template>
 						<el-tabs v-model="activeName" type="card" @tab-click="handleClick">
 							<el-tab-pane label="未出车" name="未出车">
-								<div class="layui-card-header">
-									<el-button icon="el-icon-edit" size="mini" type="primary" onclick="xadmin.open('添加外勤车辆','外勤车辆管理添加.html',800,600)">添加</el-button>
-								</div>
 								<template>
 									<el-table :data="this.page.list" style="width: 100%">
 										<el-table-column label="车辆编号" prop="legworkid">
@@ -43,8 +40,6 @@
 										<el-table-column label="操作" width="300px">
 											<template slot-scope="temp">
 												<el-button icon="el-icon-edit" size="mini" type="primary" @click="jie(temp.row.legworkid)">接车</el-button>
-												<el-button icon="el-icon-edit" size="mini" type="primary" @click="showView(temp.row.legworkid)">编辑</el-button>
-												<el-button icon="el-icon-delete" size="mini" type="danger" @click="delInfo(temp.row.legworkid)">删除</el-button>
 											</template>
 										</el-table-column>
 									</el-table>
@@ -55,9 +50,6 @@
 								</div>
 							</el-tab-pane>
 							<el-tab-pane label="已出车" name="已出车">
-								<div class="layui-card-header">
-									<el-button icon="el-icon-edit" size="mini" type="primary" onclick="xadmin.open('添加外勤车辆','外勤车辆管理添加.html',800,600)">添加</el-button>
-								</div>
 								<template>
 									<el-table :data="this.page.list" style="width: 100%">
 										<el-table-column label="车辆编号" prop="legworkid">
@@ -73,8 +65,6 @@
 										<el-table-column label="操作" width="300px">
 											<template slot-scope="temp">
 												<el-button icon="el-icon-edit" size="mini" type="primary" @click="hai(temp.row.legworkid,temp.row.wid)">完成接车</el-button>
-												<el-button icon="el-icon-edit" size="mini" type="primary" @click="showView(temp.row.legworkid)">编辑</el-button>
-												<el-button icon="el-icon-delete" size="mini" type="danger" @click="delInfo(temp.row.legworkid)">删除</el-button>
 											</template>
 										</el-table-column>
 									</el-table>
@@ -86,9 +76,6 @@
 
 							</el-tab-pane>
 							<el-tab-pane label="维修中" name="维修中">
-								<div class="layui-card-header">
-									<el-button icon="el-icon-edit" size="mini" type="primary" onclick="xadmin.open('添加外勤车辆','外勤车辆管理添加.html',800,600)">添加</el-button>
-								</div>
 								<template>
 									<el-table :data="this.page.list" style="width: 100%">
 										<el-table-column label="车辆编号" prop="legworkid">
@@ -100,12 +87,6 @@
 										<el-table-column label="技工" prop="artisan">
 										</el-table-column>
 										<el-table-column label="状态" prop="state">
-										</el-table-column>
-										<el-table-column label="操作">
-											<template slot-scope="temp">
-												<el-button icon="el-icon-edit" size="mini" type="primary" @click="showView(temp.row.legworkid)">编辑</el-button>
-												<el-button icon="el-icon-delete" size="mini" type="danger" @click="delInfo(temp.row.legworkid)">删除</el-button>
-											</template>
 										</el-table-column>
 									</el-table>
 								</template>
@@ -119,12 +100,21 @@
 					</template>
 				</div>
 			</div>
+				<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="外勤车辆管理添加" :visible.sync="isshow1" width="60%">
+				<div id="cnt1"></div>
+			</el-dialog>
+			<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="外勤车辆管理修改" :visible.sync="isshow2" width="60%">
+				<div id="cnt2"></div>
+			</el-dialog>
+			<el-dialog :destroy-on-close="true" @opened="handlerOpen3" title="外勤车辆接车" :visible.sync="isshow3" width="52%">
+				<div id="cnt3"></div>
+			</el-dialog>
 		</div>
 	</body>
 	<script type="text/javascript" src="../js/index.js"></script>
 	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
 	<script>
-		var personApp = new Vue({
+		var legworkApp = new Vue({
 			el: '#legworkApp',
 			data: {
 				currentPage4: 1,
@@ -134,6 +124,9 @@
 					legworkid: '',
 					state: '',
 				},
+				isshow1: false,
+				isshow2: false,
+				isshow3: false,
 			},
 
 			methods: {
@@ -141,6 +134,7 @@
 				query(pageNum, pageSize, state) {
 					let _this = this;
 					$.getJSON(`http://localhost:8080/ljn/api/ljnlegworkAction/query/${pageNum}/${pageSize}/${state}`, function(res) {
+						_this.currentPage4 = res.pageNum;
 						_this.page = res;
 					});
 				},
@@ -164,16 +158,18 @@
 				},
 				//查询指定外勤车辆信息
 				showView(legworkid) {
+					let _this=this;
 					$.getJSON(`http://localhost:8080/ljn/api/ljnlegworkAction/queryid/${legworkid}`, function(res) {
 						window.sessionStorage.setItem('legwork', JSON.stringify(res));
-						xadmin.open('外勤车辆管理修改', '外勤车辆管理修改.html', 800, 600)
+						_this.isshow2 = true;
 					})
 				},
 				//前去接车
 				jie(legworkid) {
+					let _this=this;
 					$.getJSON(`http://localhost:8080/ljn/api/ljnlegworkAction/queryid/${legworkid}`, function(res) {
 						window.sessionStorage.setItem('jie', JSON.stringify(res));
-						xadmin.open('外勤车辆接车', '外勤车辆接车.html', 800, 600)
+						_this.isshow3 = true;
 					})
 				},
 				//完成接车任务
@@ -181,11 +177,8 @@
 					let _this = this;
 					if(confirm("是否确定接车成功")) {
 					//修改维修信息
-					$.getJSON(`http://localhost:8080/ljn/api/ljnServiceAction/update/${wid}`, function(res) {
-						
+					$.getJSON(`http://localhost:8080/ljn/api/ljnServiceAction/update/2/${wid}`, function(res) {
 					})
-						
-						
 						_this.bill.legworkid = legworkid;
 						_this.bill.state = "未出车",
 							$.ajax({
@@ -196,8 +189,7 @@
 								success: function(res) {
 									if(res != 0) {
 										alert("还车成功");
-										xadmin.close();
-										legworkApp.query(1, _this.page.pageSize, "未出车");
+										_this.query(1, _this.page.pageSize, "已出车");
 									}
 								}
 							});
@@ -207,13 +199,27 @@
 				handleSizeChange(val) {
 					let _this = this;
 					_this.currentPage4 = 1;
-					this.query(1, val, "null");
+					this.query(1, val, _this.activeName);
 					console.log(`每页 ${val} 条`);
 				},
 				handleCurrentChange(val) {
-					this.query(val, this.page.pageSize, "null");
+					let _this = this;
+					this.query(val, this.page.pageSize,_this.activeName);
 					console.log(`当前页: ${val}`);
-				}
+				},
+				handlerOpen1() {
+					$("#cnt1").load('外勤车辆管理添加.html'); //ajax读取页面
+				},
+				handlerOpen2() {
+					$("#cnt2").load('外勤车辆管理修改.html'); //ajax读取页面
+				},
+				handlerOpen3() {
+					$("#cnt3").load('外勤车辆接车.html'); //ajax读取页面
+				},
+				//添加外勤车辆信息
+				addClick() {
+					this.isshow1 = true;
+				},
 			},
 			mounted() {
 				let _this = this;
