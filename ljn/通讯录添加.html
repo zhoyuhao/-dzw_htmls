@@ -11,8 +11,7 @@
 
 	<body>
 		<div id="personAdd" style="width: 70%;margin: 0 auto;">
-			<h2 style="text-align: center;">通讯录添加</h2>
-			<el-form style="width: 70%;margin: 0 auto;" :inline="true" label-position="left" label-width="100px" :model="bill" style="text-align: center;">
+			<el-form style="width: 70%;margin: 0 auto;" :inline="true" label-position="left" label-width="100px" style="text-align: center;">
 				<el-form-item label="员工编号">
 					<el-select v-model="pid" placeholder="请选择">
 						<el-option v-for="item in id" :label="item.pid" :value="item.pid"></el-option>
@@ -26,7 +25,7 @@
 				</el-form-item>
 				<div style="text-align: right;">
 					<el-button @click="add(pid,pname,pphone)">保存</el-button>
-					<el-button onclick="xadmin.close()">取消</el-button>
+					<el-button @click="qu">取消</el-button>
 				</div>
 		</div>
 		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
@@ -45,29 +44,24 @@
 				methods: {
 					//新增通讯录信息
 					add(pid, pname, pphone) {
-						if(pid == "") {
-							alert("请选择员工编号")
-						} else {
-							let _this = this;
-							//查询员工编号是否存在
-							$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/count/${pid}`, function(res) {
+						let _this = this;
+						if(pname==""||pid==""||pphone=="") {
+							_this.$message({
+								showClose: true,
+								message: '请填写信息！',
+								type: 'error'
+							});
+						}else{
+						$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/count/${pid}`, function(res) {
+							//新增员工信息
+							$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/add/${pid}/${pname}/${pphone}`, function(res) {
 								if(res > 0) {
-									_this.$message({
-										duration: "3000",
-										type: 'success',
-										message: '员工编号已存在!'
-									});
-								} else {
-									//新增员工信息
-									$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/add/${pid}/${pname}/${pphone}`, function(res) {
-										if(res > 0) {
-											alert("新增成功")
-											xadmin.close();
-											personApp.query(1, 9, "null");
-										}
-									});
+									alert("新增成功")
+									legworkApp.isshow1 = false;
+									legworkApp.query(1, 9, "null");
 								}
-							})
+							});
+						})
 						}
 					},
 					//查询员工编号
@@ -76,6 +70,9 @@
 						$.getJSON(`http://localhost:8080/ljn/api/ljnPersonnelAction/query`, function(res) {
 							_this.id = res;
 						})
+					},
+					qu() {
+						personApp.isshow1 = false;
 					},
 				},
 				mounted() {

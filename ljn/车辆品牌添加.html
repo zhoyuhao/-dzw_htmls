@@ -6,26 +6,35 @@
 		<title></title>
 		<link href="../css/style.css" rel="stylesheet" type="text/css">
 		<link rel="stylesheet" href="../css/index.css" />
+		<script type="text/javascript" src="../js/xadmin.js"></script>
 	</head>
 
 	<body>
 		<div id="addApp" style="width: 80%;margin: 0 auto;">
-			<h2 style="text-align: center;">品牌添加</h2>
 			<el-form style="width: 70%;margin: 0 auto;" :inline="true" label-position="left" label-width="100px" :model="bill" style="text-align: center;">
-				<el-form-item label="品牌编号：">
-					<el-input v-model="bill.categoryid"></el-input>
+				<el-form-item label="车牌号：">
+					<el-input v-model="bill.platenumber"></el-input>
 				</el-form-item>
-				<el-form-item label="品牌名称:">
-					<el-input v-model="bill.title"></el-input>
+				<el-form-item label="品牌:">
+					<el-input v-model="bill.brand"></el-input>
 				</el-form-item>
-				<el-form-item label="品牌首字母：">
-					<el-input v-model="bill.summary"></el-input>
+				<el-form-item label="技工:">
+					<el-input v-model="bill.artisan"></el-input>
 				</el-form-item>
-			</el-form>
-			<div style="text-align: right;">
-				<el-button @click="addBill">保存</el-button>
-				<el-button @click="gotoHt">取消</el-button>
-			</div>
+				<el-form-item label="车辆状态：">
+					<el-select v-model="bill.state" placeholder="未出车">
+						<el-option label="未出车" value="未出车" selected="selected"></el-option>
+						<el-option label="已出车" value="已出车"></el-option>
+						<el-option label="维修中" value="维修中"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="救援价格:">
+					<el-input v-model="bill.momey"></el-input>
+				</el-form-item>
+				<div style="text-align: center;" >
+					<el-button @click="add">保存</el-button>
+					<el-button @click="qu">取消</el-button>
+				</div>
 		</div>
 
 		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
@@ -37,16 +46,45 @@
 			var app = new Vue({
 				data: {
 					bill: {
-						id:'',
-						categoryid: '',
-						title: '',
-						summary: '',
-						uploaduser: '',
-						createdate:'',
+						platenumber: '',
+						brand: '',
+						state: '未出车',
+						artisan: '',
+						momey: '',
 					},
 					activeName: 'first'
 				},
-			
+				methods: {
+					//新增外勤车辆信息
+					add() {
+						let _this = this;
+						if(_this.bill.platenumber==""||_this.bill.brand==""||_this.bill.artisan==""||_this.bill.momey=="") {
+							_this.$message({
+								showClose: true,
+								message: '请填写信息！',
+								type: 'error'
+							});
+						}else{
+						$.ajax({
+							type: "POST",
+							contentType: "application/json",
+							data: JSON.stringify(_this.bill),
+							url: `http://127.0.0.1:8080/ljn/api/ljnlegworkAction/insert`,
+							success: function(res) {
+								if(res != 0) {
+									alert("新增成功");
+									legworkApp.query(1, 9, "未出车");
+									legworkApp.isshow1 = false;
+								}
+							}
+						});
+						}
+					},
+					qu() {
+						legworkApp.isshow1 = false;
+					},
+				},
+
 			}).$mount("#addApp");
 		</script>
 	</body>

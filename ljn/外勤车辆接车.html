@@ -6,27 +6,27 @@
 		<title></title>
 		<link href="../css/style.css" rel="stylesheet" type="text/css">
 		<link rel="stylesheet" href="../css/index.css" />
+		<script type="text/javascript" src="../js/xadmin.js"></script>
 	</head>
 
 	<body>
 		<div id="addApp" style="width: 80%;margin: 0 auto;">
-			<h2 style="text-align: center;">外勤借车管理</h2>
-			<el-form style="width: 70%;margin: 0 auto;" :inline="true" label-position="left" label-width="100px" :model="bill" style="text-align: center;">
+			<el-form style="width: 70%;margin: 0 auto;" :inline="true" label-position="left" label-width="100px"  style="text-align: center;">
 				<el-form-item label="车牌号">
-					<el-select v-model="bill.wcarid" placeholder="请选择">
-						<el-option v-for="item in bill" :label="item.wcarid" :value="item.wcarid"></el-option>
+					<el-select v-model="bill.wid" placeholder="请选择">
+						<el-option v-for="item in bill" :label="item.wcarid" :value="item.wid"></el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item label="驾驶员:">
-					<el-input v-model="bill.title"></el-input>
+					<el-input v-model="title"></el-input>
 				</el-form-item>
 				<el-form-item label="备注：">
-					<el-input v-model="bill.summary"></el-input>
+					<el-input v-model="summary"></el-input>
 				</el-form-item>
 			</el-form>
 			<div style="text-align: right;">
 				<el-button @click="addBill">保存</el-button>
-				<el-button @click="gotoHt">取消</el-button>
+				<el-button @click="qu">取消</el-button>
 			</div>
 		</div>
 
@@ -39,9 +39,11 @@
 			var app = new Vue({
 				data: {
 					bill: {
-						wId: '',
+						wid: '',
 						wcarid: '',
 					},
+						summary:'',
+						title:'',
 					jie: JSON.parse(window.sessionStorage.getItem("jie")),
 					name: '',
 					activeName: 'first'
@@ -58,7 +60,18 @@
 					//用户接车
 					addBill() {
 						let _this = this;
+						if(_this.summary==""||_this.title==""|| _this.bill.wid=="") {
+							_this.$message({
+								showClose: true,
+								message: '请填写信息！',
+								type: 'error'
+							});
+						}else{
 						_this.jie.state = "已出车";
+						_this.jie.wid = _this.bill.wid;
+						var i=this.bill.wid;
+						$.getJSON(`http://localhost:8080/ljn/api/ljnServiceAction/update/6/${_this.bill.wid}`, function(res) {
+						});
 						$.ajax({
 							type: "POST",
 							contentType: "application/json",
@@ -67,12 +80,16 @@
 							success: function(res) {
 								if(res != 0) {
 									alert("接车成功");
-									xadmin.close();
-									legworkApp.query(1, "未出车");
+									legworkApp.query(1, 9, "未出车");
+									legworkApp.isshow3 = false;
 								}
 							}
 						});
-					}
+						}
+					},
+					qu() {
+						legworkApp.isshow3 = false;
+					},
 				},
 
 				mounted() {

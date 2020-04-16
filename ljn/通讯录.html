@@ -29,7 +29,7 @@
 								<input type="text" v-model="pname" name="username" placeholder="请输入员工姓名" autocomplete="off" class="layui-input"></div>
 							<div class="layui-input-inline layui-show-xs-block">
 								<el-button type="primary" size="mini" @click="queryid(pname)">查看</el-button>
-								<el-button icon="el-icon-edit" size="mini" type="primary" onclick="xadmin.open('添加通讯录','通讯录添加.html',800,500)">添加</el-button>
+								<el-button icon="el-icon-edit" size="mini" type="primary" @click="addClick">添加</el-button>
 							</div>
 						</div>
 
@@ -86,10 +86,15 @@
 
 				</div>
 			</div>
-
+			<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="通讯录添加" :visible.sync="isshow1" width="55%">
+				<div id="cnt1"></div>
+			</el-dialog>
+			<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="通讯录修改" :visible.sync="isshow2" width="55%" >
+				<div id="cnt2"></div>
+			</el-dialog>
 		</div>
 	</body>
-		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
 	<script type="text/javascript" src="../js/vue.js"></script>
 	<script type="text/javascript" src="../js/index.js"></script>
 	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
@@ -101,6 +106,8 @@
 				currentPage4: 1,
 				page: [],
 				pname: "",
+				isshow1: false,
+				isshow2: false,
 			},
 			methods: {
 				//查询根据条件分页查询通讯录信息
@@ -114,11 +121,6 @@
 						_this.page = res;
 					});
 				},
-				//翻页实现
-				handleCurrentChange(page) {
-					let _this = this;
-					_this.query(page, "null");
-				},
 				//根据姓名查询通讯录信息
 				queryid(pname) {
 					let _this = this;
@@ -131,16 +133,17 @@
 						$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/remove/${id}`, function(res) {
 							if(res > 0) {
 								alert("删除成功")
-								_this.query(1,9, "null");
+								_this.query(1,this.page.pageSize, "null");
 							}
 						});
 					}
 				},
 				//查询需要编辑的通讯录信息
 				showView(txlid) {
+					let _this = this;
 					$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/queryid/${txlid}`, function(res) {
 						window.sessionStorage.setItem('us', JSON.stringify(res));
-						xadmin.open('修改用户', '通讯录修改.html', 800, 500);
+						_this.isshow2 = true;
 					})
 				},
 				handleSizeChange(val) {
@@ -152,7 +155,17 @@
 				handleCurrentChange(val) {
 					this.query(val, this.page.pageSize, "null");
 					console.log(`当前页: ${val}`);
-				}
+				},
+				handlerOpen1() {
+					$("#cnt1").load('通讯录添加.html'); //ajax读取页面
+				},
+				handlerOpen2() {
+					$("#cnt2").load('通讯录修改.html'); //ajax读取页面
+				},
+				//添加通讯录信息
+				addClick() {
+					this.isshow1 = true;
+				},
 			},
 			mounted() {
 				let _this = this;

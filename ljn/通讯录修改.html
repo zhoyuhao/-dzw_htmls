@@ -9,8 +9,7 @@
 		<script type="text/javascript" src="../js/xadmin.js"></script>
 	</head>
 	<div id="personUpdate" style="width: 70%;margin: 0 auto;">
-		<h2 style="text-align: center;">通讯录修改</h2>
-		<el-form style="width: 70%;margin: 0 auto;" :inline="true" label-position="left" label-width="100px" :model="bill" style="text-align: center;">
+		<el-form style="width: 70%;margin: 0 auto;" :inline="true" label-position="left" label-width="100px" style="text-align: center;">
 			<el-form-item label="员工编号">
 				<el-select v-model="form.pid" placeholder="请选择">
 					<el-option v-for="item in id" :label="item.pid" :value="item.pid"></el-option>
@@ -24,7 +23,7 @@
 			</el-form-item>
 			<div style="text-align: right;">
 				<el-button @click="update">保存</el-button>
-				<el-button onclick="xadmin.close()">取消</el-button>
+				<el-button @click="qu">取消</el-button>
 			</div>
 	</div>
 
@@ -45,15 +44,13 @@
 					//修改通讯录信息
 					update() {
 						let _this = this;
-						//查询员工编号是否存在
-						$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/count/${_this.form.pid}`, function(res) {
-							if(res > 0 && _this.form.pid != _this.qid) {
-								_this.$message({
-									duration: "3000",
-									type: 'success',
-									message: '员工编号已存在!'
-								});
-							} else {
+						if(_this.form.txlname==""||_this.form.id==""||_this.form.txlphone=="") {
+							_this.$message({
+								showClose: true,
+								message: '请填写信息！',
+								type: 'error'
+							});
+						}else{
 								$.ajax({
 									type: "POST",
 									contentType: "application/json",
@@ -62,13 +59,12 @@
 									success: function(res) {
 										if(res != 0) {
 											alert("修改成功");
-											xadmin.close();
+											personApp.isshow2 = false;
 											personApp.query(1, 9, "null");
 										}
 									}
 								});
 							}
-						})
 					},
 					//查询员工编号
 					query() {
@@ -77,6 +73,9 @@
 							_this.id = res;
 						})
 					},
+					qu() {
+						personApp.isshow2 = false;
+					}
 				},
 				mounted() {
 					let _this = this;
