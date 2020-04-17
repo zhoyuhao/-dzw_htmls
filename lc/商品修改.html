@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../css/bootstrap.min.css" />
+		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+		<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<style>
+			i {
+				color: #27A9E3;
+			}
+			[v-cloak] {
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="sss" v-cloak>
+	<el-form :model="staff" :inline="true" :rules="rules" ref="ruleForm" label-width="100px" class="demo-form-inline">
+				<el-form-item label="商品编号">
+					<el-input v-model="staff.gid" :disabled="true" style="width: 250px;"></el-input>
+				</el-form-item>
+				<el-form-item label="商品名称" placeholder="请输入姓名" prop="gname">
+
+					<el-input v-model="staff.gname" style="width: 250px;"></el-input>
+
+				</el-form-item>
+
+				<el-form-item label="出产日期" required>
+
+					<el-form-item prop="gtime" style="width: 242px;">
+						<el-date-picker type="date" placeholder="请输入" v-model="staff.gtime" style="width: 250px;"></el-date-picker>
+					</el-form-item>
+
+				</el-form-item>
+
+				<el-form-item label="商品价格" prop="gprice">
+
+					<el-input v-model.number="staff.gprice" placeholder="请输入价格" style="width: 250px;"></el-input>
+
+				</el-form-item>
+				<el-form-item label="供货商名称" prop="ghsid">
+
+					<el-select v-model="staff.ghsid" style="width: 250px;">
+
+						<el-option v-for="item in ssh" :label="item.ghsname" :value="item.ghsid" style="width: 250px;">
+						</el-option>
+					</el-select>
+
+				</el-form-item>
+
+				<el-form-item label="商品分类" class="gtype">
+					<el-select v-model="staff.gtype" placeholder="请选择" @change="typechange" style="width: 250px;">
+						<el-option label="发动机" value="发动机"></el-option>
+						<el-option label="其他" value="其他"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="商品品牌" class="gbrand">
+
+					<el-select v-if="bool" v-model="staff.gbrand" placeholder="请选择" style="width: 250px;">
+						<el-option v-for="item in pp" :label="item.ename" :value="item.eid" style="width: 250px;">
+						</el-option>
+					</el-select>
+					<el-input v-if="bool==true?false:true" v-model="staff.ename" style="width: 250px;"></el-input>
+				</el-form-item>
+
+				<el-form-item label="适用车辆" class="gsuitable">
+					<el-select v-model="staff.gsuitable" placeholder="请选择" style="width: 250px;">
+						<el-option label="上海大众" value="上海大众"></el-option>
+						<el-option label="红旗" value="红旗"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="商品数量" prop="gnumber">
+
+					<el-input v-model.number="staff.gnumber" style="width: 250px;"></el-input>
+
+				</el-form-item>
+
+				<el-form-item label="商品简介" prop="gdescribe">
+					<el-input type="textarea" v-model="staff.gdescribe" style="width: 250px;"></el-input>
+				</el-form-item>
+				<el-form-item style="margin: 0px auto;width: 700px; text-align: right;">
+					<el-button style="width: 150px;" type="primary" @click="submitForm()">立即创建</el-button>
+					<el-button style="width: 150px;" @click="dialogVisible = false">取消</el-button>
+				</el-form-item>
+		</el-form>
+		</div>
+
+	</body>
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+	<script>
+		var yggl = new Vue({
+			el: "#sss",
+			data: {
+				dialogVisible: false,
+				gid: null,
+				ssh: [],
+				staff: {
+					gid: '',
+					ghsid: '',
+					gname: '',
+					gtime: '',
+					gprice: '',
+					gbrand: "",
+					gsuitable: '',
+					gtype: '',
+					gdescribe: '',
+					gnumber: '',
+				}
+			},
+
+			methods: {
+				goodsByid() {
+					let _this = this;
+
+					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/ids/${_this.gid}`, function(date) {
+						_this.staff = date;
+					});
+				},
+				submitForm() {
+					let _this = this;
+
+					$.ajax(`http://127.0.0.1:8080/lc/api/Goods/modeil`, {
+						type: "put",
+						contentType: "application/json",
+						data: JSON.stringify(_this.staff),
+						dataType: "json",
+						success(date) {
+							if(date.code == "200") {
+								_this.$message(date.msg);
+
+							} else {
+								_this.$message(date.msg);
+							}
+						}
+					});
+				},
+				resetForm(formName) {
+					this.$refs[formName].resetFields();
+				},
+				gysid() {
+					let _this = this;
+					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sup`, function(data) {
+						console.info(data);
+						_this.ssh = data;
+						/*$.each(data, function(i,obj) {
+							var a=$("#sel").html();
+							alert(a);
+							  $("#sel").append('<option value="' + obj.ghsid + '">' + obj.ghsid + '</option>')
+								
+						});*/
+					})
+				}
+			},
+			mounted() {
+				let _this = this; //非常重要
+				_this.gysid();
+				_this.gid = sessionStorage.getItem('iss');
+				sessionStorage.setItem('iss', null);
+				if(_this.gid != null) {
+					this.goodsByid();
+				}
+
+			}
+		})
+	</script>
+
+</html>
