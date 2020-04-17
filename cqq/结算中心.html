@@ -14,10 +14,9 @@
 
 	<body style="background-color: #e6e6e6;">
 		<div id="kehuziliao" style="background-color: white;padding: 2ex;" v-cloak>
-			<h2 style="margin-left: 3ex;padding: 1ex;margin-top: 0px;">结算中心</h2>
 			<span style="display: block;margin-bottom: 3ex;margin-left: 5ex;">
 							<template>
-				<el-select v-model="value" placeholder="请选择" size="mini">
+				支付状态：<el-select v-model="value" placeholder="请选择" size="mini">
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
 					</el-option>
 				</el-select>
@@ -33,59 +32,121 @@
 
     <el-button type="primary"size="mini" @click="queryClick(input,value)"><span class="el-icon-search"  ></span></el-button>
 
-			<el-button type="success" size="mini" @click="addClick">导出</el-button>
+		<!--	//<el-button type="success" size="mini" @click="">导出</el-button>-->
 			</span>
 			<template>
 				<el-table max-height="500" :data="pageInfo.list" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
-					<el-table-column type="expand" fixed>
-						详细:{{pageInfo}}
-					</el-table-column>
-
+					<!--<el-table-column type="expand" fixed>
+						<template slot-scope="temp">
+							<el-table :data="temp.row.serdetalist" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
+								<el-table-column label="单据类型" width="" prop="sdname">
+								</el-table-column>
+							</el-table>
+						</template>
+					</el-table-column>-->
 					<el-table-column width="150" label="销售单号">
 						<template slot-scope="temp">
-							<el-radio v-model="radio" :label="temp.row.wid" @change="radiochange(temp.row)">{{temp.row.wid}}</el-radio>
+							{{temp.row.service.wid}}
 						</template>
 					</el-table-column>
-					<el-table-column label="单据类型" width="" prop="wtype">
-					</el-table-column>
-					<el-table-column label="结算方式" width="" prop="wpayment">
-					</el-table-column>
-					<el-table-column label="维修状态" width="" prop="wstatic">
-					</el-table-column>
-					<el-table-column label="结算状态" width="" prop="lx">
-					</el-table-column>
-					<el-table-column label="付款时间" width="" prop="paymenttirm">
-					</el-table-column>
-					<el-table-column label="结算人" width="" prop="wname">
-					</el-table-column>
-					<el-table-column label="结算金额" width="" prop="wenddate">
-					</el-table-column>
-					<el-table-column label="业务类型" width="" prop="wtype">
-					</el-table-column>
-					<el-table-column label="客户名称" width="" prop="wname">
-					</el-table-column>
-					<el-table-column label="车牌号" width="" prop="wcarid">
-					</el-table-column>
-					<el-table-column label="操作" width="190px">
+					<el-table-column label="单据类型" width="">
 						<template slot-scope="temp">
-							<el-button size="mini" type="primary" @click="shouyin(temp.row)">收银</el-button>
-							<el-button size="mini" type="primary" @click="suppUpdate(temp.row.ghsid)">打开单据</el-button>
+							<!--{{temp.row..wleixi}}-->
+							{{temp.row.service.wleixi==1?'站内':'站外'}}
 						</template>
 					</el-table-column>
-
+					<el-table-column label="结算方式" width="" prop="service.wpayment">
+						<template slot-scope="temp">
+							{{temp.row.service.wpayment |jiesuanfangshi}}
+						</template>
+					</el-table-column>
+					<el-table-column label="状态" width="70px" prop="service.wstatic">
+						<template slot-scope="temp">
+							{{temp.row.service.wstatic |changSex1}}
+						</template>
+					</el-table-column>
+					<el-table-column label="付款时间" width="160px" prop="service.paymenttirm">
+					</el-table-column>
+					<el-table-column label="客户姓名" width="" prop="service.wname">
+					</el-table-column>
+					<el-table-column label="结算金额" width="" prop="service.wsumprice">
+					</el-table-column>
+					<el-table-column label="业务类型" width="" prop="service.wtype">
+					</el-table-column>
+					<el-table-column label="客户名称" width="" prop="service.wname">
+					</el-table-column>
+					<el-table-column label="车牌号" width="" prop="service.wcarid">
+					</el-table-column>
+					<el-table-column label="操作" width="150px">
+						<template slot-scope="temp">
+							<el-button v-if="temp.row.service.wstatic==3" size="mini" type="success" @click="shouyin(temp.row.service)">收银</el-button>
+							<el-button size="mini" type="primary" @click="dakaidanju(temp.row)">打开</el-button>
+						</template>
+					</el-table-column>
 				</el-table>
 			</template>
-			<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="充值" :visible.sync="isshow1" width="33%" :before-close="handleClose">
-				<span style="display: block;margin-bottom: 3ex;margin-left: 5ex;">充值余额：
-    <el-input
-    	style="width: 200px;"
-    	size="mini"
-  placeholder="请输入充值余额"
-  v-model="chonzhiyve"
-  clearable>
-</el-input>     <el-button type="primary"size="mini" @click="querenchongzhi">充值</el-button>
-
+			<template>
+				<div class="block" style="text-align: center;background-color: white;padding-top: 3ex;padding-bottom: 3ex;">
+					<!--<el-pagination :total="pageInfo.total" 
+						@size-change="handleSizeChange" 
+						@current-change="handleCurrentChange" 
+						:current-page="currentPage5" 
+						:page-sizes="[8,6,3]" :page-size="pageInfo.pageSize" layout="total, sizes, prev, pager, next, jumper">-->
+						
+						<el-pagination @size-change="handleSizeChange" 
+							@current-change="handleCurrentChange" 
+							:current-page="currentPage5"
+							 :page-sizes="[8,6,3]" 
+							 :page-size="pageInfo.pageSize" 
+							layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
+					</el-pagination>
+				</div>
+			</template>
+			<el-dialog  @opened="" title="支付" :visible.sync="isshow1" width="23%" :before-close="handleClose1">
+				<span style="display: block;margin-bottom: 3ex;margin-left: 5ex;">
+					结算总金额：{{zongjine}}
+					<br>
+				<el-button type="primary"size="mini" v-if="isshow3==true" @click="xuanzehuiyuan">会员9折优惠，选择会员</el-button>
+				<div id="" v-if="isshow3==false">
+					卡号：{{huiyuanObj.ckahaok}}
+					<br>
+					积分：{{huiyuanObj.cdoublerk}}
+					<br>
+					折扣：9折
+					<br>
+					应付金额：{{zongjine*0.9}}
+					<el-button v-if="huiyuanObj.cdoublerk>=zongjine*0.9" type="primary"size="mini" @click="chengjiao(2)">使用积分抵扣</el-button>
+				</div>
+				<el-button type="primary"size="mini" @click="chengjiao(1)">成交</el-button>
 			</el-dialog>
+			<el-dialog  @opened="" title="会员" :visible.sync="isshow2" width="450px" :before-close="handleClose2">
+				<span style="display: block;margin-bottom: 3ex;margin-left: 5ex;">
+					<el-form :model="formInline" :inline="true" :rules="rules" ref="ruleForm2" label-width="100px" class="demo-form-inline">
+						<el-form-item label="卡号" prop="gh">
+							<el-input v-model="huiyuankahao" placeholder="供货商id" style="width: 250px;" :disabled="false"></el-input>
+						</el-form-item>
+						<el-form-item style="margin: 0px auto;width: 300px; text-align: right;">
+							<el-button type="primary" style="" @click="querenhuiyuan(huiyuankahao)">确认</el-button>
+							<el-button style="" @click="isshow2=false">取消</el-button>
+						</el-form-item>
+					</el-form>
+			</el-dialog>
+			<el-dialog :destroy-on-close="true" @opened="" title="详情" :visible.sync="isshow5" width="" :before-close="handleClose3">
+				<el-table :data="index.serdetalist" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
+								<el-table-column label="维修项目" width="" prop="sdname">
+								</el-table-column>
+								<el-table-column label="维系项目价格" width="" prop="sdprice">
+								</el-table-column>
+								<el-table-column label="维修数量" width="" prop="sdnumber">
+								</el-table-column>
+								<el-table-column label="小计" width="" prop="">
+										<template slot-scope="temp">
+											{{temp.row.sdprice*temp.row.sdnumber}}
+										</template>
+								</el-table-column>
+				</el-table>
+			</el-dialog>
+
 		</div>
 
 	</body>
@@ -96,38 +157,116 @@
 	<script>
 		var gangwei = new Vue({
 			el: "#kehuziliao",
-			data: {
+			data: {formInline:{},rules:{},
+				index:{},
+				isshow5:false,
+				isshow3:true,
+				huiyuankahao:'',
+				Supplier: {},
+				isshow2:false,
 				isshow1:false,
-				value: '',
+				value: '0',
 				options: [{
 					value: '4',
 					label: '以结算'
 				}, {
 					value: '3',
 					label: '未结算'
+				}, {
+					value: '0',
+					label: '不限'
 				}],
 				pageInfo: [],
-				input: ''
+				input: '',
+				currentPage5:1,
+				zongjine:0,
+				huiyuanObj:''
+				,jiesuandan:''
 			},
 			methods: {
-				shouyin(row){
-					//this.isshow1 = true;
-					alert(JSON.stringify(row))
-					row.wstatic=4;
-					$.ajax(`http://127.0.0.1:8080/CqqServiceAction/api/update`, {
+				dayin(){
+					$.getJSON(`http://127.0.0.1:8080/CqqServiceAction/api/daochukhzl`, function() {
+					_this.$message('导出成功');
+					});
+				},
+				dakaidanju(val){
+					this.index=val;
+					this.isshow5=true;
+					//this.$message('这是一条消息提示');
+				},
+				querenhuiyuan(val){
+					var _this=this;
+					if(val==''){
+					}else{
+						$.getJSON(`http://127.0.0.1:8080/CqqCustomerAction/api/${val}`, function(date) {
+							if(date==null){
+								_this.$message('没有找到');
+							}else{
+								_this.huiyuanObj = date;
+								_this.isshow2=false;
+								_this.isshow3=false;
+							}
+						
+					});
+					}
+				},
+				xuanzehuiyuan(){
+					this.isshow2=true;
+				},
+				handleSizeChange(val) {
+					var this_=this;
+					console.log(`每页 ${val} 条`);
+					var input=this_.input;
+					if(input==''){
+						input=null;
+					}
+					this.currentPage5=1;
+					this_.goToPage(1,val, this_.value, input);
+				},
+				handleCurrentChange(val) {
+					var this_=this;
+					console.log(`当前页: ${val}`);
+					var input=this_.input;
+					if(input==''){
+						input=null;
+					}
+					this_.goToPage(val, this.pageInfo.pageSize, this_.value, input);
+				},chengjiao(val){
+					var _this=this;
+					_this.jiesuandan.wstatic=4;
+					_this.jiesuandan.wpayment=val;
+					if(val>1){
+						//alert(_this.huiyuanObj.cdoublerk-(_this.huiyuanObj.cdoublerk-(_this.zongjine*0.9)))
+						_this.jiesuandan.deductionmoney=_this.huiyuanObj.cdoublerk-(_this.huiyuanObj.cdoublerk-(_this.zongjine*0.9));
+					}
+					if(_this.isshow3==false){
+						_this.jiesuandan.wpayment=2;
+					}
+					//alert(JSON.stringify(_this.jiesuandan))
+					$.ajax(`http://127.0.0.1:8080/CqqServiceAction/api/update/${_this.huiyuanObj.ckahaok}`, {
 							type: "post",
 							contentType: "application/json",
-							data: JSON.stringify(row),
+							data: JSON.stringify(_this.jiesuandan),
 							dataType: "json",
 							success(date) {
 								if(date > 0) {
-									alert("成功")
-									_this.goToPage(1, 3);
+									_this.$message('成功');
+									_this.goToPage(1,_this.pageInfo.pageSize, 0, null);
+									_this.isshow2=false;
+									_this.isshow1=false;
+									_this.isshow3=false;
+									_this.isshow5=false;
 								} else {
-									alert("不成功")
+									_this.$message('不成功');
 								}
 							}
-						});
+					});
+				},
+				shouyin(row){
+					this.isshow1 = true;
+					this.zongjine=row.wsumprice;
+					this.jiesuandan=row;
+					
 				},
 				queryClick(input, value) {
 					if(input == '') {
@@ -136,11 +275,26 @@
 					if(value == '') {
 						value = 0;
 					}
-					this.goToPage(1, 3, value, input);
+					this.goToPage(1,this.pageInfo.pageSize, value, input);
 				},
 				/*关闭对话框*/
-
-				handleClose(done) {
+				handleClose3(done) {
+					this.$confirm('确认关闭？')
+						.then(_ => {
+							this.radio = "";
+							done();
+						})
+						.catch(_ => {});
+				},
+				handleClose1(done) {
+					this.$confirm('确认关闭？')
+						.then(_ => {
+							this.radio = "";
+							done();
+						})
+						.catch(_ => {});
+				},
+				handleClose2(done) {
 					this.$confirm('确认关闭？')
 						.then(_ => {
 							this.radio = "";
@@ -152,11 +306,29 @@
 					let _this = this;
 					$.getJSON(`http://127.0.0.1:8080/CqqServiceAction/api/${n}/${s}/${wid}/${name}`, function(date) {
 						_this.pageInfo = date;
+						_this.currentPage5=date.pageNum;
 					});
+				}
+			},			filters: {
+				changSex1(val) {
+					if (val==4) {
+						return "已结算";
+					}else{
+					return "未结算";
+					}
+				}
+				,jiesuanfangshi(val) {
+					if (val==0) {
+						return "未结算";
+					}else if(val==1){
+					return "现金";
+					}else{
+					return "会员";
+					}
 				}
 			},
 			mounted() {
-				this.goToPage(1, 3, 0, null);
+				this.goToPage(1,8, 0, null);
 			}
 		})
 	</script>

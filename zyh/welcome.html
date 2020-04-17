@@ -287,47 +287,7 @@
 	</script>
 	<script>
 		
- var myChart = echarts.init(document.getElementById('main1'));
 
-        // 指定图表的配置项和数据
-        var option = {
-            title: {
-                text: '德召文上周对比'
-            },
-            tooltip: {},
-            legend: {
-                data: ['本周', '上周']
-            },
-            radar: {
-                // shape: 'circle',
-                indicator: [
-                   { name: '周一',max:70000},
-                   { name: '周二',max:70000},
-                   { name: '周三',max:70000},
-                   { name: '周四',max:70000},
-                   { name: '周五',max:70000},
-                   { name: '周六',max:70000},   
-                   { name: '周日',max:70000}
-                ]
-            },
-            series: [{
-                name: '预算 vs 开销',
-                type: 'radar',
-                data : [
-                    {
-                        value : [4300, 10000, 28000, 35000, 50000, 19000,19000],
-                        name : '本周'
-                    },
-                     {
-                        value : [5000, 14000, 28000, 31000, 42000, 21000,0],
-                        name : '上周'
-                    }
-                ]
-            }]
-        };
-
-        // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(option);
 	</script>
 
 </html>
