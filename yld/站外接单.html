@@ -347,8 +347,8 @@
 							}
 						});
 						let temp = this.outCarData[this.fixformdata.pickcar];
-						let sumprice = parseInt(temp.money) * parseInt(this.fixformdata.kmMoney);
-						let data = {wid:_this.fixcardform.wid,sid:temp.legworkid,sdname:'调度费',dprice:temp.money,sdprice:sumprice,sdnumber:this.fixformdata.kmMoney,type:3};
+						let sumprice = parseInt(temp.momey) * parseInt(this.fixformdata.kmMoney);
+						let data = {wid:_this.fixcardform.wid,sid:temp.legworkid,sdname:'调度费',dprice:temp.momey,sdprice:sumprice,sdnumber:this.fixformdata.kmMoney,type:3};
 						this.fixgoods.splice(1,0,data);
 					}else{
 						this.fixformdata.pickcar = '';
@@ -445,47 +445,49 @@
 					});
 					//总费用 = 站外接车金额+维修材料费+技工维修费
 					if(this.fixcardform.wleixi == 2){
+						this.outCarData[this.fixformdata.pickcar].state = '已出车';
+						this.outCarData[this.fixformdata.pickcar].wid = this.fixcardform.wid;
+						$.ajax('http://127.0.0.1:8080/yldaction/api/updateCarState',{
+						    type:'post',
+						    dataType:'json',
+						    contentType:'application/json',
+						    data:JSON.stringify(_this.outCarData[_this.fixformdata.pickcar]),
+						    success:function(msg){
+						        if(msg == "ok"){
+						        	return false;
+						        }else{
+						        	_this.$message({message:'出车失败！！',center:true,type:'error'});
+						        }
+						    }
+						});
 						this.fixcardform.wsumprice = parseInt(this.fixgoods[0].sdprice)+parseInt(this.fixgoods[1].sdprice)+sumPrice;
+						alert("站外接车费="+parseInt(this.fixgoods[1].sdprice)+" 技工工时费="+this.fixgoods[0].sdprice+" 维修材料费="+sumPrice+" 总费用="+this.fixcardform.wsumprice);
 					}else{
 						this.fixcardform.wsumprice = parseInt(this.fixgoods[0].sdprice)+sumPrice;
+						alert("技工工时费="+this.fixgoods[0].sdprice+" 维修材料费="+sumPrice+" 总费用="+this.fixcardform.wsumprice);
 					}
-					alert("站外接车费="+parseInt(this.fixgoods[1].sdprice)+" 技工工时费="+this.fixgoods[0].sdprice+" 维修材料费="+sumPrice+" 总费用="+this.fixcardform.wsumprice);
-					this.outCarData[this.fixformdata.pickcar].state = '已出车';
-					this.outCarData[this.fixformdata.pickcar].wid = this.fixcardform.wid;
-					$.ajax('http://127.0.0.1:8080/yldaction/api/updateCarState',{
+					$.ajax('http://127.0.0.1:8080/yldaction/api/insertService',{
 					    type:'post',
 					    dataType:'json',
 					    contentType:'application/json',
-					    data:JSON.stringify(_this.outCarData[_this.fixformdata.pickcar]),
+					    data:JSON.stringify(_this.fixcardform),
 					    success:function(msg){
 					        if(msg == "ok"){
-					        	$.ajax('http://127.0.0.1:8080/yldaction/api/insertService',{
+					        	$.ajax('http://127.0.0.1:8080/yldaction/api/insertServiceInfo',{
 								    type:'post',
 								    dataType:'json',
 								    contentType:'application/json',
-								    data:JSON.stringify(_this.fixcardform),
+								    data:JSON.stringify(_this.fixgoods),
 								    success:function(msg){
 								        if(msg == "ok"){
-								        	$.ajax('http://127.0.0.1:8080/yldaction/api/insertServiceInfo',{
-											    type:'post',
-											    dataType:'json',
-											    contentType:'application/json',
-											    data:JSON.stringify(_this.fixgoods),
-											    success:function(msg){
-											        if(msg == "ok"){
-											        	location.reload();
-											        }else{
-											        	_this.$message({message:'添加失败！',center:true,type:'error'});
-											        }
-											    }
-											});
+								        	location.reload();
 								        }else{
 								        	_this.$message({message:'添加失败！',center:true,type:'error'});
 								        }
 								    }
 								});
 					        }else{
-					        	_this.$message({message:'出车失败！！',center:true,type:'error'});
+					        	_this.$message({message:'添加失败！',center:true,type:'error'});
 					        }
 					    }
 					});

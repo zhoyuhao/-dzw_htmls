@@ -431,6 +431,7 @@
            				if(this.shjian.indexOf('.')>0){
            					this.shjian=parseInt(this.shjian.substring(0,this.shjian.indexOf('.')))+1;
            						//console.log("之后"+this.shjian);
+           						gsf=parseInt((this.gf/60).toFixed(2)*(this.shjian*60).toFixed(2));
            				}
            				
 					$.ajax(`http://127.0.0.1:8080/zyhServiceAction/api/updateByWidToStatuc/${_this.radio2}/${_this.id}/${date}/${this.shjian}/${gsf}` ,{
@@ -546,7 +547,7 @@
            			
 					let _this = this;
 					let money = 0.0;
-					this.dialogVisible = true;
+					
 					this.xiangXiData = row;
 					$.each(this.xiangXiData, function(i, obj) {
 						money +=parseInt(obj.sdprice);
@@ -555,6 +556,7 @@
 					this.hsmoney=((parseInt(this.shjian)*60)*parseFloat(this.gf/60));
 					money=parseInt(money+(parseInt(this.shjian)*60)*parseFloat(this.gf/60))*/
 					this.moneySum =money;
+						this.dialogVisible = true;
 					console.log(index, row);
 				},
 				/*详细信息关闭*/
