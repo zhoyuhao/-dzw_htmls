@@ -8,8 +8,6 @@
 		<link rel="stylesheet" href="../css/bootstrap.min.css" />
 		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
 		<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
-		<script type="text/javascript" src="../js/menu_const.js"></script>
-		<script type="text/javascript" src="../js/view_filter.js"></script>
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
 		<style>
 			i {
@@ -79,7 +77,7 @@
 				</el-form-item>-->
 				<el-form-item style="margin: 0px auto;width: 700px; text-align: right;">
 					<el-button style="width: 150px;" type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-					<el-button style="width: 150px;" @click="resetForm('ruleForm')">取消</el-button>
+					<el-button style="width: 150px;" @click="">取消</el-button>
 				</el-form-item>
 			</el-form>
 
@@ -108,6 +106,24 @@
 					pstatic: '',
 					ppwd: '',
 					ppost: ''
+				},
+				rules: {
+					pId: [{
+						required: true,
+						message: '请输入',
+						trigger: 'blur'
+					}],
+					bzId: [{
+						required: true,
+						message: '请选择',
+						trigger: 'change'
+					}],
+
+					pname: [{
+						required: true,
+						message: '请输入名称',
+						trigger: 'blur'
+					}],
 				}
 
 			},

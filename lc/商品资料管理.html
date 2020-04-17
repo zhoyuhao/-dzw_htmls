@@ -115,7 +115,7 @@
 								<template>
 									<div class="block">
 
-										<el-pagination v-if="pageInfo.total!=0" :background="true" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[6,3,2]" layout="total, sizes, prev, pager, next, jumper">
+										<el-pagination v-if="pageInfo.total!=0" :background="true" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[6,3]" layout="total, sizes, prev, pager, next, jumper">
 										</el-pagination>
 									</div>
 								</template>
@@ -169,7 +169,7 @@
 											<el-option v-for="item in pp" :label="item.ename" :value="item.eid" style="width: 250px;">
 											</el-option>
 										</el-select>
-										<el-input v-if="bool==true?false:true" v-model="staff.ename" style="width: 250px;"></el-input>
+										<el-input v-if="bool==true?false:true" v-model="staff.gbrand" style="width: 250px;"></el-input>
 									</el-form-item>
 
 									<el-form-item label="适用车辆" class="gsuitable">
@@ -300,7 +300,7 @@
 
 			},
 			methods: {
-				
+
 				goodsByid() {
 					let _this = this;
 
@@ -397,12 +397,16 @@
 									contentType: 'application/json',
 									success(msg) {
 										if(msg.code == "200") {
+
 											loading.close(); //关闭加载块【非常重要】
 											_this.$message({
 												type: 'success',
 												message: '新增成功'
 											});
-											_this.clearData(); //清除数据
+											_this.isshow1 = false;
+											/*_this.clearData(); //清除数据*/
+											_this.lcgoTopage(1, 6, this.goods.gname);
+
 										}
 									}
 								});
@@ -414,7 +418,7 @@
 					});
 				},
 				resetForm(formName) {
-					this.isshow1=false;
+					this.isshow1 = false;
 				},
 				addgoods() {
 					this.isshow1 = true;
@@ -457,7 +461,7 @@
 										type: 'success',
 										message: '删除成功!'
 									});
-									_this.showView('商品资料管理.html');
+									_this.lcgoTopage(1, 6, name);
 								}
 							}
 						});
@@ -495,8 +499,8 @@
 				_this.gysid();
 				_this.ss();
 				var date = new Date();
-					now = date.getFullYear() + "" + (date.getMonth() + 1) + "" + date.getDate() + "" + date.getHours() + "" + date.getMinutes() + "" + date.getSeconds();
-					_this.staff.gid=now;
+				now = date.getFullYear() + "" + (date.getMonth() + 1) + "" + date.getDate() + "" + date.getHours() + "" + date.getMinutes() + "" + date.getSeconds();
+				_this.staff.gid = now;
 				_this.lcgoTopage(1, 6, this.goods.gname);
 
 			}
