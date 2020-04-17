@@ -17,7 +17,7 @@ var indexShowView=[
 {label:'车型档案管理',url:'ljn/车型档案管理.html'},
 {label:'商品资料管理',url:'lc/商品资料管理.html'},
 {label:'供货单位',url:'cqq/供货单位.html'},
-{label:'维修项目管理',url:'echarts5.html'}]}
+{label:'维修项目管理',url:'yld/维修项目.html'}]}
 
 
 

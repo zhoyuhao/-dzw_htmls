@@ -22,7 +22,7 @@
 	<body>
 		<div id="emp" style="padding-top: 40px;">
 			<el-tabs value="first" style="margin: 0px auto;margin-top: 20px;width: 90%;">
-				<el-tab-pane label="技工数据" name="first">
+				<el-tab-pane label="班组数据" name="first">
 					<el-form label-width="100px" :inline="true" size="mini">
 						<el-form-item label="班组名称：">
 							<el-input class="winput" v-model="form.bzname"></el-input>
@@ -40,10 +40,12 @@
 							</el-table-column>
 							<el-table-column label="人数" prop="agnumber" align="center" show-overflow-tooltip>
 							</el-table-column>
+							<el-table-column label="工时费/小时" prop="hmoney" align="center" show-overflow-tooltip>
+							</el-table-column>
 							<el-table-column label="操作" align="center" show-overflow-tooltip>
 								<template slot-scope="temp">
-									<el-button circle size="mini" icon="el-icon-setting"></el-button>
-									<el-button circle size="mini" icon="el-icon-close"></el-button>
+									<el-button @click="openEmpGroupWoker(temp.row)" circle size="mini" icon="el-icon-setting"></el-button>
+									<el-button @click="removeEmpGroupWoker(temp.row.agid,temp.row.agnumber)" circle size="mini" icon="el-icon-close"></el-button>
 								</template>
 							</el-table-column>
 						</el-table-column>
@@ -197,6 +199,22 @@
 				  	<el-button type="primary" @click="addEmpGroupWoker" size="medium">保 存</el-button>
 				</span>
 			</el-dialog>
+			<el-dialog width="30%" title="技工班组修改" :visible.sync="uempgroupdialog2" center :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
+				<el-form label-width="100px" size="small" label-position="top" style="width: 80%;margin: 0px auto;">
+					<el-form-item label="姓名：">
+						<el-input v-model="uempgroup2.agname"></el-input>
+					</el-form-item>
+					<el-form-item label="收费：">
+						<el-input v-model.number="uempgroup2.hmoney">
+							<template slot="append">小时/元</template>
+						</el-input>
+					</el-form-item>
+				</el-form>
+				<span slot="footer" class="dialog-footer">
+					<el-button @click="uempgroupdialog2 = false" size="medium">取 消</el-button>
+				  	<el-button type="primary" @click="updateEmpGroupWoker" size="medium">保 存</el-button>
+				</span>
+			</el-dialog>
 		</div>
 	</body>
 
@@ -208,6 +226,7 @@
 				empdialog: false,
 				uempdialog: false,
 				uempgroupdialog:false,
+				uempgroupdialog2:false,
 				bzdialog:false,
 				fixempgroup: {},
 				fixemp: {},
@@ -225,6 +244,8 @@
 				uempgroup:{
 					aid:'',
 					bzid:''
+				},
+				uempgroup2:{
 				},
 				workdata: [],
 				workpagedata: {},
@@ -249,6 +270,10 @@
 				openupdate(temp){
 					this.uempdialog = true;
 					this.uempdate = JSON.parse(JSON.stringify(temp));
+				},
+				openEmpGroupWoker(temp){
+					this.uempgroupdialog2 = true;
+					this.uempgroup2 = JSON.parse(JSON.stringify(temp));
 				},
 				openuempgroup(temp){
 					this.uempgroupdialog = true;
@@ -391,6 +416,44 @@
 					        }
 					    }
 					});
+				},
+				removeEmpGroupWoker(id,count){
+					let _this = this;
+					if (count > 0) {
+						this.$message({message:'无法删除存在技工的班组！',center:true,type:'error'});
+					} else{
+						$.ajax('http://127.0.0.1:8080/yldaction/api/deleteewgroup',{
+						    type:'delete',
+						    data:{id:id},
+						    success:function(msg){
+						        if(msg == "ok"){
+						        	_this.$message({message:'删除成功！',center:true,type:'success'});
+						        	_this.getEmpGroupWoker(1);
+						        }else{
+						        	_this.$message({message:'删除失败！',center:true,type:'error'});
+						        }
+						    }
+						});
+					}
+				},
+				updateEmpGroupWoker(){
+					let _this = this;
+					$.ajax('http://127.0.0.1:8080/yldaction/api/updateewgroup',{
+					    type:'put',
+					    dataType:'json',
+					    contentType:'application/json',
+					    data:JSON.stringify({bzid:_this.uempgroup2.agid,hmoney:_this.uempgroup2.hmoney,bzname:_this.uempgroup2.agname}),
+					    success:function(msg){
+					        if (msg == "ok") {
+					        	_this.$message({message:'修改成功！',center:true,type:'success'});
+					        	_this.getEmpGroupWoker(1);
+					        	_this.uempgroupdialog2 = false;
+					        } else{
+					        	_this.$message({message:'修改失败！',center:true,type:'error'});
+					        }
+					    }
+					});
+					
 				}
 			},
 			mounted() {
