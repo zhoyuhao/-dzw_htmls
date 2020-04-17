@@ -215,22 +215,34 @@
 							<p v-if="fangoufeiwuxianshi">
 
 								<template>
-									<span style="border: 0px solid;margin-left: -10ex;">
-									选择车辆品牌：
-									<el-select v-model="cartype" @change="selectChangeCarType"  filterable placeholder="请选择" 
+									<span style="border: 0px solid;margin-left: -11ex;">
+									选择维修项目：
+							<!--		<el-select v-model="cartype" @change="selectChangeCarType"  filterable placeholder="请选择" 
 									style="width: 150px;margin-bottom:1ex;" size="mini">
 										<el-option v-for="(item,i) in carType" :key="item.gid" :label="item.gsuitable" :value="i">
 										</el-option>
-									</el-select>
+									</el-select>-->
+									<el-select @change="getFixGoodsItemData" v-model="fixformdatae" style="width: 150px;" size="mini">
+									<el-option v-for="item in fixTypeData" :key="item.xmid" :label="item.xnames" :value="item.xmid">
+									</el-option>
+								</el-select>
 								</span>
 								</template>
 								<br />
 								<template>
-									选择维修项目：
-									<el-select v-model="value" filterable placeholder="请选择" style="width: 150px;" size="mini">
+									选择维修商品：
+								<!--	<el-select v-model="value" filterable placeholder="请选择" style="width: 150px;" size="mini">
 										<el-option v-for="(item,i) in weixiu" :key="item.gid" :label="item.gname" :value="i">
 										</el-option>
-									</el-select>
+									</el-select>-->
+									
+										
+								
+								<el-select v-model="value"  style="width: 150px;" size="mini">
+									<el-option v-for="(item,i) in fixGoodsData" :key="item.gid" :label="item.gname" :value="i">
+									</el-option>
+								</el-select>
+							
 									<el-input size="mini" maxlength="8" oninput="value=value.replace(/[^\d.]/g,'')" style="width: 60px;" v-model="shuliang" clearable></el-input>
 
 									<a href="javascript:void(0)" @click="addweixiu()" class="el-icon-check"></a>
@@ -282,6 +294,9 @@
 		var zhnanei = new Vue({
 			el: "#juegong",
 			data: {
+				fixformdatae:'',
+				fixTypeData:[],
+				fixGoodsData:[],
 				hsmoney:0,
 				gf:0,
 				type:0,
@@ -314,6 +329,25 @@
 				sjObj:{}
 			},
 			methods: {
+				//获取所有的维修类型数据
+				getFixGoodsTypeData() {
+					let _this = this;
+					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryAllGoodsItem",
+					function(msg) {
+						_this.fixTypeData = msg;
+						console.info(msg);
+					});
+				},
+				//根据类型编号查询类型下的所有商品
+				getFixGoodsItemData(typeid) {
+					let _this = this;
+					/*this.fixformdata.goodsid = ''*/
+					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryAllGoodsByType",{typeid:typeid},
+					function(msg) {
+						_this.fixGoodsData = msg;
+						console.info(msg);
+					});
+				},
 				/*刪除返工维修的项目*/
 				removeweixiu(index) {
 					this.weixiuTable.splice(index, 1);
@@ -329,12 +363,12 @@
 				},
 				addweixiu() {
 
-					if(this.cartype == null) {
-						this.open2("请选择车辆类型");
+					if(this.fixformdatae == "") {
+						this.open2("请选择项目");
 						return
 					}
 					if(this.value == null) {
-						this.open2("请选择维修项目");
+						this.open2("请选择商品");
 						return
 					}
 					if(this.shuliang == "") {
@@ -343,7 +377,7 @@
 
 					let bool = false;
 					this.weixiuTable.forEach(row => {
-						if(row.sdname == this.weixiu[this.value].gname) {
+						if(row.sdname == this.fixGoodsData[this.value].gname) {
 							return bool = true;
 						}
 
@@ -353,10 +387,10 @@
 					}
 					this.weixiuTable.splice(0, 0, {
 						wid: this.id,
-						sdname: this.weixiu[this.value].gname,
-						dprice: parseFloat(this.weixiu[this.value].gprice),
+						sdname: this.fixGoodsData[this.value].gname,
+						dprice: parseFloat(this.fixGoodsData[this.value].gprice),
 						sdnumber: this.shuliang,
-						sdprice: (parseFloat(this.shuliang) * parseFloat(this.weixiu[this.value].gprice))
+						sdprice: (parseFloat(this.shuliang) * parseFloat(this.fixGoodsData[this.value].gprice))
 					});
 					this.shuliang = 1;
 
@@ -570,6 +604,7 @@
 
 			},
 			mounted() {
+				this.getFixGoodsTypeData();
 				this.page(1, 6, 1, 2);
 				this.page(1, 6, 3, 0);
 				let _this = this;
