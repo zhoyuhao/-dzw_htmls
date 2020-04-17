@@ -127,7 +127,7 @@
 						</el-form-item>
 						<el-form-item style="margin: 0px auto;width: 300px; text-align: right;">
 							<el-button type="primary" style="" @click="querenhuiyuan(huiyuankahao)">确认</el-button>
-							<el-button style="" @click="">取消</el-button>
+							<el-button style="" @click="isshow2=false">取消</el-button>
 						</el-form-item>
 					</el-form>
 			</el-dialog>
@@ -251,7 +251,11 @@
 							success(date) {
 								if(date > 0) {
 									_this.$message('成功');
-									_this.goToPage(1,_this.currentPage5, 0, null);
+									_this.goToPage(1,_this.pageInfo.pageSize, 0, null);
+									_this.isshow2=false;
+									_this.isshow1=false;
+									_this.isshow3=false;
+									_this.isshow5=false;
 								} else {
 									_this.$message('不成功');
 								}
