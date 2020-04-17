@@ -92,6 +92,8 @@
 									<el-input v-model="staff.gwname" placeholder="请输入" style="width: 250px;"></el-input>
 								</el-form-item>-->
 								<el-form-item label="员工岗位" prop="ppost" required>
+									<!--哈哈哈哈-->
+										<el-select v-model="staff.ppost">
 										<el-option v-for="item in jg" :label="item.gwname" :value="item.gwid" style="width: 250px;">
 										</el-option>
 									</el-select>
