@@ -12,29 +12,31 @@
 		<script type="text/javascript" src="../js/xadmin.js"></script>
 		<link rel="stylesheet" href="../css/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+		</style>
 	</head>
 
 	<body>
 
-		<div class="layui-fluid" id="yggl">
+		<div class="layui-fluid" id="yggl" v-cloak>
 			<div class="layui-row layui-col-space15">
 				<div class="layui-col-md12">
-
 					<div class="layui-card">
-
-						<el-form :inline="true" :model="tableData" class="demo-form-inline" align="center">
-							<el-form-item label="徳召文商品管理">
-								<el-input v-model="tableData.name" placeholder='商品名称 '></el-input>
+						<el-form :inline="true" :model="goods" class="demo-form-inline" align="center">
+							<el-form-item label="请输入员工名称" style="margin-left: 10ex;">
+								<el-input v-model="goods.pname" size="mini" placeholder='员工名称 '></el-input>
 
 							</el-form-item>
 							<el-form-item>
 								<div class="layui-inline layui-show-xs-block">
 									<el-row>
-										<el-button type="primary">查询信息</el-button>
-										<el-button type="success" onclick="xadmin.open('添加员工信息','./员工管理添加.html',600,500)">新增信息</el-button>
+										<el-button type="primary" size="mini" @click="names">查询信息</el-button>
+										<el-button type="success" size="mini" @click="addyg">新增信息</el-button>
 									</el-row>
 								</div>
-
 							</el-form-item>
 						</el-form>
 					</div>
@@ -42,28 +44,26 @@
 
 						<div class="layui-card-body layui-table-body layui-table-main">
 							<template>
-								<el-table :data="tableData" style="width: 100%; ">
+								<el-table :data="pageInfo.list" style="width: 100%; ">
 									<el-table-column label="员工资料管理" align="center">
-										<el-table-column prop="id" align="center" label="员工编号" width="120">
+										<el-table-column prop="pId" align="center" label="员工编号" width="120">
 										</el-table-column>
-										<el-table-column prop="date" align="center" label="入职日期" width="120">
+										<el-table-column prop="pentry" align="center" label="入职日期" width="120">
 										</el-table-column>
-										<el-table-column prop="name" align="center" label="员工姓名" width="120">
+										<el-table-column prop="pname" align="center" label="员工姓名" width="120">
 										</el-table-column>
-										<el-table-column prop="department" align="center" label="所属部门" width="120">
+										<el-table-column prop="psex" align="center" label="性别" width="120">
 										</el-table-column>
-										<el-table-column prop="sex" align="center" label="性别" width="120">
+										<el-table-column prop="peducational" align="center" label="学历" width="120">
 										</el-table-column>
-										<el-table-column prop="age" align="center" label="年龄" width="120">
+										<el-table-column prop="pphone" align="center" label="联系电话" width="180">
 										</el-table-column>
-										<el-table-column prop="phone" align="center" label="联系电话" width="180">
-										</el-table-column>
-										<el-table-column prop="Email" align="center" label="邮编" width="180">
+										<el-table-column prop="cname" align="center" label="员工角色" width="180">
 										</el-table-column>
 										<el-table-column label="操作" align="center">
 											<template slot-scope="temp">
-												<i class="el-icon-s-tools" onclick="xadmin.open('修改员工信息','./员工管理添加.html',600,500)"></i>&nbsp;&nbsp;
-												<i class="el-icon-delete"></i>
+												<i class="el-icon-s-tools" @click="xiugai(temp.row.pId)"></i>&nbsp;&nbsp;
+												<i class="el-icon-delete" @click="shanchu(temp.row.pId)"></i>
 											</template>
 										</el-table-column>
 
@@ -76,13 +76,18 @@
 							<div style="text-align: center;">
 								<template>
 									<div class="block">
-
-										<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+										<el-pagination v-if="pageInfo.total!=0" :background="true" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[6,3,2]" layout="total, sizes, prev, pager, next, jumper">
 										</el-pagination>
 									</div>
 								</template>
 							</div>
 						</div>
+						<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="商品资料添加" :visible.sync="isshow1" width="900px" :before-close="handleClose">
+							<div id="cnt1"></div>
+						</el-dialog>
+						<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="商品资料修改" :visible.sync="isshow2" width="900px" :before-close="handleClose">
+							<div id="cnt2"></div>
+						</el-dialog>
 					</div>
 				</div>
 			</div>
@@ -98,68 +103,85 @@
 		var yggl = new Vue({
 			el: "#yggl",
 			data: {
+				isshow1: false,
+				isshow2: false,
+				goods: {
+					pname: null
+				},
+				pageInfo: [],
+				currentPage4: 1,
 
-				currentPage4: 4,
-				tableData: [{
-					id: 1,
-					date: '2016-05-02',
-					name: '王小虎',
-					department: '洗车部',
-					position: '普通员工',
-					address: '湖南',
-					age: 12,
-					sex: '男',
-					phone: '1231',
-					Email: '12012@qq.com'
-				}, {
-					id: 2,
-					date: '2016-05-04',
-					name: '王小虎',
-					department: '财务部',
-					position: '普通员工',
-					address: '湖南',
-					age: 12,
-					sex: '男',
-					Email: '12012@qq.com'
-				}, {
-					id: 3,
-					date: '2016-05-01',
-					name: '王小虎',
-					department: '洗车部',
-					position: '普通员工',
-					address: '湖南',
-					age: 12,
-					sex: '男',
-					Email: '12012@qq.com'
-				}, {
-					id: 4,
-					date: '2016-05-03',
-					name: '王小虎',
-					department: '洗车部',
-					position: '普通员工',
-					address: '湖南',
-					age: 12,
-					sex: '男',
-					Email: '12012@qq.com'
-				}],
 				multipleSelection: []
 			},
 			methods: {
-				toggleSelection(rows) {
-					if(rows) {
-						rows.forEach(row => {
-							this.$refs.multipleTable.toggleRowSelection(row);
+				//添加员工
+				addyg() {
+					this.isshow1 = true;
+				},
+				names() {
+					this.lcgoTopage(1, this.pageInfo.pageSize, this.goods.pname);
+				},
+				handleSizeChange(val) {
+					this.currentPage4=1;
+					this.lcgoTopage(this.currentPage4, val, this.goods.pname);
+
+				},
+				handleCurrentChange(val) {
+					this.lcgoTopage(val, this.pageInfo.pageSize, this.goods.pname);
+				},
+				lcgoTopage(p, s, pname) {
+					let _this = this;
+					pname=pname==""?'null':pname;
+						$.getJSON(`http://127.0.0.1:8080/lc/api/lcpersonnels/${p}/${s}/${pname}`, function(page) {
+							_this.pageInfo = page;
+							_this.currentPage4=page.pageNum;
+							
 						});
-					} else {
-						this.$refs.multipleTable.clearSelection();
-					}
 				},
-				handleSelectionChange(val) {
-					this.multipleSelection = val;
+				shanchu(pId) {
+					let _this = this;
+					this.$confirm('是否移除商品信息?', '系统提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						$.ajax(`http://127.0.0.1:8080/lc/api/lcpersonnels/shan/${pId}`, {
+							type: "delete",
+							dataType: "json",
+							success(data) {
+								if(data.code == "500") {
+									_this.$message(data.msg);
+								} else {
+									_this.$message({
+										type: 'success',
+										message: '删除成功!'
+									});
+									_this.lcgoTopage(1, 2, _this.goods.pname);
+								}
+							}
+						});
+					}).catch(() => {
+						this.$message({
+							type: 'info',
+							message: '已取消删除'
+						});
+					});
 				},
-				xq() {
-					showWindowDialog('员工管理添加或修改.html', '员工管理添加或修改');
-				}
+				xiugai(gid) {
+					this.isshow2 = true;
+					sessionStorage.setItem('iss', gid);
+
+				},
+				handlerOpen1() {
+					$("#cnt1").load('员工管理添加.html'); //ajax读取页面
+				},
+				handlerOpen2() {
+					$("#cnt2").load('员工管理修改.html'); //ajax读取页面
+				},
+			},
+			mounted() {
+				let _this = this; //非常重要
+				_this.lcgoTopage(1, 2, _this.goods.pname);
 			}
 		})
 	</script>

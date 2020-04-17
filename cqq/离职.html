@@ -13,7 +13,7 @@
 	</head>
 
 	<body style="background-color: #e6e6e6;">
-		<div id="kehuziliao" style="background-color: white;padding: 2ex;" v-cloak>
+		<div id="lizhiapp" style="background-color: white;padding: 2ex;" v-cloak>
 
 			<template>
 				<el-form :inline="true" :model="formInline" class="demo-form-inline">
@@ -69,7 +69,7 @@
 	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
 	<script>
 		var gangwei = new Vue({
-			el: "#kehuziliao",
+			el: "#lizhiapp",
 			data: {
 				pageInfo: [],
 				isshow1: false,
@@ -116,8 +116,9 @@
 							dataType: "json",
 							success(data) {
 								if(data > 0) {
-									alert("成功");
-									_this.goToPage(1, 3);
+									_this.$alert("成功");
+									_this.goToPage(1, 3,null);
+									
 								} else {
 									alert("不成功")
 								}
@@ -137,7 +138,8 @@
 							success(date) {
 								if(date > 0) {
 									alert("成功")
-									_this.goToPage(1, 3);
+									_this.goToPage(1, 3,null);
+									gangwei.goToPage(1, 3, null);
 								} else {
 									alert("不成功")
 								}
@@ -186,15 +188,24 @@
 					}
 
 				},
-				goToPage(n, s) {
+				goToPage(n, s, name) {
 					let _this = this;
-					$.getJSON(`http://127.0.0.1:8080/CqqPersonnelAction/api/${n}/${s}/0`, function(date) {
+					$.getJSON(`http://127.0.0.1:8080/CqqPersonnelAction/api/${n}/${s}/0/${name}`, function(date) {
 						_this.pageInfo = date;
 					});
+				},
+					handleClose(done) {
+					this.$confirm('确认关闭？')
+						.then(_ => {
+							this.radio = "";
+							done();
+						})
+						.catch(_ => {});
 				}
+			
 			},
 			mounted() {
-				this.goToPage(1, 3);
+				this.goToPage(1, 3, null);
 			}
 		})
 	</script>

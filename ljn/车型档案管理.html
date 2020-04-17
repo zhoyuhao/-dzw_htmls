@@ -1,135 +1,242 @@
 <!DOCTYPE html>
 <html class="x-admin-sm">
-    
-    <head>
-        <meta charset="UTF-8">
-        <link rel="stylesheet" href="../css/bootstrap.min.css" />
-        <title>欢迎页面-X-admin2.2</title>
-        <link rel="stylesheet" href="../css/index.css" />
+
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="../css/bootstrap.min.css" />
+		<title>欢迎页面-X-admin2.2</title>
+		<link rel="stylesheet" href="../css/index.css" />
 		<script type="text/javascript" src="../js/vue.js"></script>
 		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
 		<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
-        <meta name="renderer" content="webkit">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
-        <link rel="stylesheet" href="../css/font.css">
-        <link rel="stylesheet" href="../css/xadmin.css">
-        <script src="../lib/layui/layui.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../js/xadmin.js"></script>
-    </head>
-    
-    <body>
-        <div class="x-nav">
-            <span class="layui-breadcrumb">
-                <a href="">首页</a>
-                <a href="">演示</a>
-                <a>
-                    <cite>导航元素</cite></a>
-            </span>
-            <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
-                <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
-            </a>
-        </div>
-            <div class="layui-row layui-col-space15" id="carApp">
-                <div class="layui-col-md12">
-                    <div class="layui-card">
-                        <div class="layui-card-body " style="text-align: center;">
-                                <div class="layui-input-inline layui-show-xs-block">
-                                    <input type="text" v-model="carlicenceplate" placeholder="请输入车牌" autocomplete="off" class="layui-input"></div>
-                                <div class="layui-input-inline layui-show-xs-block">
-                                    <button class="layui-btn" @click="query(1,carlicenceplate)">
-                                        <i class="layui-icon">&#xe615;</i></button>
-                                </div>
-                        </div>
-                        <div class="layui-card-header">
-                            <button class="layui-btn" onclick="xadmin.open('添加用户','车辆信息添加.html',800,600)">
-                                <i class="layui-icon"></i>添加</button></div>
-                      	<template>
-							<el-table :data="this.page.list" style="width: 100%">
-								<el-table-column label="车辆车牌" prop="carlicenceplate">
-								</el-table-column>
-								<el-table-column label="车辆品牌" prop="carbrand">
-								</el-table-column>
-								<el-table-column label="车辆颜色" prop="carcolor">
-								</el-table-column>
-								<el-table-column label="车辆配置" prop="carconfigure">
-								</el-table-column>
-								<el-table-column label="车辆产地" prop="carlocality">
-								</el-table-column>
-								<el-table-column label="车辆款式" prop="carmodel">
-								</el-table-column>
-								<el-table-column label="操作">
-									<template slot-scope="temp">
-										<el-button icon="el-icon-edit" size="mini" type="primary" @click="showView(temp.row.carid)">编辑</el-button>
-										<el-button icon="el-icon-delete" size="mini" type="danger" @click="delInfo(temp.row.carid)">删除</el-button>
-									</template>
-								</el-table-column>
-							</el-table>
-						</template>
-						<div style="text-align:right;padding-right: 200px;">
-							<el-button size="mini" @click="handleCurrentChange(1)">第一页</el-button>
-							<el-button size="mini" v-if="page.hasPreviousPage" @click="handleCurrentChange(page.prePage)">上一页</el-button>
-							<el-button size="mini" v-if="page.hasNextPage" @click="handleCurrentChange(page.nextPage)">下一页</el-button>
-							<el-button size="mini" @click="handleCurrentChange(page.pages)">最后页</el-button>
-							<span>第{{page.pageNum}}页/共{{page.pages}}页</span>
-						</div>
-						
-                    </div>
-                </div>
-            </div>
-    </body>
-    <script type="text/javascript" src="../js/index.js"></script>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+		<link rel="stylesheet" href="../css/font.css">
+		<link rel="stylesheet" href="../css/xadmin.css">
+		<script src="../lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../js/xadmin.js"></script>
+	</head>
+
+	<body>
+		<div class="layui-fluid" id="legworkApp">
+			<div class="layui-col-md12">
+				<div class="layui-card">
+					<template>
+						<el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+							<el-tab-pane label="未出车" name="未出车">
+								<div class="layui-card-header">
+									<el-button icon="el-icon-edit" size="mini" type="primary" @click="addClick">添加</el-button>
+								</div>
+								<template>
+									<el-table :data="this.page.list" style="width: 100%">
+										<el-table-column label="车辆编号" prop="legworkid">
+										</el-table-column>
+										<el-table-column label="车牌号" prop="platenumber">
+										</el-table-column>
+										<el-table-column label="品牌" prop="brand">
+										</el-table-column>
+										<el-table-column label="技工" prop="artisan">
+										</el-table-column>
+										<el-table-column label="状态" prop="state">
+										</el-table-column>
+										<el-table-column label="操作" width="300px">
+											<template slot-scope="temp">
+												<el-button icon="el-icon-edit" size="mini" type="primary" @click="showView(temp.row.legworkid)">编辑</el-button>
+												<el-button icon="el-icon-delete" size="mini" type="danger" @click="delInfo(temp.row.legworkid)">删除</el-button>
+											</template>
+										</el-table-column>
+									</el-table>
+								</template>
+								<div class="block" style="text-align: center;margin-top: 3ex;">
+									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[9,6,3]" :page-size="9" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
+									</el-pagination>
+								</div>
+							</el-tab-pane>
+							<el-tab-pane label="已出车" name="已出车">
+								<div class="layui-card-header">
+									<el-button icon="el-icon-edit" size="mini" type="primary" @click="addClick">添加</el-button>
+								</div>
+								<template>
+									<el-table :data="this.page.list" style="width: 100%">
+										<el-table-column label="车辆编号" prop="legworkid">
+										</el-table-column>
+										<el-table-column label="车牌号" prop="platenumber">
+										</el-table-column>
+										<el-table-column label="品牌" prop="brand">
+										</el-table-column>
+										<el-table-column label="技工" prop="artisan">
+										</el-table-column>
+										<el-table-column label="状态" prop="state">
+										</el-table-column>
+										<el-table-column label="操作" width="300px">
+											<template slot-scope="temp">
+												<el-button icon="el-icon-edit" size="mini" type="primary" @click="showView(temp.row.legworkid)">编辑</el-button>
+												<el-button icon="el-icon-delete" size="mini" type="danger" @click="delInfo(temp.row.legworkid)">删除</el-button>
+											</template>
+										</el-table-column>
+									</el-table>
+								</template>
+								<div class="block" style="text-align: center;margin-top: 3ex;">
+									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[9,6,3]" :page-size="9" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
+									</el-pagination>
+								</div>
+
+							</el-tab-pane>
+							<el-tab-pane label="维修中" name="维修中">
+								<div class="layui-card-header">
+									<el-button icon="el-icon-edit" size="mini" type="primary" onclick=@click="addClick">添加</el-button>
+								</div>
+								<template>
+									<el-table :data="this.page.list" style="width: 100%">
+										<el-table-column label="车辆编号" prop="legworkid">
+										</el-table-column>
+										<el-table-column label="车牌号" prop="platenumber">
+										</el-table-column>
+										<el-table-column label="品牌" prop="brand">
+										</el-table-column>
+										<el-table-column label="技工" prop="artisan">
+										</el-table-column>
+										<el-table-column label="状态" prop="state">
+										</el-table-column>
+										<el-table-column label="操作">
+											<template slot-scope="temp">
+												<el-button icon="el-icon-edit" size="mini" type="primary" @click="showView(temp.row.legworkid)">编辑</el-button>
+												<el-button icon="el-icon-delete" size="mini" type="danger" @click="delInfo(temp.row.legworkid)">删除</el-button>
+											</template>
+										</el-table-column>
+									</el-table>
+								</template>
+								<div class="block" style="text-align: center;margin-top: 3ex;">
+									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[9,6,3]" :page-size="9" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
+									</el-pagination>
+								</div>
+
+							</el-tab-pane>
+						</el-tabs>
+					</template>
+				</div>
+			</div>
+				<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="车辆品牌添加" :visible.sync="isshow1" width="50%">
+				<div id="cnt1"></div>
+			</el-dialog>
+			<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="车辆品牌修改" :visible.sync="isshow2" width="50%">
+				<div id="cnt2"></div>
+			</el-dialog>
+			</el-dialog>
+		</div>
+	</body>
+	<script type="text/javascript" src="../js/index.js"></script>
 	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
-    <script>
-    	var carApp = new Vue({
-			el: '#carApp',
+	<script>
+		var legworkApp = new Vue({
+			el: '#legworkApp',
 			data: {
+				currentPage4: 1,
 				page: [],
-				carlicenceplate:"",
+				activeName: '未出车',
+				bill: {
+					legworkid: '',
+					state: '',
+				},
+				isshow1: false,
+				isshow2: false,
 			},
-			methods:{
-				//分页查询车辆信息
-				query(pageNum,carlicenceplate){
-					if(carlicenceplate==""){
-						carlicenceplate=null;
-					}
+
+			methods: {
+				//查询外勤车辆信息
+				query(pageNum, pageSize, state) {
 					let _this = this;
-					$.getJSON(`http://localhost:8080/ljn/api/ljnCustomercarAction/query/${pageNum}/${carlicenceplate}`, function(res) {
+					$.getJSON(`http://localhost:8080/ljn/api/ljnlegworkAction/query/${pageNum}/${pageSize}/${state}`, function(res) {
+						_this.currentPage4 = res.pageNum;
 						_this.page = res;
 					});
 				},
-				//删除车辆信息
-				delInfo(carid){
+				//根据状态切换外勤车辆信息
+				handleClick(tab, event) {
 					let _this = this;
-					if(confirm("是否删除")){
-						$.getJSON(`http://localhost:8080/ljn/api/ljnCustomercarAction/remove/${carid}`, function(res) {
-						if(res>0){
-							alert("删除成功")
-							_this.query(1, "null");
-						}
-					});
+					console.log(tab, event);
+					_this.query(1, _this.page.pageSize, _this.activeName)
+				},
+				//删除外勤车辆信息
+				delInfo(legworkid) {
+					let _this = this;
+					if(confirm("是否删除")) {
+						$.getJSON(`http://localhost:8080/ljn/api/ljnlegworkAction/delete/${legworkid}`, function(res) {
+							if(res > 0) {
+								_this.$alert("删除成功")
+								_this.query(1, _this.page.pageSize, _this.activeName)
+							}
+						});
 					}
 				},
-				//翻页
-				handleCurrentChange(pageNum){
-					let _this = this;
-					_this.query(pageNum,"null");
+				//查询指定外勤车辆信息
+				showView(legworkid) {
+					let _this=this;
+					$.getJSON(`http://localhost:8080/ljn/api/ljnlegworkAction/queryid/${legworkid}`, function(res) {
+						window.sessionStorage.setItem('legwork', JSON.stringify(res));
+						_this.isshow2 = true;
+					})
 				},
-				//查询指定车辆信息
-				showView(carid){
+				//前去接车
+				jie(legworkid) {
+					let _this=this;
+					$.getJSON(`http://localhost:8080/ljn/api/ljnlegworkAction/queryid/${legworkid}`, function(res) {
+						window.sessionStorage.setItem('jie', JSON.stringify(res));
+						_this.isshow3 = true;
+					})
+				},
+				//完成接车任务
+				hai(legworkid,wid) {
 					let _this = this;
-					$.getJSON(`http://localhost:8080/ljn/api/ljnCustomercarAction/queryid/${carid}`, function(res) {
-					window.sessionStorage.setItem('car', JSON.stringify(res));
-					xadmin.open('修改车辆','车辆信息修改.html',800,600);
-				})
+					if(confirm("是否确定接车成功")) {
+					//修改维修信息
+					$.getJSON(`http://localhost:8080/ljn/api/ljnServiceAction/update/2/${wid}`, function(res) {
+					})
+						_this.bill.legworkid = legworkid;
+						_this.bill.state = "未出车",
+							$.ajax({
+								type: "POST",
+								contentType: "application/json",
+								data: JSON.stringify(_this.bill),
+								url: `http://127.0.0.1:8080/ljn/api/ljnlegworkAction/update`,
+								success: function(res) {
+									if(res != 0) {
+										_this.$alert("还车成功");
+										_this.query(1, _this.page.pageSize, "已出车");
+									}
+								}
+							});
+					}
+				},
+				//翻页实现
+				handleSizeChange(val) {
+					let _this = this;
+					_this.currentPage4 = 1;
+					this.query(1, val, _this.activeName);
+					console.log(`每页 ${val} 条`);
+				},
+				handleCurrentChange(val) {
+					let _this = this;
+					this.query(val, this.page.pageSize,_this.activeName);
+					console.log(`当前页: ${val}`);
+				},
+				handlerOpen1() {
+					$("#cnt1").load('车辆品牌添加.html'); //ajax读取页面
+				},
+				handlerOpen2() {
+					$("#cnt2").load('车辆品牌修改.html'); //ajax读取页面
+				},
+				//添加外勤车辆信息
+				addClick() {
+					this.isshow1 = true;
 				},
 			},
 			mounted() {
 				let _this = this;
-				_this.query(1, "");
+				_this.query(1, 9, "未出车");
 			},
-    	})
-    	
-    </script>
+		})
+	</script>
 
 </html>

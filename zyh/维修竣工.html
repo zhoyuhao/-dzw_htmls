@@ -278,6 +278,7 @@
 	<script type="text/javascript" src="../js/index.js"></script>
 	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
 	<script>
+
 		var zhnanei = new Vue({
 			el: "#juegong",
 			data: {
@@ -421,10 +422,17 @@
 					let startDate=new Date(this.sjObj.wstatdate);
 					let ms = date.getTime() - startDate.getTime();
             		if (ms < 0) return 0;
-           			this.shjian=parseFloat(ms/1000/60/60).toFixed(2);//工时
+           			this.shjian=parseFloat(parseInt(ms/1000/60)/60).toFixed(2);//工时
+           			
            			this.gf=this.sjObj.hmoney;
            			let gsf=parseInt((this.gf/60).toFixed(2)*(this.shjian*60).toFixed(2));
-				
+          
+					//console.log("之前"+this.shjian);
+           				if(this.shjian.indexOf('.')>0){
+           					this.shjian=parseInt(this.shjian.substring(0,this.shjian.indexOf('.')))+1;
+           						//console.log("之后"+this.shjian);
+           				}
+           				
 					$.ajax(`http://127.0.0.1:8080/zyhServiceAction/api/updateByWidToStatuc/${_this.radio2}/${_this.id}/${date}/${this.shjian}/${gsf}` ,{
 						type: "put",
 						dataType: "json",
@@ -449,6 +457,7 @@
 				},
 				/*查看*/
 				queryCk() {
+					
 					this.page(1, this.tableData.pageSize, 1, 2);
 				},
 				queryCk2() {
@@ -527,7 +536,8 @@
 					var startDate=new Date(obj.wstatdate);
 					    var ms = endDate.getTime() - startDate.getTime();
             			if (ms < 0) return 0;
-           			this.shjian=parseInt(ms/1000/60/60);
+           			this.shjian=parseFloat(ms/1000/60/60).toFixed(2);
+           			console.log(this.shjian);
            			this.type=obj.type;
            			this.danwei=obj.type==1?obj.bzname:obj.wjname+'  ('+obj.bzname+')';
            			this.gf=obj.hmoney;

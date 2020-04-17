@@ -3,7 +3,7 @@ var indexShowView=[
 {label:"前台管理",list:[{label:"结算中心",url:'cqq/结算中心.html'},
 {label:'会员卡管理',url:'cqq/会员管理.html'}]},
 {label:"人事管理",list:[{label:'员工管理',url:'lc/员工管理.html'},
-{label:'离职管理',url:'cqq/离职.html'},
+{label:'离职管理',url:'cqq/离职登记.html'},
 {label:'岗位管理',url:'zyh/岗位管理.html'},
 {label:'通讯录管理',url:'ljn/通讯录.html'},
 {label:'技工管理',url:'yld/技工管理.html'},

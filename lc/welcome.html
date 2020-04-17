@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<title>欢迎页面-X-admin2.2</title>
+		<title>首頁</title>
 		<meta name="renderer" content="webkit">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
@@ -11,261 +11,293 @@
 		<link rel="stylesheet" href="../css/xadmin.css">
 		<script src="../lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../js/xadmin.js"></script>
+		<link rel="stylesheet" href="../css/bootstrap.min.css" />
+		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+		<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
 		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
 		<!--[if lt IE 9]>
           <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
           <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
-        <style>
-        	.layui-row{
-        		text-align: center;
-        	}
-        	p{
-        		size: b5;
-        	}
-        </style>
+		<style>
+			.layui-row {
+				text-align: center;
+			}
+			
+			p {
+				size: b5;
+			}
+			
+			[v-cloak] {
+				display: none;
+			}
+			aa{
+				box-shadow: 0 2px 4px rgba（0，0，0，.12），0 0 6px rgba（0，0，0，.04）;
+			}
+		</style>
 	</head>
 
 	<body>
-		<div class="layui-fluid">
+		<div class="layui-fluid" id="welcome" v-cloak>
 			<div class="layui-row layui-col-space15">
-				<div class="layui-col-md12">
-					<div class="layui-card">
-						<div class="layui-card-body ">
-							<blockquote class="layui-elem-quote">欢迎管理员：
-								<span class="x-red">test</span>！当前时间:2018-04-25 20:50:53
-							</blockquote>
-						</div>
-					</div>
-				</div>
-				<div class="layui-col-md12">
-					<div class="layui-card">
-						<div class="layui-card-header">数据统计</div>
-						<div class="layui-card-body ">
-							<ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
-								<li class="layui-col-md3 layui-col-xs6">
+
+				<div class="layui-card">
+
+					<div class="layui-card-body ">
+						
+							<el-table :data="sy" style="width: 100%; ">
+								<ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+								<el-table-column type="expand">
+									<template slot-scope="props">
+										<el-form label-position="left" inline class="demo-table-expand">
+											<el-form-item>
+												<li class="layui-col-md3 layui-col-xs8">
+													<a href="javascript:;" class="x-admin-backlog-body">
+														<h3>站内维修</h3>
+														<p>
+															<cite>11</cite></p>
+													</a>
+												</li>
+											</el-form-item>
+
+										</el-form>
+									</template>
+								</el-table-column>
+								</ul>
+							</el-table>
+						
+
+						<!--	<ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+								<li class="layui-col-md3 layui-col-xs8">
 									<a href="javascript:;" class="x-admin-backlog-body">
 										<h3>站内维修</h3>
-										<p><cite>接车台数：66</cite></p>
-										<p><cite>结算台数：66</cite></p>
-										<p><cite>在修台数：66</cite></p>
-										<p><cite>反修台数：66</cite></p>
 										<p>
-                                              	<cite><br/></cite>
-                                            </p>
-                                              <p>
-                                              	<cite><br/></cite></p>
+											<cite>{{props.row.sy.aa}}</cite></p>
 									</a>
 								</li>
-								<li class="layui-col-md3 layui-col-xs7">
+								<li class="layui-col-md3 layui-col-xs8">
 									<a href="javascript:;" class="x-admin-backlog-body">
-										<h3>站外维修</h3>
-										<p><cite>接车台数：66</cite></p>
-										<p><cite>结算台数：66</cite></p>
-										<p><cite>在修台数：66</cite></p>
-										<p><cite>反修台数：66</cite></p>
+										<h3>今日在修台次</h3>
 										<p>
-											<cite><br/></cite>
-										</p>
-										<p>
-											<cite><br/></cite></p>
+											<cite></cite></p>
 									</a>
 								</li>
-								
-								<li class="layui-col-md3 layui-col-xs7">
+								<li class="layui-col-md3 layui-col-xs8">
+									<a href="javascript:;" class="x-admin-backlog-body">
+										<h3>今日结算台次</h3>
+										<p>
+											<cite id="jc"></cite></p>
+									</a>
+								</li>
+
+								<li class="layui-col-md3 layui-col-xs8">
 									<a href="javascript:;" class="x-admin-backlog-body">
 										<h3>今日收入</h3>
 										<p>
-											<cite>现金：67元</p>
-                                        <p>
-                                            <cite>刷卡：67元</cite></p>
-										<p>
-											<cite>退货：67元</cite></p>
-										<p>
-											<cite>累计：67元</cite></p>
-										<p>
-											<cite><br/></cite>
-										</p>
-										<p>
-											<cite><br/></cite></p>
-
+											<cite id="xj"></cite></p>
 									</a>
 								</li>
-								<li class="layui-col-md3 layui-col-xs7">
-									<a href="javascript:;" class="x-admin-backlog-body">
-										<h3>今日调度</h3>
-										<p>
-											<cite>站外车辆：99</cite></p>
-										<p>
-											<cite>站内车辆：99</cite></p>
-										<p>
-											<cite>自费车辆：99</cite></p>
-										<p>
-											<cite>自费金额：99</cite></p>
-										
-										<p>
-											<cite>三保总金额：99</cite></p>
-										<p>
-											<cite>含三保车辆数：99</cite></p>
 
-									</a>
-								</li>
-								<!-- <li class="layui-col-md2 layui-col-xs6">
-                                    <a href="javascript:;" class="x-admin-backlog-body">
-                                        <h3>文章数</h3>
-                                        <p>
-                                            <cite>67</cite></p>
-                                    </a>
-                                </li>
-                                <li class="layui-col-md2 layui-col-xs6 ">
-                                    <a href="javascript:;" class="x-admin-backlog-body">
-                                        <h3>文章数</h3>
-                                        <p>
-                                            <cite>6766</cite></p>
-                                    </a>
-                                </li>-->
-							</ul>
-						</div>
+							</ul>-->
+
 					</div>
 				</div>
-				<div class="layui-col-sm14 layui-col-md6">
-					<div class="layui-card">
-						<div class="layui-card-header">站内维修统计
-							<span class="layui-badge layui-bg-cyan layuiadmin-badge">周</span></div>
-						<div id="main" style="width: 100%;height:400px;"></div>
-					</div>
-				</div>
-				<div class="layui-col-sm14 layui-col-md6">
-					<div class="layui-card">
-						<div class="layui-card-header">周收入
-							<span class="layui-badge layui-bg-cyan layuiadmin-badge">周</span></div>
-						<div id="main1" style="width: 100%;height:400px;"></div>
-					</div>
-				</div>
-				
-				
 			</div>
+			<div class="layui-col-sm14 layui-col-md6">
+				<div class="layui-card">
+					<div class="layui-card-header">站内维修统计
+						<span class="layui-badge layui-bg-cyan layuiadmin-badge">周</span></div>
+					<div id="main" style="width: 100%;height:400px;"></div>
+				</div>
+			</div>
+			<div class="layui-col-sm14 layui-col-md6">
+				<div class="layui-card">
+					<div class="layui-card-header">周收入
+						<span class="layui-badge layui-bg-cyan layuiadmin-badge">周</span></div>
+					<div id="main1" style="width: 100%;height:400px;"></div>
+				</div>
+			</div>
+
+		</div>
 		</div>
 	</body>
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
 	<script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
 	<script>
-		
-		 var myChart = echarts.init(document.getElementById('main'));
-		 
-		 option = {
-   /* title: {
-        text: '堆叠区域图'
-    },*/
-    tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-            type: 'cross',
-            label: {
-                backgroundColor: '#6a7985'
-            }
-        }
-    },
-    legend: {
-        data: ['接车台数', '结算台数', '在修台数', '返修台数']
-    },
-    toolbox: {
-        feature: {
-            saveAsImage: {}
-        }
-    },
-    grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        containLabel: true
-    },
-    xAxis: [
-        {
-            type: 'category',
-            boundaryGap: false,
-            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-        }
-    ],
-    yAxis: [
-        {
-            type: 'value'
-        }
-    ],
-    series: [
-        {
-            name: '接车台数',
-            type: 'line',
-            stack: '总量',
-            areaStyle: {},
-            data: [120, 132, 101, 134, 90, 230, 210]
-        },
-        {
-            name: '结算台数',
-            type: 'line',
-            stack: '总量',
-            areaStyle: {},
-            data: [220, 182, 191, 234, 290, 330, 310]
-        },
-        {
-            name: '在修台数',
-            type: 'line',
-            stack: '总量',
-            areaStyle: {},
-            data: [150, 232, 201, 154, 190, 330, 410]
-        },
-        {
-            name: '返修台数',
-            type: 'line',
-            stack: '总量',
-            areaStyle: {},
-            data: [320, 332, 301, 334, 390, 330, 320]
-        }
-    ]
-};
-// 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(option);
+		var welcome = new Vue({
+			el: "#welcome",
+			data: {
+				sy: []
+			},
+			methods: {
+				test() {
+					window.setInterval(() => {
+						//站内维修
+						$("#zn").html("");
+						$.ajax({
+							url: 'http://127.0.0.1:8080/lc/api/services/zn',
+							timeout: 60000,
+							async: true,
+							type: 'get',
+							success: function(data) {
+								console.info(data);
+								this.sy = data;
+								console.info(this.sy);
+							}
+						});
+						/*$("#xj").html("");
+						//站外维修
+						$.ajax({
 
-    var myChart1 = echarts.init(document.getElementById('main1'));
+							url: 'http://127.0.0.1:8080/lc/api/services/xianjin',
+							async: true,
+							type: 'get',
+							success: function(data) {
+								var a = data.bb;
+								$("#xj").append(a);
+							}
+						});
+						$("#zj").html("");
+						$.ajax({
+
+							url: 'http://127.0.0.1:8080/lc/api/services/zaixiu',
+							async: true,
+							type: 'get',
+							success: function(data) {
+								var a = data.cc;
+								$("#zj").append(a);
+							}
+						});*/
+
+					}, 2000);
+				}
+			},
+			mounted() {
+				this.test();
+			}
+		});
+	</script>
+	<script>
+		var myChart = echarts.init(document.getElementById('main'));
+
+		option = {
+			/* title: {
+			     text: '堆叠区域图'
+			 },*/
+			tooltip: {
+				trigger: 'axis',
+				axisPointer: {
+					type: 'cross',
+					label: {
+						backgroundColor: '#6a7985'
+					}
+				}
+			},
+			legend: {
+				data: ['接车台数', '结算台数', '在修台数', '返修台数']
+			},
+			toolbox: {
+				feature: {
+					saveAsImage: {}
+				}
+			},
+			grid: {
+				left: '3%',
+				right: '4%',
+				bottom: '3%',
+				containLabel: true
+			},
+			xAxis: [{
+				type: 'category',
+				boundaryGap: false,
+				data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+			}],
+			yAxis: [{
+				type: 'value'
+			}],
+			series: [{
+					name: '接车台数',
+					type: 'line',
+					stack: '总量',
+					areaStyle: {},
+					data: [120, 132, 101, 134, 90, 230, 210]
+				},
+				{
+					name: '结算台数',
+					type: 'line',
+					stack: '总量',
+					areaStyle: {},
+					data: [220, 182, 191, 234, 290, 330, 310]
+				},
+				{
+					name: '在修台数',
+					type: 'line',
+					stack: '总量',
+					areaStyle: {},
+					data: [150, 232, 201, 154, 190, 330, 410]
+				},
+				{
+					name: '返修台数',
+					type: 'line',
+					stack: '总量',
+					areaStyle: {},
+					data: [320, 332, 301, 334, 390, 330, 320]
+				}
+			]
+		};
+		// 使用刚指定的配置项和数据显示图表。
+		myChart.setOption(option);
+
+		var myChart1 = echarts.init(document.getElementById('main1'));
 		//圆转
-        
-        option1 = {
-    title: {
-        text: '周收入来源',
-        /*subtext: '纯属虚构',*/
-        left: 'center'
-    },
-    tooltip: {
-        trigger: 'item',
-        formatter: '{a} <br/>{b} : {c} ({d}%)'
-    },
-    legend: {
-        orient: 'vertical',
-        left: 'left',
-        data: ['接车台数', '结算台数', '在修台数', '返修台数', '搜索引擎']
-    },
-    series: [
-        {
-            name: '收入来源',
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '60%'],
-            data: [
-                {value: 66, name: '刷卡'},
-                {value: 66, name: '现金'},
-                {value: 66, name: '退货'}
 
-            ],
-            emphasis: {
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
-                }
-            }
-        }
-    ]
-};
-myChart1.setOption(option1);
+		option1 = {
+			title: {
+				text: '周收入来源',
+				/*subtext: '纯属虚构',*/
+				left: 'center'
+			},
+			tooltip: {
+				trigger: 'item',
+				formatter: '{a} <br/>{b} : {c} ({d}%)'
+			},
+			legend: {
+				orient: 'vertical',
+				left: 'left',
+				data: ['接车台数', '结算台数', '在修台数', '返修台数', '搜索引擎']
+			},
+			series: [{
+				name: '收入来源',
+				type: 'pie',
+				radius: '55%',
+				center: ['50%', '60%'],
+				data: [{
+						value: 66,
+						name: '刷卡'
+					},
+					{
+						value: 66,
+						name: '现金'
+					},
+					{
+						value: 66,
+						name: '退货'
+					}
+
+				],
+				emphasis: {
+					itemStyle: {
+						shadowBlur: 10,
+						shadowOffsetX: 0,
+						shadowColor: 'rgba(0, 0, 0, 0.5)'
+					}
+				}
+			}]
+		};
+		myChart1.setOption(option1);
 	</script>
 
 </html>
