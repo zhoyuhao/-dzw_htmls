@@ -16,6 +16,21 @@
 			.winput {
 				width: 120px;
 			}
+			
+			.demo-table-expand {
+				font-size: 0;
+			}
+			
+			.demo-table-expand label {
+				width: 90px;
+				color: #99a9bf;
+			}
+			
+			.demo-table-expand .el-form-item {
+				margin-right: 0;
+				margin-bottom: 0;
+				width: 50%;
+			}
 		</style>
 	</head>
 
@@ -23,225 +38,159 @@
 		<div id="zhanwai">
 			<el-container>
 				<el-main>
-					<el-tabs value="first" style="margin: 0px auto;margin-top: 20px;width: 90%;">
-						<el-tab-pane label="作业中车辆" name="first">
-							<el-form :model="form" label-width="100px" size="mini" label-position="left" :inline="true">
+					<el-tabs value="1">
+						<el-tab-pane label="维修下单" name="1" style="margin-top: 30px;">
+							<el-form :inline="true" label-width="100px" size="mini">
 								<el-form-item label="车牌号码：">
-									<el-input v-model="form.wcarid" size="mini" clearable></el-input>
+									<el-input v-model="fixformdata.carid" clearable></el-input>
 								</el-form-item>
 								<el-form-item>
-									<el-form-item>
-										<el-button @click="getServiceData(1)" type="primary" size="mini">查询信息</el-button>
-										<el-button @click="openServiceDialog" type="primary" size="mini">维修接车</el-button>
-									</el-form-item>
+									<el-button @click="getFixCarData(1)" size="mini">查询数据</el-button>
+									<el-button @click="getFixMaxWid();fixdialog = true" type="primary" size="mini">维修下单</el-button>
+								</el-form-item>
 							</el-form>
-							<el-table :data="fixdata.list" size="small">
-								<el-table-column label="维修单号" prop="wid" align="center" show-overflow-tooltip>
-								</el-table-column>
-								<el-table-column label="接车人" prop="wjname" align="center" show-overflow-tooltip>
-								</el-table-column>
-								<el-table-column label="顾客姓名" prop="wname" align="center" show-overflow-tooltip>
-								</el-table-column>
-								<el-table-column label="车牌号码" prop="wcarid" align="center" show-overflow-tooltip>
-								</el-table-column>
-								<el-table-column label="手机号码" prop="wphone" align="center" show-overflow-tooltip>
-								</el-table-column>
-								<el-table-column label="会员卡号" prop="wvipid" align="center" show-overflow-tooltip>
-								</el-table-column>
-								<el-table-column label="维修状态" prop="wstatic" align="center" show-overflow-tooltip>
+							<el-table stripe :data="fixcardata.list" size="small" style="width: 95%;margin: 0px auto;">
+								<el-table-column type="expand" label="详情">
 									<template slot-scope="temp">
-										{{temp.row.wstatic == 1 ?'接车':'接车'}}
+										<el-table :data="temp.row.serviceinfo" size="mini" style="width: 90%;margin: 0px auto;">
+											<el-table-column label="维修单据详情">
+												<el-table-column type="index" label="序号" align="center" show-overflow-tooltip>
+												</el-table-column>
+												<el-table-column prop="sdname" label="材料名称" align="center" show-overflow-tooltip>
+												</el-table-column>
+												<el-table-column prop="sdnumber" label="数量" align="center" show-overflow-tooltip>
+												</el-table-column>
+												<el-table-column prop="dprice" label="单价" align="center" show-overflow-tooltip>
+												</el-table-column>
+												<el-table-column prop="sdprice" label="总价" align="center" show-overflow-tooltip>
+												</el-table-column>
+											</el-table-column>
+										</el-table>
 									</template>
 								</el-table-column>
-								<el-table-column label="调度派工" align="center" show-overflow-tooltip>
+								<el-table-column type="index" label="序号" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="wid" label="单据编号" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="wname" label="客户姓名" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="wjname" label="班组/技工" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="wtype" label="业务类型" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="wcarid" label="车牌号码" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="wstatic" label="维修状态" align="center" show-overflow-tooltip>
 									<template slot-scope="temp">
-										<el-button @click="centerDialogVisible2 = true" circle size="small" icon="el-icon-thumb"></el-button>
+										{{temp.row.wstatic == 1 ?'接车中':'未知状态'}}
 									</template>
+								</el-table-column>
+								<el-table-column prop="wsumprice" label="估价(元)" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="wsumprice" label="维修服务" align="center" show-overflow-tooltip>
+									<template slot-scope="temp">
+										{{temp.row.wleixi == 1?'站内服务' :'站外服务'}}
+									</template>
+								</el-table-column>
+								<el-table-column prop="wstatdate" label="开始时间" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="wenddate" label="结束时间" align="center" show-overflow-tooltip>
 								</el-table-column>
 							</el-table>
-							<div style="margin: 20px 0px;">
-								<el-button @click="getServiceData(1)" type="primary" size="mini">首页</el-button>
-								<el-button @click="getServiceData(fixdata.prePage)" v-if="fixdata.hasPreviousPage" type="primary" size="mini">上一页</el-button>
-								<el-button @click="getServiceData(fixdata.nextPage)" v-if="fixdata.hasNextPage" type="primary" size="mini">下一页</el-button>
-								<el-button @click="getServiceData(fixdata.navigateLastPage)" type="primary" size="mini">尾页</el-button>
+							<div style="margin-top: 20px;">
+								<el-pagination @current-change="getFixCarData" background layout="total, prev, pager, next, jumper" :page-size="4" :total="fixcardata.total">
+								</el-pagination>
 							</div>
-							<!--<el-divider content-position="center">客户及车辆信息</el-divider>
-							<el-table :data="userdata" size="small">
-								<el-table-column label="客户信息">
-									<el-table-column label="用户姓名" prop="name" align="center" show-overflow-tooltip>
-									</el-table-column>
-									<el-table-column label="用户类型" prop="type" align="center" show-overflow-tooltip>
-									</el-table-column>
-									<el-table-column label="用户生日" prop="birthday" align="center" show-overflow-tooltip>
-									</el-table-column>
-									<el-table-column label="手机号码" prop="phone" align="center" show-overflow-tooltip>
-									</el-table-column>
-									<el-table-column label="用户地址" prop="address" align="center" show-overflow-tooltip>
-									</el-table-column>
-								</el-table-column>
-							</el-table>
-							<el-table :data="cardata" size="small">
-								<el-table-column label="车辆信息">
-									<el-table-column label="车辆品牌" prop="brand" align="center" show-overflow-tooltip>
-									</el-table-column>
-									<el-table-column label="车辆颜色" prop="color" align="center" show-overflow-tooltip>
-									</el-table-column>
-									<el-table-column label="车险日期" prop="dated" align="center" show-overflow-tooltip>
-									</el-table-column>
-									<el-table-column label="车类型" prop="cartype" align="center" show-overflow-tooltip>
-									</el-table-column>
-									<el-table-column label="发动机" prop="engine" align="center" show-overflow-tooltip>
-									</el-table-column>
-									<el-table-column label="保养日期" prop="mdate" align="center" show-overflow-tooltip>
-									</el-table-column>
-								</el-table-column>
-							</el-table>-->
-						</el-tab-pane>
-						<el-tab-pane label="维修历史" name="second">
-							<el-table :data="fixhistory" size="small" height="250">
-								<el-table-column label="维修单号" prop="wid" align="center" show-overflow-tooltip>
-								</el-table-column>
-								<el-table-column label="接车时间" prop="wstatdate" align="center" show-overflow-tooltip>
-								</el-table-column>
-								<el-table-column label="业务类型" prop="tos" align="center" show-overflow-tooltip>
-								</el-table-column>
-								<el-table-column label="顾客姓名" prop="wname" align="center" show-overflow-tooltip>
-								</el-table-column>
-								<el-table-column label="车牌号码" prop="carid" align="center" show-overflow-tooltip>
-								</el-table-column>
-								<el-table-column label="手机号码" prop="phone" align="center" show-overflow-tooltip>
-								</el-table-column>
-								<el-table-column label="会员卡号" prop="usercard" align="center" show-overflow-tooltip>
-								</el-table-column>
-								<el-table-column label="结算时间" prop="rtime" align="center" show-overflow-tooltip>
-								</el-table-column>
-								<el-table-column label="消费金额" prop="price" align="center" show-overflow-tooltip>
-								</el-table-column>
-							</el-table>
-						</el-tab-pane>
 					</el-tabs>
-					<el-dialog title="新增维修单" width="70%" :visible.sync="centerDialogVisible" center :close-on-click-modal="false" :close-on-press-escape="false" :modal="false" :show-close="false">
-						<div>
-							<el-form label-width="100px" :inline="true" size="mini" style="width: 100%;">
-								<el-form-item label="维修单号：">
-									<el-input v-model="formfix.wid" disabled></el-input>
-								</el-form-item>
-								<el-form-item label="客户姓名：">
-									<el-input v-model="formfix.wname" ></el-input>
-								</el-form-item>
-								<el-form-item label="接车人：">
-									<el-input v-model="formfix.wjname" ></el-input>
-								</el-form-item>
-								<el-form-item label="会员卡号：">
-									<el-input v-model="formfix.wvipid" ></el-input>
-								</el-form-item>
-								<el-form-item label="开始时间：">
-									<el-date-picker v-model="formfix.wstatdate" type="date" placeholder="选择日期" value-format="yyyy-MM-dd" style="width: 178px;">
-									</el-date-picker>
-								</el-form-item>
-								<el-form-item label="结束时间：">
-									<el-date-picker v-model="formfix.wenddate" type="date" placeholder="选择日期" value-format="yyyy-MM-dd" style="width: 178px;">
-									</el-date-picker>
-								</el-form-item>
-								<el-form-item label="维修类型：">
-									<el-select @change="getServiceGoodsData" v-model="formfix.tos" placeholder="请选择" size="mini" style="width: 178px;">
-										<el-option v-for="item in fixgoodsitem" :key="item.xmid" :label="item.xnames" :value="item.xmid">
-										</el-option>
-									</el-select>
-								</el-form-item>
-								<el-form-item label="维修项目：">
-									<el-select filterable v-model="formfix.fixitem" placeholder="请选择" size="mini" style="width: 178px;">
-										<el-option v-for="item in fixgoods" :key="item.gid" :label="item.gname" :value="item.gid">
-										</el-option>
-									</el-select>
-								</el-form-item>
-								<el-form-item label="材料数量：">
-									<el-input v-model.nunmber="formfix.fixcount" style="width: 120px;" size="mini"></el-input>
-									<el-button @click="addServiceGoods" type="primary">添加</el-button>
-								</el-form-item>
-							</el-form>
-							<el-table :data="fixitemdata" size="mini" height="200">
-								<el-table-column label="维修项目" prop="sdname" align="center" show-overflow-tooltip>
-								</el-table-column>
-								<el-table-column label="项目价格" prop="sdprice" align="center" show-overflow-tooltip>
-								</el-table-column>
-								<el-table-column label="次数/数量" prop="sdnumber" align="center" show-overflow-tooltip>
-								</el-table-column>
-								<el-table-column label="操作" align="center" show-overflow-tooltip>
-									<template slot-scope="temp">
-										<el-button @click="removeServiceGoods(temp.$index)" circle size="small" icon="el-icon-close"></el-button>
-									</template>
-								</el-table-column>
-							</el-table>
-						</div>
-						<span slot="footer" class="dialog-footer">
-							<el-button @click="centerDialogVisible = false" size="small">取 消</el-button>
-						  	<el-button type="primary" @click="addService" size="small">确 定</el-button>
-						</span>
-					</el-dialog>
-					<el-dialog title="调度派工" :visible.sync="centerDialogVisible2" center :close-on-click-modal="false" :close-on-press-escape="false" :modal="false" :show-close="false">
-						<div>
-							<el-form label-width="100px" size="small" label-position="top">
-								<el-form-item label="维修技工：">
-									<el-select filterable v-model="formfix.fixgrop" placeholder="请选择" size="mini" style="width: 178px;">
-										<!--<el-option-group v-for="item in opfixgrop" :key="item.value" :label="item.label" :value="item.value">
-											<el-option v-for="obj in item.options" :key="obj.value" :label="obj.label" :value="obj.value">
-											</el-option>
-										</el-option-group>-->
-									</el-select>
-								</el-form-item>
-								<el-form-item label="作业时间：">
-									<el-date-picker v-model="fixgroptime" type="date" placeholder="选择日期" size="mini">
-									</el-date-picker>
-								</el-form-item>
-							</el-form>
-						</div>
-						<span slot="footer" class="dialog-footer">
-							<el-button @click="centerDialogVisible2 = false" size="small">取 消</el-button>
-						  	<el-button type="primary" @click="centerDialogVisible2 = false" size="small">确 定</el-button>
-						</span>
-					</el-dialog>
-					<el-dialog width="70%" title="客户及车辆信息添加" :visible.sync="UserAndCardDialog" center :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
-						<el-form label-width="100px" size="small" :inline="true">
-							<el-form-item label="客户编号：">
-								<el-input v-model="usersData.cidk" disabled></el-input>
-								</el-date-picker>
-							</el-form-item>
+					<el-dialog width="90%" center :visible.sync="fixdialog" :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
+						<el-divider content-position="center" slot="title">
+							<h3 class="el-icon-edit-outline"> 维修订单添加 订单号：{{fixcardform.wid}}</h3>
+						</el-divider>
+						<el-form label-width="100px" size="mini" :inline="true">
 							<el-form-item label="客户姓名：">
-								<el-input v-model="usersData.wnamek"></el-input>
-							</el-form-item>
-							<el-form-item label="客户地址：">
-								<el-input v-model="usersData.caddressk"></el-input>
-							</el-form-item>
-							<el-form-item label="客户性别：">
-								<div style="width: 200px;">
-									<el-radio v-model="usersData.csexk" label="男">男</el-radio>
-									<el-radio v-model="usersData.csexk" label="女">女</el-radio>
-								</div>
+								<el-input v-model="fixcardform.wname"></el-input>
 							</el-form-item>
 							<el-form-item label="客户号码：">
-								<el-input v-model="usersData.cphonek"></el-input>
+								<el-input v-model="fixcardform.wphone"></el-input>
 							</el-form-item>
-							<el-form-item label="客户身份证：">
-								<el-input v-model="usersData.cidnumberk"></el-input>
+							<el-form-item label="车牌号码：">
+								<el-input v-model="fixcardform.wcarid"></el-input>
 							</el-form-item>
-							<el-form-item label="客户类型：">
-								<el-select filterable v-model="usersData.ctypek" placeholder="请选择" size="mini" style="width: 200px;">
-									<el-option key="临时客" label="临时客" value="临时客">
+							<el-form-item label="开始时间：">
+								<el-date-picker @change="ifTimeNotNull" style="width: 178px;" v-model="fixcardform.wstatdate" type="datetime" placeholder="选择日期">
+								</el-date-picker>
+							</el-form-item>
+							<el-form-item label="结束时间：">
+								<el-date-picker @change="ifTimeNotNull" style="width: 178px;" v-model="fixcardform.wenddate" type="datetime" placeholder="选择日期">
+								</el-date-picker>
+							</el-form-item>
+							<el-form-item label="维修人员：">
+								<el-select @change="addFixTimeMoney" v-model="fixformdata.wjname" style="width: 178px;" v-if="fixformdata.fixiftrue">
+									<el-option-group v-for="temp in prsAndGroupData" :key="temp.label" :label="temp.label">
+									  <el-option v-for="item in temp.options" :key="item.pid" :label="item.pname" :value="item.pid">
+									  </el-option>
+									</el-option-group>
+								</el-select>
+								<el-select v-model="fixcardform.wjname" style="width: 178px;" disabled v-if="!fixformdata.fixiftrue">
+								</el-select>
+							</el-form-item>
+							<el-form-item label="业务类型：">
+								<el-select @change="changeTypeData" v-model="fixformdata.wtype" multiple collapse-tags style="width: 178px;">
+									<el-option label="保养" value="保养"></el-option>
+									<el-option label="维修" value="维修"></el-option>
+									<el-option label="美容" value="美容"></el-option>
+									<el-option label="装饰" value="装饰"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="维修类型：">
+								<el-select @change="getFixGoodsItemData" v-model="fixformdata.fixType" style="width: 87px;">
+									<el-option v-for="item in fixTypeData" :key="item.xmid" :label="item.xnames" :value="item.xmid">
 									</el-option>
-									<el-option key="普通客户" label="普通客户" value="普通客户">
-									</el-option>
-									<el-option key="会员客户" label="会员客户" value="会员客户">
+								</el-select>
+								<el-select v-model="fixformdata.goodsid" style="width: 86px;">
+									<el-option v-for="item in fixGoodsData" :key="item.gid" :label="item.gname" :value="item.gid">
 									</el-option>
 								</el-select>
 							</el-form-item>
-							<el-form-item label="会员卡号：">
-								<el-input v-model="usersData.ckahaok"></el-input>
+							<el-form-item label="材料数量：">
+								<el-input v-model.number="fixformdata.gcount" style="width: 117px;"><template slot="append">个</template></el-input>
+								<el-button @click="addFixGoods" type="primary" size="mini">添加</el-button>
+							</el-form-item>
+							<el-form-item label="站外维修：">
+								<el-switch @change="orderStateChangeData" v-model="fixcardform.wleixi" :width="78" active-value="2" inactive-value="1" style="padding: 0px 50px;">
+								</el-switch>
+							</el-form-item>
+							<el-form-item label="接车派车：">
+								<el-select @change="addPickCarMoney" v-model="fixformdata.pickcar" style="width: 178px;" v-if="fixformdata.iftrue">
+									<el-option v-for="(item,i) in outCarData" :key="item.legworkid" :label="item.brand+'—'+item.platenumber" :value="i">
+									</el-option>
+								</el-select>
+								<el-select v-model="fixformdata.pickcar" style="width: 178px;" disabled v-if="!fixformdata.iftrue">
+									<!--<el-option v-for="item in fixGoodsData" :key="item.gid" :label="item.gname" :value="item.gid">
+									</el-option>-->
+								</el-select>
+							</el-form-item>
+							<el-form-item label="接车距离：">
+								<el-input @change="addPickCarMoney" v-model="fixformdata.kmMoney" style="width: 178px;" v-if="fixformdata.iftrue"><template slot="append">KM</template></el-input>
+								<el-input v-model="fixformdata.kmMoney" style="width: 178px;" v-if="!fixformdata.iftrue" disabled><template slot="append">KM</template></el-input>
 							</el-form-item>
 						</el-form>
+						<el-table :data="fixgoods" size="mini" style="width: 95%;margin: 0px auto;">
+							<el-table-column label="材料名称" prop="sdname" align="center"></el-table-column>
+							<el-table-column label="材料数量" prop="sdnumber" align="center"></el-table-column>
+							<el-table-column label="材料单价" prop="dprice" align="center"></el-table-column>
+							<el-table-column label="材料总价" prop="sdprice" align="center"></el-table-column>
+							<el-table-column label="操作" align="center">
+								<template slot-scope="temp" v-if="temp.row.type == 1">
+									<el-button @click="goodsControl(temp.$index,1)" icon="el-icon-plus" circle size="mini"></el-button>
+									<el-button @click="goodsControl(temp.$index,2)" icon="el-icon-minus" circle size="mini"></el-button>
+									<el-button @click="goodsControl(temp.$index,3)" icon="el-icon-close" circle size="mini"></el-button>
+								</template>
+							</el-table-column>
+						</el-table>
 						<span slot="footer" class="dialog-footer">
-							<el-button @click="UserAndCardDialog = false" size="medium">取 消</el-button>
-						  	<el-button type="primary" @click="UserAndCardDialog = false" size="medium">保 存</el-button>
+							<el-button @click="fixdialog = false" size="small">取 消</el-button>
+						  	<el-button type="primary" @click="addFixNumber" size="small">保 存</el-button>
 						</span>
 					</el-dialog>
 				</el-main>
@@ -253,187 +202,290 @@
 		var zhanwai = new Vue({
 			el: '#zhanwai',
 			data: {
-				centerDialogVisible: false,
-				centerDialogVisible2: false,
-				UserAndCardDialog: false,
-				fixcount: '',
-				fixgrop: '',
-				fixgroptime: '',
-				fixitemdata: [],
-				formfix: {
-					wid: '', //维修id
-					wname: '', //客户姓名
-					wjname: '', //接车人
-					wcarid: '', //车牌号
-					wphone: '', //客户号码
-					wvipid: '', //会员卡号
-					wstatic: '1', //维修状态
-					wstatdate: '', //开始时间
-					wenddate: '', //结束时间
-					wsumprice:'',//维修价格
-					tos:'',
-					fixitem:'',
-					fixcount:'1'
+				//模态框显示隐藏数据
+				fixdialog: false,
+				//用于查询的form数据
+				fixformdata: {
+					//车牌号码
+					carid: '',
+					//维修类型
+					fixType:'',
+					//商品编号
+					goodsid:'',
+					//商品添加数量
+					gcount:'1',
+					//派车编号
+					pickcar:'',
+					//接车距离
+					kmMoney:'',
+					//控件隐藏、显示
+					iftrue:false,
+					//维修工显示隐藏
+					fixiftrue:false,
+					//维修类型
+					wtype:'',
+					wjname:'',
 				},
-				formfixinfo: [],
-				fixitems: [],
-				//表单数据
-				form: {
-					wcarid: '', //车牌号码
-					wstatic: ''
+				//查询的维修单据
+				fixcardata: {},
+				//表单的维修单据
+				fixcardform: {
+					wid: '',
+					wname: '',
+					wcarid: '',
+					wphone: '',
+					wleixi: '1',
+					wstatdate: '',
+					wenddate: '',
+					wsumprice: '',
+					wstatic: '1',
+					wjname: '',
+					wtype: ''
 				},
-				fixdata: {},
-				fixhistory: [{
-					wid: '20200324001', //维修单号
-					wstatdate: '2020-3-23', //接车时间
-					tos: '快速洗车', //业务类型
-					etime: '2020-3-27', //完工时间
-					wname: '张三', //顾客姓名
-					carid: '京E42S6', //车牌号码
-					phone: '13875261423', //手机号码
-					usercard: 'ZS2234', //会员卡号
-					rtime: '2020-3-29', //结算时间
-					price: '450.0' //消费金额
-				}],
-				fixStatusData: [],
-				usersData: {
-					cidk: '',
-					cnamek: '',
-					caddressk: '',
-					csexk: '男',
-					cphonek: '',
-					cidnumberk: '',
-					ctypek: '',
-					ckahaok: ''
-				},
-				fixgoodsitem: [],
-				fixgoods: []
+				//维修类型数据
+				fixTypeData:[],
+				//维修类型下的商品数据
+				fixGoodsData:[],
+				//维修材料数据
+				fixgoods:[],
+				//技工组及技工
+				prsAndGroupData:[],
+				//站外维修接车数据
+				outCarData:[]
 			},
 			mounted() {
-				this.getServiceData(1);
-				this.getServiceStatusData();
-				this.getServiceItem();
-				this.getServiceGoodsData();
-				this.getServiceMaxWid();
+				this.getFixCarData(1);
+				this.getFixGoodsTypeData();
+				this.getFixPersonData();
+				this.getPickCarData();
 			},
 			methods: {
-				openServiceDialog() {
-					let _this = this;
-					if(this.form.wcarid != '') {
-						this.formfix.wcarid = this.form.wcarid;
-						this.centerDialogVisible = true;
-						//						this.getServiceData(1);
-						//						if(this.fixdata.list.length == 0){
-						//							this.$confirm('没有该车牌号及客户信息！是否添加？', '提示', {
-						//							      confirmButtonText: '确定',
-						//							      cancelButtonText: '取消',
-						//							      type: 'warning',
-						//							      center:true
-						//							    }).then(() => {
-						//							      _this.UserAndCardDialog = true;
-						//							    }).catch(() => {
-						//							    	_this.centerDialogVisible = true;
-						//							    });
-						//						}else{
-						//							this.centerDialogVisible = true;
-						//						}
-					} else {
-						this.$message({
-							message: '请输入车牌号码再进行下单接车',
-							center: true,
-							type: 'error'
-						});
-					}
-
-				},
-				getServiceData(page) {
+				//获取所有的维修订单数据
+				getFixCarData(page) {
 					let _this = this;
 					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryAllServicePage", {
-							page: page,
-							wcarid: _this.form.wcarid,
-							wstatic: _this.form.wstatic
-						},
-						(msg) => {
-							_this.fixdata = msg;
-							console.info(msg+"12");
-						});
-				},
-				getServiceStatusData() {
-					let _this = this;
-					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryAllServiceStatus",
-						(msg) => {
-							_this.fixStatusData = msg;
-							console.info(msg+"1");
-						});
-				},
-				getServiceItem() {
-					let _this = this;
-					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryAllGoodsItem",
-						function(msg) {
-							_this.fixgoodsitem = msg;
-							console.info(msg+"33");
-						});
-				},
-				getServiceGoodsData() {
-					let _this = this;
-					this.fixitem = '';
-					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryAllGoodsByType", {
-							typeid: _this.formfix.tos
-						},
-						(msg) => {
-							_this.fixgoods = msg;
-							console.info(msg+"11");
-						});
-				},
-				getServiceMaxWid(){
-					let _this = this;
-					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryMaxWid",
-					(msg) => {
-						_this.formfix.wid = msg;
+						page: page,
+						wcarid: _this.fixformdata.carid
+					}, function(msg) {
+						_this.fixcardata = msg;
 						console.info(msg);
 					});
 				},
-				addServiceGoods(){
+				//获取所有的维修类型数据
+				getFixGoodsTypeData() {
 					let _this = this;
-					$.each(_this.fixgoods, function(i,obj) {
-						if(obj.gid == _this.formfix.fixitem){
-							_this.fixitemdata.push({wid:_this.formfix.wid,sdname:obj.gname,sdprice:obj.gprice,sdnumber:_this.formfix.fixcount});
+					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryAllGoodsItem",
+					function(msg) {
+						_this.fixTypeData = msg;
+						console.info(msg);
+					});
+				},
+				//根据类型编号查询类型下的所有商品
+				getFixGoodsItemData(typeid) {
+					let _this = this;
+					this.fixformdata.goodsid = ''
+					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryAllGoodsByType",{typeid:typeid},
+					function(msg) {
+						_this.fixGoodsData = msg;
+						console.info(msg);
+					});
+				},
+				//获取订单编号
+				getFixMaxWid(){
+					let _this = this;
+					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryMaxWid",
+					function(msg) {
+						_this.fixcardform.wid = msg;
+					});
+				},
+				//获取所有技工数据
+				getFixPersonData(){
+					let _this = this;
+					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryAllPreson",function(msg){
+						_this.prsAndGroupData.push({label:'技工',options:msg});
+					});
+					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryALlPrsGroup",function(msg){
+						let data = [];
+						$.each(msg,function(i,obj){
+							data.push({pid:obj.bzid,pname:obj.bzname,hmoney:obj.hmoney});
+						});
+						_this.prsAndGroupData.push({label:'班组',options:data});
+					});
+					console.info(_this.prsAndGroupData);
+				},
+				addFixTimeMoney(val){
+					let _this = this;
+					let data = {};
+					$.each(this.prsAndGroupData, function(i,obj) {
+						$.each(obj.options, function(j,temp) {
+							if(val == temp.pid){
+								let stime = new Date(_this.fixcardform.wstatdate).getTime(); 
+								let etime = new Date(_this.fixcardform.wenddate).getTime(); 
+								_this.fixcardform.wjname = temp.pname;
+								let prsPrice = parseInt(temp.hmoney * Math.ceil(parseInt((etime-stime))/ 1000 / 60 / 60));
+								data = {wid:_this.fixcardform.wid,sid:temp.pid,sdname:'工时费(1h)',dprice:prsPrice,sdprice:prsPrice,sdnumber:1,type:2};
+								return false;
+							}
+						});
+					});
+					console.info(this.fixgoods);
+					$.each(this.fixgoods, function(i,obj) {
+						if(obj.type == 2){
+							_this.fixgoods.splice(i,1);
+							return false;
+						}
+					});
+					this.fixgoods.splice(0,0,data);
+				},
+				addPickCarMoney(){
+					let _this = this;
+					if(this.fixformdata.kmMoney != ''){
+						$.each(this.fixgoods, function(i,obj) {
+							if(obj.type == 3){
+								_this.fixgoods.splice(i,1);
+								return false;
+							}
+						});
+						let temp = this.outCarData[this.fixformdata.pickcar];
+						let sumprice = parseInt(temp.momey) * parseInt(this.fixformdata.kmMoney);
+						let data = {wid:_this.fixcardform.wid,sid:temp.legworkid,sdname:'调度费',dprice:temp.momey,sdprice:sumprice,sdnumber:this.fixformdata.kmMoney,type:3};
+						this.fixgoods.splice(1,0,data);
+					}else{
+						this.fixformdata.pickcar = '';
+						this.$message({message:'请输入公里数再选择调度车辆！',center:true,type:'warning'});
+					}
+				},
+				getPickCarData(){
+					let _this = this;
+					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryAllNotOutCar",function(msg){
+						_this.outCarData = msg;
+						console.info(msg);
+					});
+				},
+				changeTypeData(val){
+						let _this = this;
+						this.fixcardform.wtype = '';
+						$.each(val, function(i,obj) {
+							_this.fixcardform.wtype += obj+" "
+						});
+						console.info(this.fixcardform.wtype);
+				},
+				//根据站内站外禁用选项
+				orderStateChangeData(val){
+					if(val == 2){
+						this.fixformdata.iftrue = true;
+					}else{
+						this.fixformdata.iftrue = false;
+					}
+				},
+				ifTimeNotNull(){
+					if(this.fixcardform.wstatdate != '' && this.fixcardform.wenddate != ''){
+						this.fixformdata.fixiftrue = true;
+					}else{
+						this.fixformdata.fixiftrue = false;
+					}
+				},
+				//添加维修材料
+				addFixGoods(){
+					let _this = this;
+					let iftrue = true;
+					//遍历所有的商品数据
+					$.each(this.fixGoodsData, function(i,obj) {
+						//获取选中的商品数据
+						if(_this.fixformdata.goodsid == obj.gid){
+							//遍历已存在的商品数据
+							$.each(_this.fixgoods,function(j,temp){
+								//判断商品是否存在，存在则在原有商品上加上数量
+								if(temp.sid == _this.fixformdata.goodsid){
+									_this.fixgoods[j].sdnumber = parseInt(_this.fixgoods[j].sdnumber)+parseInt(_this.fixformdata.gcount);
+									_this.fixgoods[j].sdprice = parseInt(obj.gprice * _this.fixgoods[j].sdnumber);
+									iftrue = false;
+									return;
+								}
+							});
+							//如果遍历后没有存在商品则添加商品
+							if(iftrue){
+								let sumprice = parseInt(obj.gprice * _this.fixformdata.gcount);
+								_this.fixgoods.push({wid:_this.fixcardform.wid,sid:obj.gid,sdname:obj.gname,dprice:obj.gprice,sdprice:sumprice,sdnumber:_this.fixformdata.gcount,type:1});
+							}
 						}
 					});
 				},
-				removeServiceGoods(i){
+				//材料控制
+				goodsControl(i,val){
 					let _this = this;
-					_this.fixitemdata.splice(i,1);
+					switch (val){
+						case 1:
+							_this.fixgoods[i].sdnumber = parseInt(_this.fixgoods[i].sdnumber) + 1;
+							_this.fixgoods[i].sdprice = parseInt(_this.fixgoods[i].dprice)* parseInt(_this.fixgoods[i].sdnumber);
+							break;
+						case 2:
+							if(_this.fixgoods[i].sdnumber > 1){
+								_this.fixgoods[i].sdnumber = parseInt(_this.fixgoods[i].sdnumber) - 1;
+								_this.fixgoods[i].sdprice = parseInt(_this.fixgoods[i].dprice)* parseInt(_this.fixgoods[i].sdnumber);
+							}else{
+								_this.fixgoods.splice(i,1);
+							}
+							break;
+						case 3:
+							_this.fixgoods.splice(i,1);
+							break;
+					}
 				},
-				addService(){
+				
+				//添加订单
+				addFixNumber(){
 					let _this = this;
-					let sumprice = 0;
-					$.each(_this.fixitemdata, function(i,obj) {
-						sumprice += parseInt(obj.sdprice) * parseInt(obj.sdnumber);
+					//维修材料费
+					let sumPrice = 0;
+					$.each(this.fixgoods, function(i,obj) {
+						if(obj.type == 1){
+							sumPrice += obj.sdprice;
+						}
 					});
-					this.formfix.wsumprice = sumprice;
+					//总费用 = 站外接车金额+维修材料费+技工维修费
+					if(this.fixcardform.wleixi == 2){
+						this.outCarData[this.fixformdata.pickcar].state = '已出车';
+						this.outCarData[this.fixformdata.pickcar].wid = this.fixcardform.wid;
+						$.ajax('http://127.0.0.1:8080/yldaction/api/updateCarState',{
+						    type:'post',
+						    dataType:'json',
+						    contentType:'application/json',
+						    data:JSON.stringify(_this.outCarData[_this.fixformdata.pickcar]),
+						    success:function(msg){
+						        if(msg == "ok"){
+						        	return false;
+						        }else{
+						        	_this.$message({message:'出车失败！！',center:true,type:'error'});
+						        }
+						    }
+						});
+						this.fixcardform.wsumprice = parseInt(this.fixgoods[0].sdprice)+parseInt(this.fixgoods[1].sdprice)+sumPrice;
+						alert("站外接车费="+parseInt(this.fixgoods[1].sdprice)+" 技工工时费="+this.fixgoods[0].sdprice+" 维修材料费="+sumPrice+" 总费用="+this.fixcardform.wsumprice);
+					}else{
+						this.fixcardform.wsumprice = parseInt(this.fixgoods[0].sdprice)+sumPrice;
+						alert("技工工时费="+this.fixgoods[0].sdprice+" 维修材料费="+sumPrice+" 总费用="+this.fixcardform.wsumprice);
+					}
 					$.ajax('http://127.0.0.1:8080/yldaction/api/insertService',{
 					    type:'post',
 					    dataType:'json',
 					    contentType:'application/json',
-					    data:JSON.stringify(_this.formfix),
+					    data:JSON.stringify(_this.fixcardform),
 					    success:function(msg){
 					        if(msg == "ok"){
 					        	$.ajax('http://127.0.0.1:8080/yldaction/api/insertServiceInfo',{
-					        	    type:'post',
-					        	    dataType:'json',
-					    			contentType:'application/json',
-					        	    data:JSON.stringify(_this.fixitemdata),
-					        	    success:function(msg){
-					        	        if(msg == "ok"){
-					        	        	_this.$message({message:'添加成功！',center:true,type:'success'});
-					        	        	_this.getServiceData(1);
-					        	        	_this.centerDialogVisible = false;
-					        	        }else{
-					        	        	_this.$message({message:'添加失败！',center:true,type:'error'});
-					        	        }
-					        	    }
-					        	});
+								    type:'post',
+								    dataType:'json',
+								    contentType:'application/json',
+								    data:JSON.stringify(_this.fixgoods),
+								    success:function(msg){
+								        if(msg == "ok"){
+								        	location.reload();
+								        }else{
+								        	_this.$message({message:'添加失败！',center:true,type:'error'});
+								        }
+								    }
+								});
 					        }else{
 					        	_this.$message({message:'添加失败！',center:true,type:'error'});
 					        }
