@@ -18,9 +18,9 @@
 				<el-form-item label="品牌:">
 					<el-input v-model="bill.brand"></el-input>
 				</el-form-item>
-				<el-form-item label="技工:">
+				<!--<el-form-item label="技工:">
 					<el-input v-model="bill.artisan"></el-input>
-				</el-form-item>
+				</el-form-item>-->
 				<el-form-item label="车辆状态：">
 					<el-select v-model="bill.state" placeholder="未出车">
 						<el-option label="未出车" value="未出车" selected="selected"></el-option>
@@ -52,7 +52,7 @@
 					//修改外勤车辆信息
 					update() {
 							let _this = this;
-						if(_this.bill.platenumber==""||_this.bill.brand==""||_this.bill.artisan==""||_this.bill.momey=="") {
+						if(_this.bill.platenumber==""||_this.bill.brand==""||_this.bill.momey=="") {
 							_this.$message({
 								showClose: true,
 								message: '请填写信息！',
