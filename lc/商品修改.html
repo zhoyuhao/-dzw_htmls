@@ -88,7 +88,7 @@
 				</el-form-item>
 				<el-form-item style="margin: 0px auto;width: 700px; text-align: right;">
 					<el-button style="width: 150px;" type="primary" @click="submitForm()">立即创建</el-button>
-					<el-button style="width: 150px;" @click="qu">取消</el-button>
+					<el-button style="width: 150px;" @click="colse">取消</el-button>
 				</el-form-item>
 			</el-form>
 		</div>
@@ -99,7 +99,7 @@
 	<script type="text/javascript" src="../js/index.js"></script>
 	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
 	<script>
-		var yggl = new Vue({
+		var  goodsUpdate= new Vue({
 			el: "#sss",
 			data: {
 				bool: true,
@@ -117,12 +117,67 @@
 					gtype: '',
 					gdescribe: '',
 					gnumber: '',
+				},
+				rules:{
+					
+					gid: [{
+						required: true,
+						message: '请输入商品编号',
+						trigger: 'blur'
+					}],
+					ghsid: [{
+						required: true,
+						message: '请选择',
+						trigger: 'change'
+					}],
+					gbrand:[{
+						required: true,
+						message: '请选择',
+						trigger: 'change'
+					}],
+					gname: [{
+						required: true,
+						message: '请输入商品名称',
+						trigger: 'blur'
+					}],
+					gtype: [{
+						required: true,
+						message: '请选择',
+						trigger: 'change'
+					}],
+					gtime: [{
+						
+						required: true,
+						message: '请选择日期',
+						trigger: 'change'
+					}],
+					gsuitable: [{
+						required: true,
+						message: '请填写',
+						trigger: 'blur'
+					}],
+					gprice: [{
+							required: true,
+							message: '请填写价格',
+							trigger: 'blur'
+						}
+						/*,
+												{
+													type: 'number',
+													message: '必须为数字值'
+												}*/
+					]
+				
 				}
 			},
 
 			methods: {
-				qu(){
-					yggl.isshow1 = false;
+				typechange(){},
+				change(){
+					
+				},
+				colse(){
+					yggl.isshow2 = false;
 				},
 				goodsByid() {
 					let _this = this;
@@ -138,8 +193,10 @@
 				},
 				submitForm() {
 					let _this = this;
-
-					$.ajax(`http://127.0.0.1:8080/lc/api/Goods/modeil`, {
+						this.$refs['ruleForm'].validate(valid => {
+						if(valid) {
+							
+							$.ajax(`http://127.0.0.1:8080/lc/api/Goods/modeil`, {
 						type: "put",
 						contentType: "application/json",
 						data: JSON.stringify(_this.staff),
@@ -150,13 +207,24 @@
 												type: 'success',
 												message: '操作成功'
 											});
-								yggl.isshow1 = false;
+									yggl.lcgoTopage(1, 6,"");		
+								yggl.isshow2 = false;
 
 							} else {
 								_this.$message(date.msg);
 							}
 						}
+					});	
+							
+							
+						} else {
+							
+						}
 					});
+					
+					
+
+				
 				},
 				resetForm(formName) {
 					this.$refs[formName].resetFields();
@@ -164,25 +232,21 @@
 				gysid() {
 					let _this = this;
 					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sup`, function(data) {
-						console.info(data);
+						//console.info(data);
 						_this.ssh = data;
-						/*$.each(data, function(i,obj) {
-							var a=$("#sel").html();
-							alert(a);
-							  $("#sel").append('<option value="' + obj.ghsid + '">' + obj.ghsid + '</option>')
-								
-						});*/
 					})
-				}
+				},
+				pp(){}
 			},
 			mounted() {
 				let _this = this; //非常重要
 				_this.gysid();
 				_this.gid = sessionStorage.getItem('iss');
 				sessionStorage.setItem('iss', null);
-				if(_this.gid != null) {
+				_this.staff=JSON.parse(sessionStorage.getItem('goods'));
+				/*if(_this.gid != null) {
 					this.goodsByid();
-				}
+				}*/
 
 			}
 		})
