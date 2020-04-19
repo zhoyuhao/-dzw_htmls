@@ -208,10 +208,8 @@
 				
 			},
 			methods: {
-				chushi(){
-
-
- setInterval(()=>{
+				queryAll(){
+					
  	let _this=this;
 						$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryJieDan',function(data){
 				
@@ -231,6 +229,11 @@
 						_this.jrsummoney=data.jrsummoney;
 						_this.jrshimoney=data.jrshimoney;
 					});
+					
+								//开启同步
+		$.ajaxSetup({
+				async:false
+				})
 					
 					$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryZQMoney',function(data){
 							let val=0;
@@ -260,6 +263,7 @@
 						
 				});
 				
+	
 				$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryZQMoneyS',function(data){
 								let val=0;
 								_this.option2.series[0].data[1].value=[0, 0, 0, 0, 0, 0,0];
@@ -274,13 +278,22 @@
 							myChart2.setOption(_this.option2);
 				});
  	
- },'1000');
+ 
+				},
+				chushi(){
+				let _this=this;
+
+ 				setInterval(()=>{
+ 				_this.queryAll();
+ 	
+ 					},'1000');
 					
 					
 						
 				}
 			},
 			mounted() {
+				this.queryAll();
 				this.chushi();
 			}
 		});
