@@ -758,6 +758,7 @@
 						this.fixcardform.wsumprice = parseInt(this.fixgoods[0].sdprice)+parseInt(this.fixgoods[1].sdprice)+sumPrice;
 					}else{
 						//站内维修
+						this.fixcardform.wstatic = '2';
 						this.fixcardform.wsumprice = parseInt(this.fixgoods[0].sdprice)+sumPrice;
 					}
 					//添加订单
