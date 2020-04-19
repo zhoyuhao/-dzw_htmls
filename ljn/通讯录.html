@@ -24,9 +24,9 @@
 				<div class="layui-col-md12">
 					<div class="layui-card">
 						<div class="layui-card-body " style="text-align: center;">
-							<span style="margin-right: 3ex;">请输入员工姓名：</span>
+							<span style="margin-right: 3ex; color: red; font-size:15px">请输入员工姓名：</span>
 							<div class="layui-input-inline layui-show-xs-block">
-								<input type="text" v-model="pname" name="username" placeholder="请输入员工姓名" autocomplete="off" class="layui-input"></div>
+								<input type="text" v-model="pname" name="username" placeholder="" autocomplete="off" class="layui-input"></div>
 							<div class="layui-input-inline layui-show-xs-block">
 								<el-button type="primary" size="mini" @click="queryid(pname)">查看</el-button>
 								<el-button icon="el-icon-edit" size="mini" type="primary" @click="addClick">添加</el-button>
@@ -50,7 +50,7 @@
 											<el-form-item label="员工身份证">
 												<span>{{ props.row.pidcard }}</span>
 											</el-form-item>
-											<el-form-item label="员工入职日期">
+											<el-form-item label="入职日期">
 												<span>{{ props.row.pentry }}</span>
 											</el-form-item>
 											<el-form-item label="员工岗位">
@@ -94,10 +94,25 @@
 			</el-dialog>
 		</div>
 	</body>
+	<style>
+  .demo-table-expand {
+    font-size: 0;
+  }
+  .demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+  .demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 33%;
+  }
+</style>
 	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
 	<script type="text/javascript" src="../js/vue.js"></script>
 	<script type="text/javascript" src="../js/index.js"></script>
 	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
 
 	<script>
 		var personApp = new Vue({
