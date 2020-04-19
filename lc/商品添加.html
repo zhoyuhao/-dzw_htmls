@@ -192,6 +192,7 @@
 					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sup`, function(data) {
 						console.info(data);
 						_this.ssh = data;
+						console.info(ssh);
 						/*$.each(data, function(i,obj) {
 							var a=$("#sel").html();
 							alert(a);
@@ -260,9 +261,10 @@
 				let _this = this;
 				_this.gysid();
 				_this.ss();
-				var date = new Date();
+					var date = new Date();
 					now = date.getFullYear() + "" + (date.getMonth() + 1) + "" + date.getDate() + "" + date.getHours() + "" + date.getMinutes() + "" + date.getSeconds();
-					_this.staff.gid=now;
+					_this.staff.pId=now;
+				_this.jgbz();
 
 			}
 		})
