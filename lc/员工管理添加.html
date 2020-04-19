@@ -21,12 +21,18 @@
 				<el-form-item label="员工编号"   prop="pId" >
 						<el-input v-model="staff.pId" :disabled="true" placeholder="请输入" style="width: 250px;"></el-input>
 				</el-form-item>
-				<!--修改为岗位-->
-				<el-form-item label="岗位" prop="gwname">
-						<el-input v-model="staff.gwname" placeholder="请输入" style="width: 250px;"></el-input>
-				</el-form-item>
-				<el-form-item label="员工名称" prop="pname">
+				<el-form-item label="员工姓名"   prop="pname" >
 						<el-input v-model="staff.pname" placeholder="请输入" style="width: 250px;"></el-input>
+				</el-form-item>
+				<!--修改为岗位-->
+				<!--<el-form-item label="岗位" prop="gwname">
+						<el-input v-model="staff.gwname" placeholder="请输入" style="width: 250px;"></el-input>
+				</el-form-item>-->
+				<el-form-item label="员工岗位" prop="ppost" required>
+						<el-select v-model="staff.ppost" style="width: 250px;">
+							<el-option v-for="item in jg" :label="item.gwname" :value="item.gwid" style="width: 250px;">
+							</el-option>
+						</el-select>
 				</el-form-item>
 				<el-form-item label="性别">
 					<el-radio-group v-model="staff.psex" style="width: 250px;">
@@ -64,12 +70,7 @@
 							<el-date-picker style="width: 250px;" type="date" placeholder="选择日期" v-model="staff.pentry" style="width: 100%;"></el-date-picker>
 						</el-form-item>
 				</el-form-item>
-				<!--<el-form-item label="员工岗位" prop="ppost" required>
-						<el-select v-model="staff.bzId">
-							<el-option v-for="item in jg" :label="item.bzname" :value="item.bzId" style="width: 250px;">
-							</el-option>
-						</el-select>
-				</el-form-item>-->
+
 				<el-form-item style="margin: 0px auto;width: 700px; text-align: right;">
 					<el-button style="width: 150px;" type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
 					<el-button style="width: 150px;" @click="resetForm('ruleForm')">取消</el-button>
@@ -163,6 +164,7 @@
 	
 					$.getJSON(`http://127.0.0.1:8080/lc/api/workergroups/zw`, function(date) {
 						_this.jg = date;
+						console.info(date);
 					});
 					$.getJSON(`http://127.0.0.1:8080/lc/api/lcRoles/ssb`, function(date) {
 						_this.js = date;

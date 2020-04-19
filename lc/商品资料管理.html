@@ -34,7 +34,7 @@
 	</head>
 
 	<body>
-		<div class="layui-fluid" id="yggl" v-cloak>
+		<div class="layui-fluid" id="spgl" v-cloak>
 			<div class="layui-row layui-col-space15">
 				<div class="layui-col-md12">
 					<div class="layui-card">
@@ -211,7 +211,7 @@
 	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
 	<script>
 		var yggl = new Vue({
-			el: "#yggl",
+			el: "#spgl",
 			data: {
 				bool: true,
 				gid: null,
@@ -300,49 +300,7 @@
 
 			},
 			methods: {
-
-				goodsByid() {
-					let _this = this;
-
-					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/ids/${_this.gid}`, function(date) {
-						_this.staff = date;
-					});
-				},
-				submitForm() {
-					let _this = this;
-
-					$.ajax(`http://127.0.0.1:8080/lc/api/Goods/modeil`, {
-						type: "put",
-						contentType: "application/json",
-						data: JSON.stringify(_this.staff),
-						dataType: "json",
-						success(date) {
-							if(date.code == "200") {
-								_this.$message(date.msg);
-
-							} else {
-								_this.$message(date.msg);
-							}
-						}
-					});
-				},
-				resetForm(formName) {
-					this.$refs[formName].resetFields();
-				},
-				gysid() {
-					let _this = this;
-					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sup`, function(data) {
-						console.info(data);
-						_this.ssh = data;
-						/*$.each(data, function(i,obj) {
-							var a=$("#sel").html();
-							alert(a);
-							  $("#sel").append('<option value="' + obj.ghsid + '">' + obj.ghsid + '</option>')
-								
-						});*/
-					})
-				},
-				//查询所有发动机品牌
+//查询所有发动机品牌
 				ss() {
 					let _this = this;
 					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sss`, function(data) {
@@ -359,6 +317,7 @@
 					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sup`, function(data) {
 						console.info(data);
 						_this.ssh = data;
+						console.info(ssh);
 						/*$.each(data, function(i,obj) {
 							var a=$("#sel").html();
 							alert(a);
@@ -377,7 +336,7 @@
 				},
 				submitForm() {
 					let _this = this;
-
+					
 					this.$refs['ruleForm'].validate(valid => {
 						if(valid) {
 							//验证通过
@@ -397,16 +356,13 @@
 									contentType: 'application/json',
 									success(msg) {
 										if(msg.code == "200") {
-
 											loading.close(); //关闭加载块【非常重要】
 											_this.$message({
 												type: 'success',
 												message: '新增成功'
 											});
 											_this.isshow1 = false;
-											/*_this.clearData(); //清除数据*/
 											_this.lcgoTopage(1, 6, this.goods.gname);
-
 										}
 									}
 								});
@@ -416,6 +372,7 @@
 							//this.$alert('请按格式正确填写信息', '系统提示');
 						}
 					});
+
 				},
 				resetForm(formName) {
 					this.isshow1 = false;
