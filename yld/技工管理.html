@@ -16,11 +16,15 @@
 			.winput {
 				width: 200px;
 			}
+			
+			[v-cloak] {
+				display: none;
+			}
 		</style>
 	</head>
 
 	<body>
-		<div id="emp" style="padding-top: 40px;">
+		<div id="emp" style="padding-top: 40px;" v-cloak>
 			<el-tabs value="first" style="margin: 0px auto;margin-top: 20px;width: 90%;">
 				<el-tab-pane label="班组数据" name="first">
 					<el-form label-width="100px" :inline="true" size="mini">
@@ -50,11 +54,9 @@
 							</el-table-column>
 						</el-table-column>
 					</el-table>
-					<div style="margin: 20px 0px;">
-						<el-button @click="getEmpGroupWoker(1)" type="primary" size="mini">首页</el-button>
-						<el-button @click="getEmpGroupWoker(fixempgroup.prePage)" v-if="fixempgroup.hasPreviousPage" type="primary" size="mini">上一页</el-button>
-						<el-button @click="getEmpGroupWoker(fixempgroup.nextPage)" v-if="fixempgroup.hasNextPage" type="primary" size="mini">下一页</el-button>
-						<el-button @click="getEmpGroupWoker(fixempgroup.navigateLastPage)" type="primary" size="mini">尾页</el-button>
+					<div style="margin-top: 20px;">
+						<el-pagination @current-change="getEmpGroupWoker" background layout="total, prev, pager, next, jumper" :page-size="4" :total="fixempgroup.total">
+						</el-pagination>
 					</div>
 				</el-tab-pane>
 				<el-tab-pane label="技工数据" name="second">
@@ -92,11 +94,9 @@
 							</el-table-column>
 						</el-table-column>
 					</el-table>
-					<div style="margin: 20px 0px;">
-						<el-button @click="getdata(fixemp.navigateFirstPage)" type="primary" size="mini">首页</el-button>
-						<el-button @click="getdata(fixemp.prePage)" v-if="fixemp.hasPreviousPage" type="primary" size="mini">上一页</el-button>
-						<el-button @click="getdata(fixemp.nextPage)" v-if="fixemp.hasNextPage" type="primary" size="mini">下一页</el-button>
-						<el-button @click="getdata(fixemp.navigateLastPage)" type="primary" size="mini">尾页</el-button>
+					<div style="margin-top: 20px;">
+						<el-pagination @current-change="getdata" background layout="total, prev, pager, next, jumper" :page-size="4" :total="fixemp.total">
+						</el-pagination>
 					</div>
 				</el-tab-pane>
 				<el-tab-pane label="技工星级" name="three">
@@ -125,12 +125,10 @@
 							</el-table-column>
 							</template>
 						</el-table-column>
-					</el-table>
-					<div style="margin: 20px 0px;">
-						<el-button @click="getworkdata(workpagedata.navigateFirstPage)" type="primary" size="mini">首页</el-button>
-						<el-button @click="getworkdata(workpagedata.prePage)" v-if="workpagedata.hasPreviousPage" type="primary" size="mini">上一页</el-button>
-						<el-button @click="getworkdata(workpagedata.nextPage)" v-if="workpagedata.hasNextPage" type="primary" size="mini">下一页</el-button>
-						<el-button @click="getworkdata(workpagedata.navigateLastPage)" type="primary" size="mini">尾页</el-button>
+				</el-table>
+					<div style="margin-top: 20px;">
+						<el-pagination @current-change="getworkdata" background layout="total, prev, pager, next, jumper" :page-size="4" :total="workpagedata.total">
+						</el-pagination>
 					</div>
 				</el-tab-pane>
 			</el-tabs>

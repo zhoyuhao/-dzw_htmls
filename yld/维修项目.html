@@ -16,11 +16,15 @@
 			.winput {
 				width: 200px;
 			}
+			
+			[v-cloak] {
+				display: none;
+			}
 		</style>
 	</head>
 
 	<body>
-		<div id="serviceitem">
+		<div id="serviceitem" v-cloak>
 			<el-container>
 				<el-main>
 					<el-tabs value="1" style="margin: 0px auto;margin-top: 20px;width: 90%;">
@@ -59,11 +63,9 @@
 									</template>
 								</el-table-column>
 							</el-table>
-							<div style="margin: 20px 0px;">
-								<el-button @click="getFixGoodsData(fixgoods.navigateFirstPage)" type="primary" size="mini">首页</el-button>
-								<el-button @click="getFixGoodsData(fixgoods.prePage)" v-if="fixgoods.hasPreviousPage" type="primary" size="mini">上一页</el-button>
-								<el-button @click="getFixGoodsData(fixgoods.nextPage)" v-if="fixgoods.hasNextPage" type="primary" size="mini">下一页</el-button>
-								<el-button @click="getFixGoodsData(fixgoods.navigateLastPage)" type="primary" size="mini">尾页</el-button>
+							<div style="margin-top: 20px;">
+								<el-pagination @current-change="getFixGoodsData" background layout="total, prev, pager, next, jumper" :page-size="4" :total="fixgoods.total">
+								</el-pagination>
 							</div>
 						</el-tab-pane>
 						<el-tab-pane label="维修项目类型" name="2">
@@ -90,11 +92,9 @@
 									</template>
 								</el-table-column>
 							</el-table>
-							<div style="margin: 20px 0px;">
-								<el-button @click="getFixGoodsItemDataPage(fixgoodsitempage.navigateFirstPage)" type="primary" size="mini">首页</el-button>
-								<el-button @click="getFixGoodsItemDataPage(fixgoodsitempage.prePage)" v-if="fixgoodsitempage.hasPreviousPage" type="primary" size="mini">上一页</el-button>
-								<el-button @click="getFixGoodsItemDataPage(fixgoodsitempage.nextPage)" v-if="fixgoodsitempage.hasNextPage" type="primary" size="mini">下一页</el-button>
-								<el-button @click="getFixGoodsItemDataPage(fixgoodsitempage.navigateLastPage)" type="primary" size="mini">尾页</el-button>
+							<div style="margin-top: 20px;">
+								<el-pagination @current-change="getFixGoodsItemDataPage" background layout="total, prev, pager, next, jumper" :page-size="4" :total="fixgoodsitempage.total">
+								</el-pagination>
 							</div>
 						</el-tab-pane>
 					</el-tabs>

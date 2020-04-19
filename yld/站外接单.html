@@ -31,11 +31,15 @@
 				margin-bottom: 0;
 				width: 50%;
 			}
+			
+			[v-cloak] {
+				display: none;
+			}
 		</style>
 	</head>
 
 	<body>
-		<div id="zhanwai">
+		<div id="zhanwai" v-cloak>
 			<el-container>
 				<el-main>
 					<el-tabs value="1">
@@ -108,30 +112,28 @@
 						</el-divider>
 						<el-form label-width="100px" size="mini" :inline="true">
 							<el-form-item label="客户姓名：">
-								<el-input v-model="fixcardform.wname"></el-input>
+								<el-autocomplete @select="handleSelect" :fetch-suggestions="querySearch" :trigger-on-focus="false" v-model="fixcardform.wname"></el-autocomplete>
 							</el-form-item>
 							<el-form-item label="客户号码：">
 								<el-input v-model="fixcardform.wphone"></el-input>
 							</el-form-item>
 							<el-form-item label="车牌号码：">
-								<el-input v-model="fixcardform.wcarid"></el-input>
+								<el-autocomplete :fetch-suggestions="querySearchCar" :trigger-on-focus="false" v-model="fixcardform.wcarid"></el-autocomplete>
 							</el-form-item>
 							<el-form-item label="开始时间：">
-								<el-date-picker @change="ifTimeNotNull" style="width: 178px;" v-model="fixcardform.wstatdate" type="datetime" placeholder="选择日期">
+								<el-date-picker style="width: 178px;" v-model="fixcardform.wstatdate" type="datetime" placeholder="选择日期" value-format="yyyy-MM-dd HH:mm:ss">
 								</el-date-picker>
 							</el-form-item>
 							<el-form-item label="结束时间：">
-								<el-date-picker @change="ifTimeNotNull" style="width: 178px;" v-model="fixcardform.wenddate" type="datetime" placeholder="选择日期">
+								<el-date-picker style="width: 178px;" v-model="fixcardform.wenddate" type="datetime" placeholder="选择日期" value-format="yyyy-MM-dd HH:mm:ss">
 								</el-date-picker>
 							</el-form-item>
 							<el-form-item label="维修人员：">
-								<el-select @change="addFixTimeMoney" v-model="fixformdata.wjname" style="width: 178px;" v-if="fixformdata.fixiftrue">
+								<el-select @change="addFixTimeMoney" v-model="fixformdata.wjname" style="width: 178px;">
 									<el-option-group v-for="temp in prsAndGroupData" :key="temp.label" :label="temp.label">
 									  <el-option v-for="item in temp.options" :key="item.pid" :label="item.pname" :value="item.pid">
 									  </el-option>
 									</el-option-group>
-								</el-select>
-								<el-select v-model="fixcardform.wjname" style="width: 178px;" disabled v-if="!fixformdata.fixiftrue">
 								</el-select>
 							</el-form-item>
 							<el-form-item label="业务类型：">
@@ -177,8 +179,18 @@
 						</el-form>
 						<el-table :data="fixgoods" size="mini" style="width: 95%;margin: 0px auto;">
 							<el-table-column label="材料名称" prop="sdname" align="center"></el-table-column>
-							<el-table-column label="材料数量" prop="sdnumber" align="center"></el-table-column>
-							<el-table-column label="材料单价" prop="dprice" align="center"></el-table-column>
+							<el-table-column label="材料数量" prop="sdnumber" align="center">
+								<template slot-scope="temp">
+									<span v-if="temp.row.type == 2">{{temp.row.sdnumber}}小时</span>
+									<span v-else-if="temp.row.type == 3">{{temp.row.sdnumber}}公里</span>
+									<span v-else>{{temp.row.sdnumber}}个</span>
+								</template>
+							</el-table-column>
+							<el-table-column label="材料单价" prop="dprice" align="center">
+								<template slot-scope="temp">
+									{{temp.row.dprice}}元
+								</template>
+							</el-table-column>
 							<el-table-column label="材料总价" prop="sdprice" align="center"></el-table-column>
 							<el-table-column label="操作" align="center">
 								<template slot-scope="temp" v-if="temp.row.type == 1">
@@ -193,6 +205,186 @@
 						  	<el-button type="primary" @click="addFixNumber" size="small">保 存</el-button>
 						</span>
 					</el-dialog>
+					<el-dialog width="60%" title="客户资料新增" :visible.sync="prsdialog" center :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
+						<el-divider content-position="center" slot="title">
+							<h3 class="el-icon-edit-outline"> 客户资料添加 编号：{{prsForm.cidk}}</h3>
+						</el-divider>
+						<el-form :inline="true" label-width="90px" size="small">
+							<el-form-item label="姓名：">
+								<el-input v-model="prsForm.cnamek"></el-input>
+							</el-form-item>
+							<el-form-item label="地址：">
+								<el-cascader @change="addressChange" v-model="prsForm.caddressk" :options="addressOptions" style="width: 200px;"></el-cascader>
+							</el-form-item>
+							<el-form-item label="手机：">
+								<el-input v-model="prsForm.cphonek"></el-input>
+							</el-form-item>
+							<el-form-item label="身份证：">
+								<el-input v-model="prsForm.cidnumberk"></el-input>
+							</el-form-item>
+							<el-form-item label="性别：">
+								<el-radio-group v-model="prsForm.csexk" size="small" style="width: 200px;">
+							      <el-radio border label="男"></el-radio>
+							      <el-radio border label="女"></el-radio>
+							    </el-radio-group>
+							</el-form-item>
+							<el-form-item label="客户类型：">
+								<el-radio-group v-model="prsForm.ctypek" size="small" style="width: 200px;">
+							      <el-radio border label="普通"></el-radio>
+							      <el-radio border label="会员"></el-radio>
+							    </el-radio-group>
+							</el-form-item>
+							<el-form-item label="车牌号码：">
+								<el-input v-model="fixformdata.carname"></el-input>
+							</el-form-item>
+							<el-form-item label="车辆品牌：">
+								<el-select v-model="fixformdata.carbrand" style="width: 200px;">
+									<el-option key="宝马" label="宝马" value="宝马">
+									</el-option>
+									<el-option key="大众" label="大众" value="大众">
+									</el-option>
+									<el-option key="奔驰" label="奔驰" value="奔驰">
+									</el-option>
+									<el-option key="本田" label="本田" value="本田">
+									</el-option>
+									<el-option key="奥迪" label="奥迪" value="奥迪">
+									</el-option>
+									<el-option key="比亚迪" label="比亚迪" value="比亚迪">
+									</el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="车身颜色：">
+								<el-select v-model="fixformdata.carcolor" style="width: 200px;">
+									<el-option key="黑色" label="黑色" value="黑色">
+									</el-option>
+									<el-option key="白色" label="白色" value="白色">
+									</el-option>
+									<el-option key="红色" label="红色" value="红色">
+									</el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="车型配置：">
+								<el-select v-model="fixformdata.carconfig" style="width: 200px;">
+									<el-option key="低配" label="低配" value="低配">
+									</el-option>
+									<el-option key="中配" label="中配" value="中配">
+									</el-option>
+									<el-option key="高配" label="高配" value="高配">
+									</el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="汽车产地：">
+								<el-cascader v-model="fixformdata.carlocal" :options="addressOptions" style="width: 200px;"></el-cascader>
+							</el-form-item>
+							<el-form-item label="车辆款式：">
+								<el-select v-model="fixformdata.carmodel" style="width: 100px;">
+									<el-option key="乘用车" label="乘用车" value="乘用车">
+									</el-option>
+									<el-option key="休闲车" label="休闲车" value="休闲车">
+									</el-option>
+								</el-select>
+								<el-button @click="addPrsCar" type="primary" size="small" style="width: 95px;">添加</el-button>
+							</el-form-item>
+						</el-form>
+						<el-table stripe :data="prsForm.prsCar" size="small" style="width: 95%;margin: 0px auto;">
+								<el-table-column type="index" label="序号" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="carlicenceplate" label="车牌号码" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="carbrand" label="汽车品牌" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="carcolor" label="车身颜色" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="carconfigure" label="汽车配置" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="carlocality" label="汽车产地" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="carmodel" label="车辆款式" align="center" show-overflow-tooltip>
+								</el-table-column>
+							</el-table>
+						<span slot="footer" class="dialog-footer">
+							<el-button @click="prsdialog = false" size="medium">取 消</el-button>
+						  	<el-button type="primary" @click="addPrsAndCarData" size="medium">保 存</el-button>
+						</span>
+					</el-dialog>
+					<el-dialog width="60%" title="客户资料新增" :visible.sync="prsdialog2" center :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
+						<el-divider content-position="center" slot="title">
+							<h3 class="el-icon-edit-outline"> 客户车辆添加 编号：{{prsCarForm.cidk}}</h3>
+						</el-divider>
+						<el-form :inline="true" label-width="90px" size="small">
+							<el-form-item label="车牌号码：">
+								<el-input v-model="prsCarForm.carlicenceplate"></el-input>
+							</el-form-item>
+							<el-form-item label="车辆品牌：">
+								<el-select v-model="prsCarForm.carbrand" style="width: 200px;">
+									<el-option key="宝马" label="宝马" value="宝马">
+									</el-option>
+									<el-option key="大众" label="大众" value="大众">
+									</el-option>
+									<el-option key="奔驰" label="奔驰" value="奔驰">
+									</el-option>
+									<el-option key="本田" label="本田" value="本田">
+									</el-option>
+									<el-option key="奥迪" label="奥迪" value="奥迪">
+									</el-option>
+									<el-option key="比亚迪" label="比亚迪" value="比亚迪">
+									</el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="车身颜色：">
+								<el-select v-model="prsCarForm.carcolor" style="width: 200px;">
+									<el-option key="黑色" label="黑色" value="黑色">
+									</el-option>
+									<el-option key="白色" label="白色" value="白色">
+									</el-option>
+									<el-option key="红色" label="红色" value="红色">
+									</el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="车型配置：">
+								<el-select v-model="prsCarForm.carconfigure" style="width: 200px;">
+									<el-option key="低配" label="低配" value="低配">
+									</el-option>
+									<el-option key="中配" label="中配" value="中配">
+									</el-option>
+									<el-option key="高配" label="高配" value="高配">
+									</el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="汽车产地：">
+								<el-cascader v-model="prsCarForm.carlocality" :options="addressOptions" style="width: 200px;"></el-cascader>
+							</el-form-item>
+							<el-form-item label="车辆款式：">
+								<el-select v-model="prsCarForm.carmodel" style="width: 100px;">
+									<el-option key="乘用车" label="乘用车" value="乘用车">
+									</el-option>
+									<el-option key="休闲车" label="休闲车" value="休闲车">
+									</el-option>
+								</el-select>
+								<el-button @click="addPrsCar2" type="primary" size="small" style="width: 95px;">添加</el-button>
+							</el-form-item>
+						</el-form>
+						<el-table stripe :data="prsCarFormList" size="small" style="width: 95%;margin: 0px auto;">
+								<el-table-column type="index" label="序号" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="carlicenceplate" label="车牌号码" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="carbrand" label="汽车品牌" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="carcolor" label="车身颜色" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="carconfigure" label="汽车配置" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="carlocality" label="汽车产地" align="center" show-overflow-tooltip>
+								</el-table-column>
+								<el-table-column prop="carmodel" label="车辆款式" align="center" show-overflow-tooltip>
+								</el-table-column>
+							</el-table>
+						<span slot="footer" class="dialog-footer">
+							<el-button @click="prsdialog2 = false" size="medium">取 消</el-button>
+						  	<el-button type="primary" @click="addCarData" size="medium">保 存</el-button>
+						</span>
+					</el-dialog>
 				</el-main>
 			</el-container>
 		</div>
@@ -204,6 +396,32 @@
 			data: {
 				//模态框显示隐藏数据
 				fixdialog: false,
+				prsdialog: false,
+				prsdialog2: false,
+				prsiftrue: true,
+				addressOptions: [{
+						value: '湖南省',
+						label: '湖南省',
+						children: [{
+							value: '长沙市',
+							label: '长沙市',
+						}, {
+							value: '株洲市',
+							label: '株洲市',
+						}]
+					},
+					{
+						value: '浙江省',
+						label: '浙江省',
+						children: [{
+							value: '温州市',
+							label: '温州市',
+						}, {
+							value: '杭州市',
+							label: '杭州市',
+						}]
+					}
+				],
 				//用于查询的form数据
 				fixformdata: {
 					//车牌号码
@@ -220,11 +438,15 @@
 					kmMoney:'',
 					//控件隐藏、显示
 					iftrue:false,
-					//维修工显示隐藏
-					fixiftrue:false,
 					//维修类型
 					wtype:'',
 					wjname:'',
+					carname:'',
+					carbrand:'',
+					carcolor:'',
+					carconfig:'',
+					carlocal:'',
+					carmodel:''
 				},
 				//查询的维修单据
 				fixcardata: {},
@@ -251,15 +473,54 @@
 				//技工组及技工
 				prsAndGroupData:[],
 				//站外维修接车数据
-				outCarData:[]
+				outCarData:[],
+				//客户数据
+				prsData:[],
+				//客户表单数据
+				prsForm:{
+					cidk:'',
+					cnamek:'',
+					caddressk:'',
+					csexk:'男',
+					cphonek:'',
+					cidnumberk:'',
+					ctypek:'普通',
+					ckahaok:'',
+					cdoublerk:'0',
+					cmoney:'0',
+					cgrade:'0',
+					prsCar:[]
+				},
+				//客户车辆数据
+				prsCarData:[],
+				//客户车辆表单数据
+				prsCarForm:{
+					cidk:'',
+					carbrand:'',
+					carcolor:'',
+					carmodel:'',
+					carlicenceplate:'',
+					carconfigure:'',
+					carlocality:''
+				},
+				prsCarFormList:[]
 			},
 			mounted() {
 				this.getFixCarData(1);
 				this.getFixGoodsTypeData();
 				this.getFixPersonData();
 				this.getPickCarData();
+				this.getCustomerData();
 			},
 			methods: {
+				//获取所有客户信息
+				getCustomerData(){
+					let _this = this;
+					$.getJSON('http://127.0.0.1:8080/yldaction/api/queryAllprs',function(msg){
+						_this.prsData = msg;
+						console.info(msg);
+					});
+				},
 				//获取所有的维修订单数据
 				getFixCarData(page) {
 					let _this = this;
@@ -298,6 +559,13 @@
 						_this.fixcardform.wid = msg;
 					});
 				},
+				//获取用户编号
+				getPrsCid(){
+					let date = new Date();
+					this.prsForm.cidk = date.getFullYear()+""+(date.getMonth()+1)+""+date.getDate()+""+date.getHours()+""+date.getMinutes()+""+date.getSeconds();
+					this.prsForm.ckahaok = this.prsForm.cidk;
+					this.prsdialog = true;
+				},
 				//获取所有技工数据
 				getFixPersonData(){
 					let _this = this;
@@ -316,19 +584,31 @@
 				addFixTimeMoney(val){
 					let _this = this;
 					let data = {};
+					let prsPrice = 0;
+					let count = 0;
+					if((_this.fixcardform.wstatdate == null || _this.fixcardform.wstatdate == '')&&(_this.fixcardform.wenddate == null || _this.fixcardform.wenddate == '')){
+						count = 2;
+					}else if((_this.fixcardform.wstatdate != '' && _this.fixcardform.wstatdate != null)&&(_this.fixcardform.wenddate != '' && _this.fixcardform.wenddate != null)){
+						let stime = new Date(_this.fixcardform.wstatdate).getTime();
+						let etime = new Date(_this.fixcardform.wenddate).getTime(); 
+						count = Math.ceil(parseInt((etime-stime))/ 1000 / 60 / 60);
+						if(count < 2){
+							count = 2;
+						}
+					}else{
+						this.$message({message:'请输入完整的时间范围！',center:true,type:'error'});
+						return false;
+					}
 					$.each(this.prsAndGroupData, function(i,obj) {
 						$.each(obj.options, function(j,temp) {
 							if(val == temp.pid){
-								let stime = new Date(_this.fixcardform.wstatdate).getTime(); 
-								let etime = new Date(_this.fixcardform.wenddate).getTime(); 
+								prsPrice = parseInt(temp.hmoney * count);
 								_this.fixcardform.wjname = temp.pname;
-								let prsPrice = parseInt(temp.hmoney * Math.ceil(parseInt((etime-stime))/ 1000 / 60 / 60));
-								data = {wid:_this.fixcardform.wid,sid:temp.pid,sdname:'工时费(1h)',dprice:prsPrice,sdprice:prsPrice,sdnumber:1,type:2};
+								data = {wid:_this.fixcardform.wid,sid:temp.pid,sdname:'工时费(1h)',dprice:temp.hmoney,sdprice:prsPrice,sdnumber:count,type:2};
 								return false;
 							}
 						});
 					});
-					console.info(this.fixgoods);
 					$.each(this.fixgoods, function(i,obj) {
 						if(obj.type == 2){
 							_this.fixgoods.splice(i,1);
@@ -339,21 +619,22 @@
 				},
 				addPickCarMoney(){
 					let _this = this;
-					if(this.fixformdata.kmMoney != ''){
-						$.each(this.fixgoods, function(i,obj) {
-							if(obj.type == 3){
-								_this.fixgoods.splice(i,1);
-								return false;
-							}
-						});
-						let temp = this.outCarData[this.fixformdata.pickcar];
-						let sumprice = parseInt(temp.momey) * parseInt(this.fixformdata.kmMoney);
-						let data = {wid:_this.fixcardform.wid,sid:temp.legworkid,sdname:'调度费',dprice:temp.momey,sdprice:sumprice,sdnumber:this.fixformdata.kmMoney,type:3};
-						this.fixgoods.splice(1,0,data);
+					let kmMoney = 0;
+					if(this.fixformdata.kmMoney == ''){
+						kmMoney = 2;
 					}else{
-						this.fixformdata.pickcar = '';
-						this.$message({message:'请输入公里数再选择调度车辆！',center:true,type:'warning'});
+						kmMoney = parseInt(this.fixformdata.kmMoney);
 					}
+					$.each(this.fixgoods, function(i,obj) {
+						if(obj.type == 3){
+							_this.fixgoods.splice(i,1);
+							return false;
+						}
+					});
+					let temp = this.outCarData[this.fixformdata.pickcar];
+					let sumprice = parseInt(temp.money) * parseInt(kmMoney);
+					let data = {wid:_this.fixcardform.wid,sid:temp.legworkid,sdname:'调度费',dprice:temp.money,sdprice:sumprice,sdnumber:kmMoney,type:3};
+					this.fixgoods.splice(1,0,data);
 				},
 				getPickCarData(){
 					let _this = this;
@@ -375,14 +656,14 @@
 					if(val == 2){
 						this.fixformdata.iftrue = true;
 					}else{
+						let _this = this;
+						$.each(this.fixgoods, function(i,obj) {
+							if(obj.type == 3){
+								_this.fixgoods.splice(i,1);
+								return false;
+							}
+						});
 						this.fixformdata.iftrue = false;
-					}
-				},
-				ifTimeNotNull(){
-					if(this.fixcardform.wstatdate != '' && this.fixcardform.wenddate != ''){
-						this.fixformdata.fixiftrue = true;
-					}else{
-						this.fixformdata.fixiftrue = false;
 					}
 				},
 				//添加维修材料
@@ -436,15 +717,29 @@
 				//添加订单
 				addFixNumber(){
 					let _this = this;
-					//维修材料费
 					let sumPrice = 0;
+					//计算材料总价格
 					$.each(this.fixgoods, function(i,obj) {
 						if(obj.type == 1){
 							sumPrice += obj.sdprice;
 						}
 					});
-					//总费用 = 站外接车金额+维修材料费+技工维修费
+					if((this.fixcardform.wstatdate == null || this.fixcardform.wstatdate == '')&&(this.fixcardform.wenddate == null || this.fixcardform.wenddate == '')){
+						this.fixcardform.wstatdate = new Date();
+						let hours = 0;
+						if(parseInt(new Date().getHours()) < 22){
+							hours = parseInt(new Date().getHours())+2;
+							this.fixcardform.wenddate = new Date().setHours(hours);
+						}else{
+							var time = new Date();
+							time.setHours(hours);
+							time.setDate(new Date().getDate()+1);
+							this.fixcardform.wenddate = time;
+						}
+					}
+					//更改出车状态并单据总价格
 					if(this.fixcardform.wleixi == 2){
+						//站外维修
 						this.outCarData[this.fixformdata.pickcar].state = '已出车';
 						this.outCarData[this.fixformdata.pickcar].wid = this.fixcardform.wid;
 						$.ajax('http://127.0.0.1:8080/yldaction/api/updateCarState',{
@@ -461,11 +756,11 @@
 						    }
 						});
 						this.fixcardform.wsumprice = parseInt(this.fixgoods[0].sdprice)+parseInt(this.fixgoods[1].sdprice)+sumPrice;
-						alert("站外接车费="+parseInt(this.fixgoods[1].sdprice)+" 技工工时费="+this.fixgoods[0].sdprice+" 维修材料费="+sumPrice+" 总费用="+this.fixcardform.wsumprice);
 					}else{
+						//站内维修
 						this.fixcardform.wsumprice = parseInt(this.fixgoods[0].sdprice)+sumPrice;
-						alert("技工工时费="+this.fixgoods[0].sdprice+" 维修材料费="+sumPrice+" 总费用="+this.fixcardform.wsumprice);
 					}
+					//添加订单
 					$.ajax('http://127.0.0.1:8080/yldaction/api/insertService',{
 					    type:'post',
 					    dataType:'json',
@@ -488,6 +783,140 @@
 								});
 					        }else{
 					        	_this.$message({message:'添加失败！',center:true,type:'error'});
+					        }
+					    }
+					});
+				},
+				querySearch(qs,cb){
+					let data = [];
+					$.each(this.prsData, function(i,obj) {
+						data.push({value: obj.cnamek, phone: obj.cphonek});
+					});
+					var msg = data.filter((temp)=>{
+						if(temp.value.toLowerCase().indexOf(qs.toLowerCase()) >=0){
+							return temp;
+						}
+					});
+					cb(msg);
+					if(msg == null || msg.length == 0){
+						this.$confirm('没有找到该用户，是否添加该用户？', '提示', {
+						      confirmButtonText: '确定',
+						      cancelButtonText: '取消',
+						      type: 'warning',
+						      center:true
+						    }).then(() => {
+						      this.prsForm.cnamek = this.fixcardform.wname;
+						      this.getPrsCid();
+						    }).catch(() => {
+						    	this.prsiftrue = false;
+						    });
+					}else{
+						this.prsiftrue = true;
+					}
+				},
+				querySearchCar(qs,cb){
+					let _this = this;
+					let data = [];
+					$.each(this.prsCarData, function(i,obj) {
+						data.push({value: obj.carlicenceplate});
+					});
+					var msg = [];
+					if(qs.trim() == ''){
+						msg = data;
+					}else{
+						msg = data.filter((temp)=>{
+							if(temp.value.toLowerCase().indexOf(qs.toLowerCase()) >=0){
+								return temp;
+							}
+						});
+					}
+					if(msg == null || msg.length == 0){
+						this.$confirm('没有该车辆信息，是否为该用户添加？', '提示', {
+					      confirmButtonText: '确定',
+					      cancelButtonText: '取消',
+					      type: 'warning',
+					      center:true
+					    }).then(() => {
+					      	if(!this.prsiftrue){
+					      		this.$alert('车主信息不存在，请先添加车主信息或自定义车牌号码！', '提示', {
+						          confirmButtonText: '确定',
+						          type: 'warning',
+						          center: true,
+						          callback: action => {
+						          	this.prsForm.cnamek = this.fixcardform.wname;
+						     		this.getPrsCid();
+						          }
+						        });
+					      	}else{
+					      		this.prsdialog2 = true;
+					      	}
+					    }).catch(() => {
+					    	
+					    });
+					}else{
+						cb(msg);
+					}
+				},
+				handleSelect(item){
+					let _this = this;
+					$.each(this.prsData, function(i,obj) {
+						if(obj.cnamek == item.value){
+							_this.fixcardform.wphone = obj.cphonek;
+							_this.prsCarForm.cidk = obj.cidk;
+							$.getJSON("http://127.0.0.1:8080/yldaction/api/queryAllByPrsId",{id:obj.cidk},function(msg){
+								_this.prsCarData = msg;
+								console.info(msg);
+							});
+							return false;
+						}
+					});
+				},
+				addPrsCar(){
+					let data = this.fixformdata;
+					this.prsForm.prsCar.push({cidk:this.prsForm.cidk,carlicenceplate:data.carname,carbrand:data.carbrand,carcolor:data.carcolor,carconfigure:data.carconfig,carlocality:data.carlocal,carmodel:data.carmodel});
+				},
+				addressChange(value) {
+					this.prsForm.caddressk = (value[0]+"/"+value[1]).toString();
+				},
+				addPrsAndCarData(){
+					let _this = this;
+					$.ajax('http://127.0.0.1:8080/yldaction/api/insertCustomerAndCar',{
+					    type:'post',
+					    dataType:'json',
+					    contentType:'application/json',
+					    data:JSON.stringify(_this.prsForm),
+					    success:function(msg){
+					        if(msg =="ok"){
+					        	_this.$message({message:'客户信息添加成功！',center:true,type:'success'});
+					        	_this.fixcardform.wname = '';
+					        	_this.getCustomerData();
+					        	_this.prsdialog = false;
+					        }else{
+					        	_this.$message({message:'客户信息添加失败！',center:true,type:'error'});
+					        }
+					    }
+					});
+				},
+				addPrsCar2(){
+					this.prsCarFormList.push(this.prsCarForm);
+				},
+				addCarData(){
+					let _this = this;
+					$.ajax('http://127.0.0.1:8080/yldaction/api/insertCustomerCar',{
+					    type:'post',
+					    dataType:'json',
+					    contentType:'application/json',
+					    data:JSON.stringify(_this.prsCarFormList),
+					    success:function(msg){
+					        if(msg =="ok"){
+					        	_this.$message({message:'车辆信息添加成功！',center:true,type:'success'});
+					        	_this.fixcardform.wcarid = '';
+					        	_this.fixcardform.wname = '';
+					        	_this.fixcardform.wphone = '';
+					        	_this.getCustomerData();
+					        	_this.prsdialog2 = false;
+					        }else{
+					        	_this.$message({message:'车辆信息添加失败！',center:true,type:'error'});
 					        }
 					    }
 					});
