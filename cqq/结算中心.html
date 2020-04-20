@@ -74,9 +74,11 @@
 							{{temp.row.service.wstatic |changSex1}}
 						</template>
 					</el-table-column>
-					<el-table-column label="付款时间" width="160px" prop="service.paymenttirm">
+					<el-table-column label="付款时间" width="160px"  sortable prop="service.paymenttirm">
 					</el-table-column>
 					<el-table-column label="结算金额" width="" prop="service.wsumprice">
+					</el-table-column>
+					<el-table-column label="抵扣金额" width="" prop="service.deductionmoney">
 					</el-table-column>
 					<el-table-column label="业务类型" width="" prop="service.wtype">
 					</el-table-column>
@@ -150,14 +152,14 @@
 						<el-table-column label="维修项目" width="" prop="sdname">
 							<aq></aq>
 						</el-table-column>
-						<el-table-column label="项目价格" width="" prop="sdprice">
+						<el-table-column label="项目价格" width="" prop="dprice">
 						</el-table-column>
-						<el-table-column label="维修数量" width="" prop="sdnumber">
+						<el-table-column label="(件数/小时)" width="" prop="sdnumber">
 						</el-table-column>
-						<el-table-column label="小计" width="" prop="">
-							<template slot-scope="temp">
+						<el-table-column label="小计" width="" prop="sdprice">
+							<!--<template slot-scope="temp">
 								{{temp.row.sdprice*temp.row.sdnumber}}
-							</template>
+							</template>-->
 						</el-table-column>
 					</el-table>
 				</template>
@@ -170,7 +172,7 @@
 								总计：
 							</el-col>
 							<el-col :span="12" style="text-align: right;">
-								{{zongjine.sum}}
+								{{zongjine.service.wsumprice}}
 							</el-col>
 						</el-row>
 					</el-col>
@@ -216,12 +218,12 @@
 									应付金额：
 								</el-col>
 								<el-col :span="12">
-									{{zongjine.sum-(zongjine.sum-zongjine.sum*zhekou)}}
+									{{yfmoney}}
 								</el-col>
 							</el-row>
 						</el-col>
 						</el-col>
-						<el-button v-if="huiyuanObj.cdoublerk>=zongjine.sum-(zongjine.sum-zongjine.sum*zhekou)" type="primary" size="mini" @click="chengjiao(2)">使用积分抵扣</el-button>
+						<el-button v-if="huiyuanObj.cdoublerk>=yfmoney" type="primary" size="mini" @click="chengjiao(3)">使用积分抵扣</el-button>
 						<el-button v-if="isshow3==true" type="primary" size="mini" v-if="isshow3==true" @click="xuanzehuiyuan">会员9折优惠，选择会员</el-button>
 						<el-button type="primary" size="mini" @click="chengjiao(1)">成交</el-button>
 				</div>
@@ -265,7 +267,9 @@
 	<script>
 		var gangwei = new Vue({
 			el: "#kehuziliao",
-			data: {formInline:{},rules:{},
+			data: {
+				yfmoney:0,
+				formInline:{},rules:{},
 				index:{},
 				isshow5:false,
 				isshow3:true,
@@ -295,7 +299,7 @@
 				huiyuanObj:{
 					cdoublerk:0
 				}
-				,jiesuandan:'',zhekou:1
+				,jiesuandan:{},zhekou:1
 			},
 			methods: {
 				dayin(){
@@ -320,6 +324,7 @@
 								_this.isshow2=false;
 								_this.isshow3=false;
 								_this.zhekou=0.9;
+								_this.yfmoney=parseFloat(_this.yfmoney*_this.zhekou).toFixed(2);
 							}
 						
 					});
@@ -346,19 +351,18 @@
 						input=null;
 					}
 					this_.goToPage(val, this.pageInfo.pageSize, this_.value, input);
-				},chengjiao(val){
+				},
+				chengjiao(val){
 					var _this=this;
 					_this.jiesuandan.service.wstatic=4;
-					_this.jiesuandan.service.wpayment=val;
-					_this.jiesuandan.service.deductionmoney=_this.zongjine.sum-(_this.zongjine.sum-(_this.zongjine.sum-_this.zongjine.sum*_this.zhekou));
-					alert(_this.zongjine.sum-(_this.zongjine.sum-(_this.zongjine.sum-_this.zongjine.sum*_this.zhekou)))
-					if(val==2){
-						_this.jiesuandan.service.deductionmoney=0-(_this.zongjine.sum-(_this.zongjine.sum-_this.zongjine.sum*_this.zhekou));
+					if(val==3){
+						_this.jiesuandan.service.wpayment=3;
+						_this.jiesuandan.service.deductionmoney=parseFloat(_this.yfmoney).toFixed(2);
+					}else{
+						_this.jiesuandan.service.wpayment=this.yfmoney<_this.jiesuandan.service.wsumprice?2:1;
+						_this.jiesuandan.service.deductionmoney=parseFloat(_this.jiesuandan.service.wsumprice-_this.yfmoney).toFixed(2);
 					}
-					if(_this.isshow3==false){
-						_this.jiesuandan.service.wpayment=2;
-					}
-					alert(JSON.stringify(_this.jiesuandan.service))
+					
 					$.ajax(`http://127.0.0.1:8080/CqqServiceAction/api/update/${_this.huiyuanObj.ckahaok}`, {
 							type: "post",
 							contentType: "application/json",
@@ -379,15 +383,17 @@
 					});
 				},
 				shouyin(row){
+						this.zongjine='';
+					this.jiesuandan={};
 					this.huiyuankahao='';
 					this.huiyuanObj={
 					cdoublerk:0
 				};
-				this.zhekou=1;
+					this.zhekou=1;
 					this.isshow1 = true;
 					this.zongjine=row;
 					this.jiesuandan=row;
-					
+					this.yfmoney=this.jiesuandan.service.wsumprice;
 				},
 				queryClick(input, value) {
 					if(input == '') {
@@ -447,8 +453,10 @@
 						return "未结算";
 					}else if(val==1){
 					return "现金";
-					}else{
+					}else if(val==2){
 					return "会员";
+					}else if(val==3){
+						return "会员积分";
 					}
 				}
 			},

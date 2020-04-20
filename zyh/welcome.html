@@ -85,12 +85,12 @@
 				<div class="layui-col-sm14 layui-col-md6" style="margin-top: 5ex;">
 					<div class="layui-card">
 						
-						<div id="main" style="min-width:100%;height:400px;"></div>
+						<div id="main" style="min-width:100%;height:450px;"></div>
 					</div>
 				</div>
 				<div class="layui-col-sm14 layui-col-md6" style="margin-top: 5ex;">
 					
-						<div id="main1" style="min-width: 100%;height:400px;"></div>
+						<div id="main1"  style="min-width: 100%;height:450px;"></div>
 					</div>
 				</div>
 
@@ -113,6 +113,8 @@
 		var welcome = new Vue({
 			el: "#welcome",
 			data: {
+				myChart1:null,
+				myChart2:null,
 				jrsummoney:0,
 				jrshimoney:0,
 				kehuhnumber:0,
@@ -209,29 +211,11 @@
 			},
 			methods: {
 				queryAll(){
-					
- 	let _this=this;
-						$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryJieDan',function(data){
 				
-						_this.jrzjiedan=data.jrzjiedan;
-						_this.jrwjiedan=data.jrwjiedan;
-			
-					});
-						$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryJieSuan',function(data){
-						_this.jiesuannumber=data;
-					});
-						$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryKeHu',function(data){
-						_this.kehuhnumber=data.kehuhnumber;
-						_this.kehupnumber=data.kehupnumber;
-					});
-						$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryMoney',function(data){
-						
-						_this.jrsummoney=data.jrsummoney;
-						_this.jrshimoney=data.jrshimoney;
-					});
+ 					let _this=this;
 					
 								//开启同步
-		$.ajaxSetup({
+	$.ajaxSetup({
 				async:false
 				})
 					
@@ -258,8 +242,8 @@
 								}
 							_this.option.series[0].data.splice(val,1);
 						}
-							var myChart = echarts.init(document.getElementById('main'));
-							myChart.setOption(_this.option);
+						
+						_this.myChart1.setOption(_this.option,true);
 						
 				});
 				
@@ -269,15 +253,38 @@
 								_this.option2.series[0].data[1].value=[0, 0, 0, 0, 0, 0,0];
 						$.each(data,function(i,obj){
 							//雷达图
+							
 								val=val<obj.xq?obj.xq:val;
 								let indext=obj.xq==0?6:obj.xq-1;
 							_this.$set(_this.option2.series[0].data[1].value,indext,obj.jrsummoney);
-							//console.log(JSON.stringify(_this.option2.series[0].data))
+							_this.myChart2.setOption(_this.option2);	
 						});
-							var myChart2 = echarts.init(document.getElementById('main1'));
-							myChart2.setOption(_this.option2);
+			
 				});
- 	
+				/*渲染数据*/
+							
+							
+						
+					
+							
+				$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryJieDan',function(data){
+				
+						_this.jrzjiedan=data.jrzjiedan;
+						_this.jrwjiedan=data.jrwjiedan;
+			
+					});
+						$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryJieSuan',function(data){
+						_this.jiesuannumber=data;
+					});
+						$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryKeHu',function(data){
+						_this.kehuhnumber=data.kehuhnumber;
+						_this.kehupnumber=data.kehupnumber;
+					});
+						$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryMoney',function(data){
+						
+						_this.jrsummoney=data.jrsummoney;
+						_this.jrshimoney=data.jrshimoney;
+					});
  
 				},
 				chushi(){
@@ -292,7 +299,10 @@
 						
 				}
 			},
-			mounted() {return
+			mounted() {
+					this.myChart1 = echarts.init(document.getElementById('main'));
+					this.myChart2= echarts.init(document.getElementById('main1'));
+					
 				this.queryAll();
 				this.chushi();
 			}

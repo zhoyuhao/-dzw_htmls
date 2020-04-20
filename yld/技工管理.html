@@ -259,12 +259,14 @@
 			       return this.workpagedatas.filter(item => item.type == '2')
 			    }*/
 			},
+			
 			filters: {
 				changeGroup(val) {
 					return val == '' ? '暂未加入' : val;
 				}
 			},
 			methods: {
+				getdata(){},
 				openupdate(temp){
 					this.uempdialog = true;
 					this.uempdate = JSON.parse(JSON.stringify(temp));
