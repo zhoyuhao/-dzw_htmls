@@ -25,7 +25,7 @@
 </el-input>
     <el-button type="primary"size="mini" @click="queryClick(input)"><span class="el-icon-search"  ></span></el-button>
 			<el-button type="success" size="mini" @click="addClick">添加</el-button>
-			<el-button type="success" size="mini" @click="daochu">导出</el-button>
+		<!--	<el-button type="success" size="mini" @click="daochu">导出</el-button>-->
 			</span>
 			<template>
 				<el-table max-height="500" :data="pageInfo.list" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
@@ -81,6 +81,18 @@
 				input: ''
 			},
 			methods: {
+				handleClose(done) {
+					var _this=this;
+					this.$confirm('确认关闭？')
+						.then(_ => {
+							this.radio = "";
+							done();
+							_this.zhekou=1;
+							//_this.huiyuanObj =null;
+							_this.isshow3=true;
+						})
+						.catch(_ => {});
+				},
 				queryClick(input) {
 					if(input == '')
 						input = null;

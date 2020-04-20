@@ -74,7 +74,7 @@
 									<div class="x-admin-backlog-body" style="box-shadow: 0px 0px 5px #000000;">
 										<h3>今日收入</h3>
 										<p>
-											<cite id="xj"><span style="margin-right: 2ex;">总:￥{{jrsummoney}}</span><span>实:￥{{jrshimoney}}</span></cite></p>
+											<cite id="xj"><span style="margin-right: 2ex;">总:￥{{jrsummoney}}</span><span>抵扣金额:￥{{jrshimoney}}</span></cite></p>
 									</div>
 								</li>
 
@@ -211,6 +211,7 @@
 			},
 			methods: {
 				queryAll(){
+					return
 				/*$("#main").html()$("#main1").html()*/
 					this.myChart1 = echarts.init(document.getElementById('main'));
 					this.myChart2= echarts.init(document.getElementById('main1'));
@@ -292,6 +293,7 @@
  
 				},
 				chushi(){
+					
 				let _this=this;
 
  				setInterval(()=>{
@@ -308,8 +310,6 @@
 					
 				this.queryAll();
 				let _this=this;
-				
-			/*	this.chushi();*/
 					setInterval(()=>{
  				_this.queryAll();
  	

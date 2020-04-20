@@ -85,11 +85,15 @@
 					}
 					$.getJSON(`http://127.0.0.1:8080/zyhPersonnelAction/api/querylogin/${this.login.card}/${this.login.pwd}`, function(data) {
 						if(data.pid != "") {
-							/*_this.$message({
+							if(data.pstatic!=0){
+								_this.$message({
 								showClose: true,
-								message: '欢迎使用德召文汽修系统',
-								type: 'success'
-							});*/
+								message: '用户已经离职！',
+								type: 'error'
+							});
+								return
+							}
+							
 							/*保存当前登入的用户信息*/
 							sessionStorage.setItem("user", JSON.stringify(data));
 							location.href='/dzw/index.html'

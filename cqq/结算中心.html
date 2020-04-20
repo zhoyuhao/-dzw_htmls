@@ -40,10 +40,10 @@
 
     <el-button type="primary"size="mini" @click="queryClick(input,value)"><span class="el-icon-search"  ></span></el-button>
 
-			<el-button type="success" size="mini" @click="dayin">导出</el-button>
+			<!--<el-button type="success" size="mini" @click="dayin">导出</el-button>-->
 			</span>
 			<template>
-				<el-table max-height="500" :data="pageInfo.list" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
+				<el-table  :data="pageInfo.list" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
 					<!--<el-table-column type="expand" fixed>
 						<template slot-scope="temp">
 							<el-table :data="temp.row.serdetalist" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
@@ -60,12 +60,18 @@
 					<el-table-column label="单据类型" width="">
 						<template slot-scope="temp">
 							<!--{{temp.row..wleixi}}-->
-							{{temp.row.service.wleixi==1?'站内':'站外'}}
+							<span  v-if="temp.row.service.wleixi==1">站内</span>
+							<span style="color: #E6A23C;" v-if="temp.row.service.wleixi!=1">站外</span>
+					
 						</template>
 					</el-table-column>
 					<el-table-column label="结算方式" width="" prop="service.wpayment">
 						<template slot-scope="temp">
-							{{temp.row.service.wpayment |jiesuanfangshi}}
+							<span v-if="temp.row.service.wpayment==0">未结算</span>
+							<span v-if="temp.row.service.wpayment==1">现金</span>
+							<span style="color: red;" v-if="temp.row.service.wpayment==2">会员</span>
+							<span style="color: red;" v-if="temp.row.service.wpayment==3">会员积分</span>
+							<!--{{temp.row.service.wpayment |jiesuanfangshi}}-->
 							
 						</template>
 					</el-table-column>
@@ -90,6 +96,7 @@
 						<template slot-scope="temp">
 							<el-button v-if="temp.row.service.wstatic==3" size="mini" type="success" @click="shouyin(temp.row)">收银</el-button>
 							<el-button size="mini" type="primary" @click="dakaidanju(temp.row)">打开</el-button>
+							<el-button v-if="temp.row.service.wstatic==4" size="mini" type="info" @click="dayin(temp.row)">打印</el-button>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -257,6 +264,9 @@
 				</el-table>
 			</el-dialog>
 
+			<el-dialog  title="订单详细" :visible.sync="dayinshow" width="" :before-close="handleClose3">
+			<div id="cnt1"></div>
+			</el-dialog>
 		</div>
 
 	</body>
@@ -268,6 +278,7 @@
 		var gangwei = new Vue({
 			el: "#kehuziliao",
 			data: {
+				dayinshow:false,
 				yfmoney:0,
 				formInline:{},rules:{},
 				index:{},
@@ -302,10 +313,20 @@
 				,jiesuandan:{},zhekou:1
 			},
 			methods: {
-				dayin(){
-					$.getJSON(`http://127.0.0.1:8080/CqqServiceAction/api/daochukhzl`, function() {
+				dayin(obj){
+					//alert(JSON.stringify(obj))
+					sessionStorage.setItem("dy",JSON.stringify(obj));
+					window.open("../zyh/打印机.html");
+				/*	this.dayinshow=true;
+					setInterval(()=>{
+						sessionStorage.setItem("dy",JSON.stringify(obj));
+						$("#cnt1").load("../zyh/打印机.html");
+					},"500")*/
+					
+					/*cnt1*/
+					/*$.getJSON(`http://127.0.0.1:8080/CqqServiceAction/api/daochukhzl`, function() {
 					_this.$message('导出成功');
-					});
+					});*/
 				},
 				dakaidanju(val){
 					this.index=val;
@@ -330,6 +351,7 @@
 					});
 					}
 				},
+				
 				xuanzehuiyuan(){
 					this.isshow2=true;
 				},

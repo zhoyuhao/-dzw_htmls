@@ -36,7 +36,7 @@
 							<el-button @click="bzdialog = true" type="primary">添加班组</el-button>
 						</el-form-item>
 					</el-form>
-					<el-table :data="fixempgroup.list" size="small">
+					<el-table :data="fixempgroup.list" size="small" height="500px" style="">
 						<el-table-column label="技工组数据" align="center" height="250">
 							<el-table-column label="编号" type="index" align="center" show-overflow-tooltip>
 							</el-table-column>
@@ -54,10 +54,10 @@
 							</el-table-column>
 						</el-table-column>
 					</el-table>
-					<div style="margin-top: 20px;">
+					<!--<div style="margin-top: 20px;">
 						<el-pagination @current-change="getEmpGroupWoker" background layout="total, prev, pager, next, jumper" :page-size="4" :total="fixempgroup.total">
 						</el-pagination>
-					</div>
+					</div>-->
 				</el-tab-pane>
 				<el-tab-pane label="技工数据" name="second">
 					<el-form :inline="true" label-width="120px" size="mini">
@@ -74,7 +74,7 @@
 							<el-button @click="getEmpdata(1)" type="default">查询</el-button>
 						</el-form-item>
 					</el-form>
-					<el-table :data="fixemp.list" size="small">
+					<el-table :data="fixemp.list" size="small" height="500px">
 						<el-table-column label="技工数据" align="center" height="250">
 							<el-table-column label="工号" prop="aid" align="center" show-overflow-tooltip>
 							</el-table-column>
@@ -94,10 +94,10 @@
 							</el-table-column>
 						</el-table-column>
 					</el-table>
-					<div style="margin-top: 20px;">
+				<!--	<div style="margin-top: 20px;">
 						<el-pagination @current-change="getdata" background layout="total, prev, pager, next, jumper" :page-size="4" :total="fixemp.total">
 						</el-pagination>
-					</div>
+					</div>-->
 				</el-tab-pane>
 				<el-tab-pane label="技工星级" name="three">
 					<el-form :inline="true" label-width="120px" size="mini">
@@ -109,7 +109,7 @@
 							<el-button @click="empdialog = true" type="primary">添加技工等级</el-button>
 						</el-form-item>
 					</el-form>
-					<el-table :data="workpagedata.list" size="small">
+					<el-table :data="workpagedata.list" size="small" height="500px">
 						<el-table-column label="星级数据" align="center">
 							<el-table-column label="编号" type="index" align="center" show-overflow-tooltip>
 							</el-table-column>
@@ -126,10 +126,10 @@
 							</template>
 						</el-table-column>
 				</el-table>
-					<div style="margin-top: 20px;">
+					<!--<div style="margin-top: 20px;">
 						<el-pagination @current-change="getworkdata" background layout="total, prev, pager, next, jumper" :page-size="4" :total="workpagedata.total">
 						</el-pagination>
-					</div>
+					</div>-->
 				</el-tab-pane>
 			</el-tabs>
 			<el-dialog width="30%" title="技工星级添加" :visible.sync="empdialog" center :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false">
@@ -266,6 +266,7 @@
 				}
 			},
 			methods: {
+				alert(){},
 				getdata(){},
 				openupdate(temp){
 					this.uempdialog = true;
@@ -410,6 +411,7 @@
 					        if(msg == "ok"){
 					        	_this.$message({message:'添加成功！',center:true,type:'success'});
 					        	_this.getEmpGroupWoker(1);
+					        	_this.getworkdata(1);
 					        	_this.bzdialog = false;
 					        }else{
 					        	_this.$message({message:'添加失败！',center:true,type:'error'});
@@ -427,6 +429,7 @@
 						    data:{id:id},
 						    success:function(msg){
 						        if(msg == "ok"){
+						        	_this.getworkdata(1);
 						        	_this.$message({message:'删除成功！',center:true,type:'success'});
 						        	_this.getEmpGroupWoker(1);
 						        }else{
@@ -445,6 +448,7 @@
 					    data:JSON.stringify({bzid:_this.uempgroup2.agid,hmoney:_this.uempgroup2.hmoney,bzname:_this.uempgroup2.agname}),
 					    success:function(msg){
 					        if (msg == "ok") {
+					        	_this.getworkdata(1);
 					        	_this.$message({message:'修改成功！',center:true,type:'success'});
 					        	_this.getEmpGroupWoker(1);
 					        	_this.uempgroupdialog2 = false;
