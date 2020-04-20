@@ -66,6 +66,7 @@
 					<el-table-column label="结算方式" width="" prop="service.wpayment">
 						<template slot-scope="temp">
 							{{temp.row.service.wpayment |jiesuanfangshi}}
+							
 						</template>
 					</el-table-column>
 					<el-table-column label="状态" width="70px" prop="service.wstatic">
@@ -378,6 +379,11 @@
 					});
 				},
 				shouyin(row){
+					this.huiyuankahao='';
+					this.huiyuanObj={
+					cdoublerk:0
+				};
+				this.zhekou=1;
 					this.isshow1 = true;
 					this.zongjine=row;
 					this.jiesuandan=row;

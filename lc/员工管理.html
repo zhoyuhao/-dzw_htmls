@@ -48,7 +48,7 @@
 									<el-table-column label="员工资料管理" align="center">
 										<el-table-column prop="pId" align="center" label="员工编号" width="120">
 										</el-table-column>
-										<el-table-column prop="pentry" align="center" label="入职日期" width="120">
+										<el-table-column prop="pentry" align="center" label="入职日期" width="200">
 										</el-table-column>
 										<el-table-column prop="pname" align="center" label="员工姓名" width="120">
 										</el-table-column>
@@ -60,9 +60,9 @@
 										</el-table-column>
 										<el-table-column prop="cname" align="center" label="员工角色" width="180">
 										</el-table-column>
-										<el-table-column label="操作" align="center">
+										<el-table-column label="操作" align="center" >
 											<template slot-scope="temp">
-												<i class="el-icon-s-tools" @click="xiugai(temp.row.pId)"></i>&nbsp;&nbsp;
+												<i class="el-icon-s-tools" @click="xiugai(temp.row.pId,temp.row)"></i>&nbsp;&nbsp;
 												<i class="el-icon-delete" @click="shanchu(temp.row.pId)"></i>
 											</template>
 										</el-table-column>
@@ -82,24 +82,29 @@
 								</template>
 							</div>
 						</div>
-						<el-dialog :destroy-on-close="true" title="商品资料添加" :visible.sync="isshow1" width="900px" :before-close="handleClose">
+						<el-dialog  title="商品资料添加" :visible.sync="isshow1" width="900px" :before-close="handleClose">
 							<el-form :model="staff" :inline="true" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm.inline">
 								<el-form-item label="员工编号" prop="pId">
 									<el-input v-model="staff.pId" :disabled="true" placeholder="请输入" style="width: 250px;"></el-input>
 								</el-form-item>
+								<el-form-item label="员工姓名" prop="pname">
+									<el-input v-model="staff.pname" placeholder="请输入" style="width: 250px;"></el-input>
+								</el-form-item>
 								<!--修改为岗位-->
 								<!--<el-form-item label="岗位" prop="gwname">
-									<el-input v-model="staff.gwname" placeholder="请输入" style="width: 250px;"></el-input>
-								</el-form-item>-->
-								<el-form-item label="员工岗位" prop="ppost" required>
-									<!--哈哈哈哈-->
-										<el-select v-model="staff.ppost">
-										<el-option v-for="item in jg" :label="item.gwname" :value="item.gwid" style="width: 250px;">
+						<el-input v-model="staff.gwname" placeholder="请输入" style="width: 250px;"></el-input>
+				</el-form-item>-->
+				<el-form-item label="角色" prop="cid">
+									<el-select v-model="staff.cid" style="width: 250px;">
+										<el-option v-for="item in js" :label="item.cname" :value="item.cid">
 										</el-option>
 									</el-select>
 								</el-form-item>
-								<el-form-item label="员工名称" prop="pname">
-									<el-input v-model="staff.pname" placeholder="请输入" style="width: 250px;"></el-input>
+								<el-form-item label="员工岗位" prop="ppost" required>
+									<el-select v-model="staff.ppost" style="width: 250px;">
+										<el-option v-for="item in jg" :label="item.gwname" :value="item.gwid" style="width: 250px;">
+										</el-option>
+									</el-select>
 								</el-form-item>
 								<el-form-item label="性别">
 									<el-radio-group v-model="staff.psex" style="width: 250px;">
@@ -123,14 +128,9 @@
 								<el-form-item label="员工地址" prop="paddress">
 									<el-input v-model="staff.paddress" style="width: 250px;"></el-input>
 								</el-form-item>
-								<el-form-item label="角色" prop="cid">
-									<el-select v-model="staff.cid" style="width: 250px;">
-										<el-option v-for="item in js" :label="item.cname" :value="item.cid">
-										</el-option>
-									</el-select>
-								</el-form-item>
+								
 								<el-form-item label="员工密码" prop="ppwd">
-									<el-input v-model="staff.ppwd" style="width: 250px;"></el-input>
+									<el-input v-model="staff.ppwd" type="password" :disabled="true" style="width: 250px;"></el-input>
 								</el-form-item>
 								<el-form-item label="入职日期" prop="pentry">
 									<el-form-item prop="pentry">
@@ -140,7 +140,7 @@
 
 								<el-form-item style="margin: 0px auto;width: 700px; text-align: right;">
 									<el-button style="width: 150px;" type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-									<el-button style="width: 150px;" @click="isshow1= false">取消</el-button>
+									<el-button style="width: 150px;" @click="isshow1=false">取消</el-button>
 								</el-form-item>
 							</el-form>
 						</el-dialog>
@@ -162,27 +162,59 @@
 		var yggl = new Vue({
 			el: "#yggl",
 			data: {
-				jg: [],
-				js: [],
-				pid: null,
+				jg:[],
+				js:[],
+				pid:null,
 				staff: {
 					pId: '',
 					bzId: '',
 					pname: '',
 					psex: '',
-					pentry: '',
+					pentry:'',
 					peducational: '',
 					pphone: '',
 					paddress: '',
-					pidcard: '',
-					pstatic: '',
-					ppwd: '',
-					ppost: '',
-					gwname: '',
-					cid: ''
+					pidcard:'',
+					pstatic:'',
+					ppwd:'',
+					ppost:'',
+					gwname:'',
+					cid:''
+
 				},
 				rules: {
+					pId: [{
+						required: true,
+						message: '请输入',
+						trigger: 'blur'
+					}],
+					bzId: [{
+						required: true,
+						message: '请选择',
+						trigger: 'change'
+					}],
 
+					pname: [{
+						required: true,
+						message: '请输入名称',
+						trigger: 'blur'
+					}],
+					cid: [{
+						required: true,
+						message: '请选择',
+						trigger: 'change'
+					}],
+					ppost:[{
+						required: true,
+						message: '请选择',
+						trigger: 'change'
+					}],
+					pentry:[{
+						type:"date",
+						required: true,
+						message: '请选择',
+						trigger: 'change'
+					}]
 				},
 				isshow1: false,
 				isshow2: false,
@@ -196,50 +228,63 @@
 			},
 			methods: {
 				submitForm(formName) {
-					let _this = this;
-					_this.staff.ppost = _this.staff.cid;
+					let _this=this;
+					_this.staff.ppost=_this.staff.cid;
 					this.$refs[formName].validate((valid) => {
 						if(valid) {
 							$.ajax(`http://127.0.0.1:8080/lc/api/lcpersonnels/addGoods`, {
-								type: "post",
-								contentType: "application/json",
-								data: JSON.stringify(_this.staff),
-								dataType: "json",
-								success(date) {
-									if(date.code == "200") {
-										_this.$message(date.msg);
-										_this.isshow1 = false;
-										_this.lcgoTopage(1, 6, _this.goods.pname);
-									} else {
-										_this.$message(date.msg);
-									}
-								}
-							});
+						type: "post",
+						contentType: "application/json",
+						data: JSON.stringify(_this.staff),
+						dataType: "json",
+						success(date) {
+							if(date.code == "200") {
+								_this.$message({
+										type: 'success',
+										message: '新增成功!'
+									});
+									_this.resetForm('ruleForm');
+									_this.isshow1 = false;
+								_this.lcgoTopage(1, 6, _this.goods.pname);
+
+							} else {
+								_this.$message(date.msg);
+							}
+						}
+					});
 						} else {
 							console.log('error submit!!');
 							return false;
 						}
 					});
 				},
+				  resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
 				resetForm(formName) {
 					this.$refs[formName].resetFields();
 				},
 				//提供的班组和职位
-				jgbz() {
-					let _this = this;
-
+				jgbz(){
+					let _this=this;
+	
 					$.getJSON(`http://127.0.0.1:8080/lc/api/workergroups/zw`, function(date) {
 						_this.jg = date;
-						console.info(_this.jg);
+						console.info(date);
 					});
 					$.getJSON(`http://127.0.0.1:8080/lc/api/lcRoles/ssb`, function(date) {
 						_this.js = date;
+						console.info(date);
 					});
 
 				},
 				//添加员工
 				addyg() {
+					let _this=this;
 					this.isshow1 = true;
+					setTimeout(()=>{
+						_this.resetForm('ruleForm');
+					},"500")
 				},
 				names() {
 					this.lcgoTopage(1, this.pageInfo.pageSize, this.goods.pname);
@@ -276,10 +321,11 @@
 									_this.$message(data.msg);
 								} else {
 									_this.$message({
-										type: 'success',
-										message: '删除成功!'
-									});
-									_this.lcgoTopage(1, 2, _this.goods.pname);
+														duration:"1000",
+														type: 'success',
+														message: '刪除成功!'
+													});
+									_this.lcgoTopage(1, 6, _this.goods.pname);
 								}
 							}
 						});
@@ -290,10 +336,11 @@
 						});
 					});
 				},
-				xiugai(gid) {
+				xiugai(gid,obj) {
 					this.isshow2 = true;
 					sessionStorage.setItem('iss', gid);
-
+					sessionStorage.setItem("userUpdate",JSON.stringify(obj));
+					sessionStorage.setItem("isso",this.isshow2);
 				},
 				/*handlerOpen1() {
 					$("#cnt1").load('员工管理添加.html'); //ajax读取页面
@@ -318,6 +365,8 @@
 				var date = new Date();
 				now = date.getFullYear() + "" + (date.getMonth() + 1) + "" + date.getDate() + "" + date.getHours() + "" + date.getMinutes() + "" + date.getSeconds();
 				_this.staff.pId = now;
+				_this.staff.ppwd=now;
+				_this.staff.psex='男';
 				_this.jgbz();
 			}
 		})

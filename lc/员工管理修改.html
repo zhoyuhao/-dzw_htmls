@@ -24,14 +24,26 @@
 		<div id="sss" v-cloak>
 			<el-form :model="staff" :inline="true" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm.inline">
 				<el-form-item label="员工编号" prop="pId">
-					<el-input v-model="staff.pId" placeholder="请输入" style="width: 250px;"></el-input>
+					<el-input v-model="staff.pId" :disabled="true" placeholder="请输入" style="width: 250px;"></el-input>
+				</el-form-item>
+				<el-form-item label="员工姓名" prop="pname">
+					<el-input v-model="staff.pname" placeholder="请输入" style="width: 250px;"></el-input>
 				</el-form-item>
 				<!--修改为岗位-->
-				<el-form-item label="岗位" prop="gwname">
-					<el-input v-model="staff.gwname" placeholder="请输入" style="width: 250px;"></el-input>
+				<!--<el-form-item label="岗位" prop="gwname">
+						<el-input v-model="staff.gwname" placeholder="请输入" style="width: 250px;"></el-input>
+				</el-form-item>-->
+				<el-form-item label="角色" prop="cid">
+					<el-select v-model="staff.cid" style="width: 250px;">
+						<el-option v-for="item in js" :label="item.cname" :value="item.cid">
+						</el-option>
+					</el-select>
 				</el-form-item>
-				<el-form-item label="员工名称" prop="pname">
-					<el-input v-model="staff.pname" placeholder="请输入" style="width: 250px;"></el-input>
+				<el-form-item label="员工岗位" prop="ppost" required>
+					<el-select v-model="staff.ppost" style="width: 250px;">
+						<el-option v-for="item in jg" :label="item.gwname" :value="item.pid" style="width: 250px;">
+						</el-option>
+					</el-select>
 				</el-form-item>
 				<el-form-item label="性别">
 					<el-radio-group v-model="staff.psex" style="width: 250px;">
@@ -39,9 +51,9 @@
 						<el-radio label="女" value="女"></el-radio>
 					</el-radio-group>
 				</el-form-item>
-				<el-form-item label="员工学历" prop="peducational" >
+				<el-form-item label="员工学历" prop="peducational">
 					<el-select v-model="staff.peducational" style="width: 250px;">
-						<el-option label="本科" value="本科" >
+						<el-option label="本科" value="本科">
 						</el-option>
 						<el-option label="专科" value="专科">
 						</el-option>
@@ -55,12 +67,7 @@
 				<el-form-item label="员工地址" prop="paddress">
 					<el-input v-model="staff.paddress" style="width: 250px;"></el-input>
 				</el-form-item>
-				<el-form-item label="角色" prop="cid" >
-					<el-select :label="staff.cname" v-model="staff.cid" style="width: 250px;">
-						<el-option v-for="item in jg" :label="item.cname" :value="item.cid" style="width: 250px;">
-						</el-option>
-					</el-select>
-				</el-form-item>
+				
 				<el-form-item label="员工密码" prop="ppwd">
 					<el-input v-model="staff.ppwd" style="width: 250px;"></el-input>
 				</el-form-item>
@@ -69,15 +76,10 @@
 						<el-date-picker style="width: 250px;" type="date" placeholder="选择日期" v-model="staff.pentry" style="width: 100%;"></el-date-picker>
 					</el-form-item>
 				</el-form-item>
-				<!--<el-form-item label="员工岗位" prop="ppost" required>
-						<el-select v-model="staff.bzId">
-							<el-option v-for="item in jg" :label="item.bzname" :value="item.bzId" style="width: 250px;">
-							</el-option>
-						</el-select>
-				</el-form-item>-->
+
 				<el-form-item style="margin: 0px auto;width: 700px; text-align: right;">
 					<el-button style="width: 150px;" type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-					<el-button style="width: 150px;" @click="">取消</el-button>
+					<el-button style="width: 150px;" @click="colse">取消</el-button>
 				</el-form-item>
 			</el-form>
 
@@ -89,23 +91,29 @@
 	<script type="text/javascript" src="../js/index.js"></script>
 	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
 	<script>
-		var yggl = new Vue({
+		var yggl2 = new Vue({
 			el: "#sss",
 			data: {
 				jg: [],
+				js: [],
+				isshow2: null,
 				pids: null,
 				staff: {
 					pId: '',
 					bzId: '',
 					pname: '',
 					psex: '',
+					pentry: '',
 					peducational: '',
 					pphone: '',
 					paddress: '',
 					pidcard: '',
 					pstatic: '',
 					ppwd: '',
-					ppost: ''
+					ppost: '',
+					gwname: '',
+					cid: ''
+
 				},
 				rules: {
 					pId: [{
@@ -129,6 +137,9 @@
 			},
 
 			methods: {
+				colse(){
+					yggl.isshow2=false;
+				},
 				//最大值
 				getServiceMaxWid() {
 					let _this = this;
@@ -140,15 +151,20 @@
 				//提供的班组
 				jgbz() {
 					let _this = this;
-					$.getJSON(`http://127.0.0.1:8080/lc/api/lcRoles/ssb`, function(date) {
-						_this.jg = date;
-					});
-					$.getJSON(`http://127.0.0.1:8080/lc/api/lcpersonnels/${_this.pid}`, function(date) {
+			/*		$.getJSON(`http://127.0.0.1:8080/lc/api/lcpersonnels/${_this.pids}`, function(date) {
 						_this.staff = date;
-						_this.pids=date.pId;
-					
 
+					});*/
+					$.getJSON(`http://127.0.0.1:8080/lc/api/workergroups/zw`, function(date) {
+						_this.jg = date;
+				
+						console.info(date);
 					});
+					$.getJSON(`http://127.0.0.1:8080/lc/api/lcRoles/ssb`, function(date) {
+						_this.js = date;
+						console.info(date);
+					});
+
 				},
 
 				submitForm(formName) {
@@ -162,7 +178,8 @@
 									if(data.code == "500") {
 										_this.$message(data.msg);
 									} else {
-										alert("111");
+										
+									//	_this.staff.ppost=_this.staff.postid
 										$.ajax(`http://127.0.0.1:8080/lc/api/lcpersonnels/addGoods`, {
 											type: "post",
 											contentType: "application/json",
@@ -170,7 +187,14 @@
 											dataType: "json",
 											success(date) {
 												if(date.code == "200") {
-													_this.$message(date.msg);
+													_this.$message({
+														duration:"1000",
+														type: 'success',
+														message: '操作成功!'
+													});
+													
+													_this.colse();
+													yggl.lcgoTopage(1, 6,"")
 
 												} else {
 													_this.$message(date.msg);
@@ -188,12 +212,24 @@
 				},
 				resetForm(formName) {
 					this.$refs[formName].resetFields();
+				},
+				/*关闭对话框*/
+
+				handleClose(done) {
+					this.$confirm('确认关闭？')
+						.then(_ => {
+							this.radio = "";
+							done();
+						})
+						.catch(_ => {});
 				}
 			},
 			mounted() {
 				let _this = this; //非常重要
-				_this.pid = sessionStorage.getItem('iss');
-				if(_this.pid != null) {
+				_this.pids = sessionStorage.getItem('iss');
+				_this.staff=JSON.parse(sessionStorage.getItem('userUpdate'));
+				//alert(JSON.stringify(this.staff))
+				if(_this.pids != null) {
 					_this.jgbz();
 				}
 			}

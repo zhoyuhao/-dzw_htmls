@@ -632,8 +632,8 @@
 						}
 					});
 					let temp = this.outCarData[this.fixformdata.pickcar];
-					let sumprice = parseInt(temp.money) * parseInt(kmMoney);
-					let data = {wid:_this.fixcardform.wid,sid:temp.legworkid,sdname:'调度费',dprice:temp.money,sdprice:sumprice,sdnumber:kmMoney,type:3};
+					let sumprice = parseInt(temp.momey) * parseInt(kmMoney);
+					let data = {wid:_this.fixcardform.wid,sid:temp.legworkid,sdname:'调度费',dprice:temp.momey,sdprice:sumprice,sdnumber:kmMoney,type:3};
 					this.fixgoods.splice(1,0,data);
 				},
 				getPickCarData(){
@@ -758,6 +758,7 @@
 						this.fixcardform.wsumprice = parseInt(this.fixgoods[0].sdprice)+parseInt(this.fixgoods[1].sdprice)+sumPrice;
 					}else{
 						//站内维修
+						this.fixcardform.wstatic = '2';
 						this.fixcardform.wsumprice = parseInt(this.fixgoods[0].sdprice)+sumPrice;
 					}
 					//添加订单

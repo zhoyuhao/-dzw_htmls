@@ -34,12 +34,12 @@
 	</head>
 
 	<body>
-		<div class="layui-fluid" id="yggl" v-cloak>
+		<div class="layui-fluid" id="spgl" v-cloak>
 			<div class="layui-row layui-col-space15">
 				<div class="layui-col-md12">
 					<div class="layui-card">
-						<div class="layui-card-body ">
-							<el-form :inline="true" :model="goods" class="demo-form-inline" align="center">
+						<div class="layui-card-body " >
+							<el-form :inline="true" :model="goods" class="demo-form-inline" align="center"  style="padding: 0px;line-height: 30px;">
 								<el-form-item label="请输入商品名称" style="margin-left: 10ex;">
 									<el-input v-model="goods.gname" placeholder='商品名称 ' size="mini"></el-input>
 
@@ -55,14 +55,14 @@
 								</el-form-item>
 							</el-form>
 						</div>
-						<div class="layui-card-body layui-table-body layui-table-main">
+						<div class="layui-card-body layui-table-body layui-table-main" style="margin-top: -5ex;">
 							<el-table :data="pageInfo.list" style="width: 100%; ">
 								<el-table-column label="商品资料管理" align="center">
 									<el-table-column type="expand">
 										<template slot-scope="props">
 											<el-form label-position="left" inline class="demo-table-expand">
 												<el-form-item label="供应商编号">
-													<span>{{ props.row.lcSupplier.ghsId}}</span>
+													<span>{{ props.row.lcSupplier.ghsid}}</span>
 												</el-form-item>
 												<el-form-item label="供应商名称">
 													<span>{{ props.row.lcSupplier.ghsname}}</span>
@@ -101,7 +101,7 @@
 									</el-table-column>
 									<el-table-column label="操作" align="center">
 										<template slot-scope="temp">
-											<i class="el-icon-s-tools" @click="xiugai(temp.row.gid)"></i>&nbsp;&nbsp;
+											<i class="el-icon-s-tools" @click="xiugai(temp.row.gid,temp.row)"></i>&nbsp;&nbsp;
 											<i class="el-icon-delete" @click="shanchu(temp.row.gid)"></i>
 										</template>
 									</el-table-column>
@@ -125,9 +125,9 @@
 						<el-dialog title="商品资料添加" :visible.sync="isshow1" width="900px" :before-close="handleClose">
 							<template>
 								<el-form :model="staff" :inline="true" :rules="rules" ref="ruleForm" label-width="100px" class="demo-form-inline">
-									<el-form-item label="商品编号">
+									<!--<el-form-item label="商品编号">
 										<el-input v-model="staff.gid" :disabled="true" style="width: 250px;"></el-input>
-									</el-form-item>
+									</el-form-item>-->
 									<el-form-item label="商品名称" placeholder="请输入姓名" prop="gname">
 
 										<el-input v-model="staff.gname" style="width: 250px;"></el-input>
@@ -194,7 +194,7 @@
 								</el-form>
 							</template>
 						</el-dialog>
-						<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="商品资料修改" :visible.sync="isshow2" width="900px" :before-close="handleClose">
+						<el-dialog  @opened="handlerOpen2" title="商品资料修改" :visible.sync="isshow2" width="900px" :before-close="handleClose">
 							<div id="cnt2"></div>
 						</el-dialog>
 
@@ -211,14 +211,14 @@
 	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
 	<script>
 		var yggl = new Vue({
-			el: "#yggl",
+			el: "#spgl",
 			data: {
 				bool: true,
 				gid: null,
 				pp: [],
 				ssh: [],
 				staff: {
-					gid: '',
+					gid: 0,
 					ghsid: '',
 					gname: '',
 					gtime: '',
@@ -300,49 +300,7 @@
 
 			},
 			methods: {
-
-				goodsByid() {
-					let _this = this;
-
-					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/ids/${_this.gid}`, function(date) {
-						_this.staff = date;
-					});
-				},
-				submitForm() {
-					let _this = this;
-
-					$.ajax(`http://127.0.0.1:8080/lc/api/Goods/modeil`, {
-						type: "put",
-						contentType: "application/json",
-						data: JSON.stringify(_this.staff),
-						dataType: "json",
-						success(date) {
-							if(date.code == "200") {
-								_this.$message(date.msg);
-
-							} else {
-								_this.$message(date.msg);
-							}
-						}
-					});
-				},
-				resetForm(formName) {
-					this.$refs[formName].resetFields();
-				},
-				gysid() {
-					let _this = this;
-					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sup`, function(data) {
-						console.info(data);
-						_this.ssh = data;
-						/*$.each(data, function(i,obj) {
-							var a=$("#sel").html();
-							alert(a);
-							  $("#sel").append('<option value="' + obj.ghsid + '">' + obj.ghsid + '</option>')
-								
-						});*/
-					})
-				},
-				//查询所有发动机品牌
+//查询所有发动机品牌
 				ss() {
 					let _this = this;
 					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sss`, function(data) {
@@ -359,6 +317,7 @@
 					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sup`, function(data) {
 						console.info(data);
 						_this.ssh = data;
+						/*console.info(ssh);*/
 						/*$.each(data, function(i,obj) {
 							var a=$("#sel").html();
 							alert(a);
@@ -377,7 +336,7 @@
 				},
 				submitForm() {
 					let _this = this;
-
+					
 					this.$refs['ruleForm'].validate(valid => {
 						if(valid) {
 							//验证通过
@@ -388,6 +347,7 @@
 								spinner: 'el-icon-loading',
 								background: 'rgba(0, 0, 0, 0.5)'
 							});
+							this.staff.gid=0;
 							//延迟2秒，模拟网络延迟
 							setTimeout(() => {
 								$.ajax('http://localhost:8080/lc/api/Goods/addGoods', {
@@ -397,16 +357,13 @@
 									contentType: 'application/json',
 									success(msg) {
 										if(msg.code == "200") {
-
 											loading.close(); //关闭加载块【非常重要】
 											_this.$message({
 												type: 'success',
 												message: '新增成功'
 											});
 											_this.isshow1 = false;
-											/*_this.clearData(); //清除数据*/
 											_this.lcgoTopage(1, 6, this.goods.gname);
-
 										}
 									}
 								});
@@ -416,6 +373,7 @@
 							//this.$alert('请按格式正确填写信息', '系统提示');
 						}
 					});
+
 				},
 				resetForm(formName) {
 					this.isshow1 = false;
@@ -475,16 +433,16 @@
 				showView(url) {
 					window.location.href = url;
 				},
-				xiugai(gid) {
+				xiugai(gid,obj) {
 					this.isshow2 = true;
 					sessionStorage.setItem('iss', gid);
+					sessionStorage.setItem('goods', JSON.stringify(obj));
 				},
 				/*关闭对话框*/
 
 				handleClose(done) {
 					this.$confirm('确认关闭？')
 						.then(_ => {
-							this.radio = "";
 							done();
 						})
 						.catch(_ => {});
@@ -498,9 +456,9 @@
 				let _this = this; //非常重要
 				_this.gysid();
 				_this.ss();
-				var date = new Date();
+			/*	var date = new Date();
 				now = date.getFullYear() + "" + (date.getMonth() + 1) + "" + date.getDate() + "" + date.getHours() + "" + date.getMinutes() + "" + date.getSeconds();
-				_this.staff.gid = now;
+				_this.staff.gid = now;*/
 				_this.lcgoTopage(1, 6, this.goods.gname);
 
 			}
