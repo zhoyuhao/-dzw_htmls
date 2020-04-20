@@ -211,13 +211,35 @@
 			},
 			methods: {
 				queryAll(){
-				
+				/*$("#main").html()$("#main1").html()*/
+					this.myChart1 = echarts.init(document.getElementById('main'));
+					this.myChart2= echarts.init(document.getElementById('main1'));
  					let _this=this;
 					
+									
+				$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryJieDan',function(data){
+				
+						_this.jrzjiedan=data.jrzjiedan;
+						_this.jrwjiedan=data.jrwjiedan;
+			
+					});
+						$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryJieSuan',function(data){
+						_this.jiesuannumber=data;
+					});
+						$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryKeHu',function(data){
+						_this.kehuhnumber=data.kehuhnumber;
+						_this.kehupnumber=data.kehupnumber;
+					});
+						$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryMoney',function(data){
+						
+						_this.jrsummoney=data.jrsummoney;
+						_this.jrshimoney=data.jrshimoney;
+					});
+					
 								//开启同步
-	$.ajaxSetup({
+				/*$.ajaxSetup({
 				async:false
-				})
+				})*/
 					
 					$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryZQMoney',function(data){
 							let val=0;
@@ -266,25 +288,7 @@
 							
 						
 					
-							
-				$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryJieDan',function(data){
-				
-						_this.jrzjiedan=data.jrzjiedan;
-						_this.jrwjiedan=data.jrwjiedan;
 			
-					});
-						$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryJieSuan',function(data){
-						_this.jiesuannumber=data;
-					});
-						$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryKeHu',function(data){
-						_this.kehuhnumber=data.kehuhnumber;
-						_this.kehupnumber=data.kehupnumber;
-					});
-						$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryMoney',function(data){
-						
-						_this.jrsummoney=data.jrsummoney;
-						_this.jrshimoney=data.jrshimoney;
-					});
  
 				},
 				chushi(){
@@ -300,11 +304,16 @@
 				}
 			},
 			mounted() {
-					this.myChart1 = echarts.init(document.getElementById('main'));
-					this.myChart2= echarts.init(document.getElementById('main1'));
+				
 					
 				this.queryAll();
-				this.chushi();
+				let _this=this;
+				
+			/*	this.chushi();*/
+					setInterval(()=>{
+ 				_this.queryAll();
+ 	
+ 					},'1000');
 			}
 		});
 	</script>
