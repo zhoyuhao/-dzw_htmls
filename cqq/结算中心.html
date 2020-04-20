@@ -69,8 +69,7 @@
 						</template>
 					</el-table-column>
 					<el-table-column label="状态" width="70px" prop="service.wstatic">
-						<template slot-scope="temp">
-							
+						<template slot-scope="temp" row-style="">
 							{{temp.row.service.wstatic |changSex1}}
 						</template>
 					</el-table-column>
@@ -350,13 +349,15 @@
 					var _this=this;
 					_this.jiesuandan.service.wstatic=4;
 					_this.jiesuandan.service.wpayment=val;
-					if(val>1){
-						//alert(_this.huiyuanObj.cdoublerk-(_this.huiyuanObj.cdoublerk-(_this.zongjine*0.9)))
-						//_this.jiesuandan.deductionmoney=_this.huiyuanObj.cdoublerk-(_this.huiyuanObj.cdoublerk-(_this.zongjine*0.9));
+					_this.jiesuandan.service.deductionmoney=_this.zongjine.sum-(_this.zongjine.sum-(_this.zongjine.sum-_this.zongjine.sum*_this.zhekou));
+					alert(_this.zongjine.sum-(_this.zongjine.sum-(_this.zongjine.sum-_this.zongjine.sum*_this.zhekou)))
+					if(val==2){
+						_this.jiesuandan.service.deductionmoney=0-(_this.zongjine.sum-(_this.zongjine.sum-_this.zongjine.sum*_this.zhekou));
 					}
 					if(_this.isshow3==false){
 						_this.jiesuandan.service.wpayment=2;
 					}
+					alert(JSON.stringify(_this.jiesuandan.service))
 					$.ajax(`http://127.0.0.1:8080/CqqServiceAction/api/update/${_this.huiyuanObj.ckahaok}`, {
 							type: "post",
 							contentType: "application/json",
