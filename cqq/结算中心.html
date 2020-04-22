@@ -69,8 +69,10 @@
 						<template slot-scope="temp">
 							<span v-if="temp.row.service.wpayment==0">未结算</span>
 							<span v-if="temp.row.service.wpayment==1">现金</span>
-							<span style="color: red;" v-if="temp.row.service.wpayment==2">会员</span>
+							<span style="color: red;" v-if="temp.row.service.wpayment==2">现金(会员)</span>
 							<span style="color: red;" v-if="temp.row.service.wpayment==3">会员积分</span>
+							<span style="color: red;" v-if="temp.row.service.wpayment==4">支付宝扫码(会员)</span>
+							<span style="color: red;" v-if="temp.row.service.wpayment==5">支付宝扫码</span>
 							<!--{{temp.row.service.wpayment |jiesuanfangshi}}-->
 							
 						</template>
@@ -186,7 +188,7 @@
 					</el-col>
 				</el-row>
 				<div id="xxx" style="text-align: right">
-					<span id="" v-if="isshow3==false">
+					<span id="" v-if="!isshow3">
 						<el-row>
 							<el-col :span="12">&nbsp;
 							</el-col>
@@ -230,9 +232,11 @@
 							</el-row>
 						</el-col>
 						</el-col>
-						<el-button v-if="huiyuanObj.cdoublerk>=yfmoney" type="primary" size="mini" @click="chengjiao(3)">使用积分抵扣</el-button>
-						<el-button v-if="isshow3==true" type="primary" size="mini" v-if="isshow3==true" @click="xuanzehuiyuan">会员9折优惠，选择会员</el-button>
-						<el-button type="primary" size="mini" @click="chengjiao(1)">成交</el-button>
+						<div style="height: 30px;"></div>
+						<el-button   v-if="huiyuanObj.cdoublerk>=yfmoney" type="primary" :disabled="zfb" size="mini" @click="chengjiao(3)">使用积分抵扣</el-button>
+						<el-button v-if="isshow3==true" type="primary" size="mini"  :disabled="zfb" v-if="isshow3==true" @click="xuanzehuiyuan">会员9折优惠，选择会员</el-button>
+						<el-button type="primary" size="mini" @click="chengjiao(1)" :disabled="zfb">成交</el-button>
+						<el-button type="primary" size="mini" @click="zhifubao(4)" :loading="zfb">支付宝支付</el-button>
 				</div>
 
 			</el-dialog>
@@ -278,6 +282,7 @@
 		var gangwei = new Vue({
 			el: "#kehuziliao",
 			data: {
+				zfb:false,
 				dayinshow:false,
 				yfmoney:0,
 				formInline:{},rules:{},
@@ -308,30 +313,20 @@
 					service:{}
 				},
 				huiyuanObj:{
-					cdoublerk:0
+					cdoublerk:0,
+					ckahaok:0
 				}
-				,jiesuandan:{},zhekou:1
+				,jiesuandan:{},zhekou:1,
+				dh:""
 			},
 			methods: {
 				dayin(obj){
-					//alert(JSON.stringify(obj))
 					sessionStorage.setItem("dy",JSON.stringify(obj));
 					window.open("../zyh/打印机.html");
-				/*	this.dayinshow=true;
-					setInterval(()=>{
-						sessionStorage.setItem("dy",JSON.stringify(obj));
-						$("#cnt1").load("../zyh/打印机.html");
-					},"500")*/
-					
-					/*cnt1*/
-					/*$.getJSON(`http://127.0.0.1:8080/CqqServiceAction/api/daochukhzl`, function() {
-					_this.$message('导出成功');
-					});*/
 				},
 				dakaidanju(val){
 					this.index=val;
 					this.isshow5=true;
-					//this.$message('这是一条消息提示');
 				},
 				querenhuiyuan(val){
 					var _this=this;
@@ -374,6 +369,60 @@
 					}
 					this_.goToPage(val, this.pageInfo.pageSize, this_.value, input);
 				},
+				/*支付宝扫码*/
+				zhifubao(val){
+					let statuc=5;
+					if(this.yfmoney<this.zongjine.service.wsumprice){
+						statuc=4;
+					}
+					sessionStorage.setItem("statuc",statuc);
+					sessionStorage.setItem("jiesuandan",JSON.stringify(this.jiesuandan));
+					sessionStorage.setItem("zongjine",JSON.stringify(this.zongjine));
+					sessionStorage.setItem("yfmoney",JSON.stringify(this.yfmoney));
+					sessionStorage.setItem("huiyuanObj",JSON.stringify(this.huiyuanObj));
+					var date=new Date();
+					now=date.getFullYear()+""+(date.getMonth()+1)+""+date.getDate()+""+date.getHours()+""+date.getMinutes()+""+date.getSeconds();
+					this.dh=now+""+this.zongjine.service.wid;
+					sessionStorage.setItem("dh",JSON.stringify(this.dh));
+					this.typeif();
+					this.zfb=true;
+					window.open("../zyh/二维码支付.html");
+					
+				},
+				typeif(){
+					let _this=this;
+					$.getJSON(`http://127.0.0.1:8080/AlipayAction/api/queryStatuc/${this.dh}`, function(data) {
+						/*_this.statuc=data;*/
+						if(data=="FAILED"){
+							setTimeout(()=>{
+											_this.typeif();
+									},"2000")
+						
+						}
+						if(data=="SUCCESS"){
+							_this.closetypey();
+						}
+					});
+					
+					
+					
+				},
+				closetypey(){
+					let _this=this;
+					 this.$notify({
+          title: '支付提示',
+          message: '支付成功',
+          type: 'success'
+        });
+        		_this.goToPage(1,_this.pageInfo.pageSize, 0, null);
+									_this.isshow2=false;
+									_this.isshow1=false;
+									_this.isshow3=true;
+									_this.isshow5=false;
+										_this.zfb=false;
+					sessionStorage.setItem("type",false);
+				}
+				,
 				chengjiao(val){
 					var _this=this;
 					_this.jiesuandan.service.wstatic=4;
@@ -392,11 +441,18 @@
 							dataType: "json",
 							success(date) {
 								if(date > 0) {
-									_this.$message('成功');
+									  _this.$message({
+									  	duration:"1000",
+          showClose: true,
+          message: '操作成功！',
+          type: 'success'
+        });
+        /*_this.huiyuanObj={};*/
+       _this.isshow3=true;
 									_this.goToPage(1,_this.pageInfo.pageSize, 0, null);
 									_this.isshow2=false;
 									_this.isshow1=false;
-									_this.isshow3=false;
+									
 									_this.isshow5=false;
 								} else {
 									_this.$message('不成功');
@@ -409,13 +465,15 @@
 					this.jiesuandan={};
 					this.huiyuankahao='';
 					this.huiyuanObj={
-					cdoublerk:0
+					cdoublerk:0,
+					ckahaok:0
 				};
 					this.zhekou=1;
 					this.isshow1 = true;
 					this.zongjine=row;
 					this.jiesuandan=row;
 					this.yfmoney=this.jiesuandan.service.wsumprice;
+					sessionStorage.setItem("erweima",JSON.stringify(row));
 				},
 				queryClick(input, value) {
 					if(input == '') {

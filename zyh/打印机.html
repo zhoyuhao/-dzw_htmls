@@ -56,6 +56,9 @@
 			<span v-if="obj.service.wpayment==3">
 				会员积分抵扣
 			</span>
+			<span v-if="obj.service.wpayment==4">支付宝扫码(会员)</span>
+			<span v-if="obj.service.wpayment==5">支付宝扫码</span>
+			
 			</li>
 		<li>应付金额：￥{{obj.service.wsumprice}}</li>
 		<li>实收金额：

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<style>
+			#erweima {
+				background: url(../images/bg.png) no-repeat center center;
+				background-size: cover;
+				background-attachment: fixed;
+				width: 100%;
+				height: 100%;
+				max-width: 100%;
+				max-height: 100%;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				margin: auto;
+				overflow: auto;
+				position: fixed;
+				z-index: -1;
+			}
+			[v-cloak]{
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="erweima" style="text-align: center;" v-cloak>
+			
+			<div>
+				<!--<el-image src="zyhImgs/log.png" fit="fill" style="width: 300px;"></el-image>-->
+				<!--<h3 style="color: #C0A16B;">德召文交易支付</h3>-->
+				<div  v-if="type!='SUCCESS'" style="border: 0px solid; width: 300px;margin: 100px auto;background-color: white;">
+					<h4  style="padding-top: 4ex;font-size: 20px;font-weight: 500;">扫一扫付款(<span style="color: red;">{{yfmoney}}元</span>)</h4>
+						<div>
+							<h1 v-if="img==''" class="el-icon-loading"></h1>
+							
+						</div>
+					<img v-if="img!=''" style="margin-top: -3ex;" :src="img"  width="300" height="300"/>
+					<div style="text-align: center;border: 0px solid;height: 70px;margin-bottom: -10ex;" >
+					<img src="zyhImgs/png.png" width="60" height="60" style="margin-left: 10%;" />
+					<span style="float: right;margin-right: 20%;margin-top: 1ex;">打开手机支付宝<br/>
+						<span style="margin-top: 1ex;">扫一扫继续支付</span>
+					</span>
+					</div>
+					
+					<!--<h2 class="el-icon-check" style="color: seagreen;font-size: 25px;"></h2>-->
+					
+				</div>
+				
+				<div  v-if="type=='SUCCESS'" style="border: 0px solid; width: 300px;margin: 100px auto;background-color: white;">
+				
+						
+						<img style="margin-top:3ex;border-radius:100%"
+					 src="zyhImgs/u=436937017,337546424&fm=26&gp=0.jpg"  width="100" height="100"/>
+					<h4 style="padding-top: 0ex;font-size: 20px;font-weight: 500;height: 20px;">支付成功</h4>
+					<div style="text-align: center;border: 0px solid;height: 150px;margin-bottom: -10ex;" >
+						<h4>￥{{yfmoney}}</h4>
+						<h4 style="color:#000000;font-weight:400;margin-top: 10ex;"><span style="float: left;margin-left: 1ex;">付款方式</span><span style="float: right;margin-right: 1ex;">余额</span></h4>
+						<br />
+						
+						<h4 style="color:#000000;font-weight:400;"><span style="float: left;margin-left: 1ex;">收款方</span><span style="float: right;margin-right: 1ex;">德召文汽修</span></h4>
+					
+					</div>
+					
+					<!--<h2 class="el-icon-check" style="color: seagreen;font-size: 25px;"></h2>-->
+						<el-button   v-if="type=='SUCCESS'" type="primary" style="width: 300px;margin-top: 4ex;" @click="colse">完成</el-button>
+				</div>
+				
+			
+			</div>
+			
+		</div>
+		
+	</body>
+	
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+	<script>
+			var erweima = new Vue({
+			el: "#erweima",
+			data: {
+				obj:{},
+				jiesuandan:{},
+				statuc:1,
+				img:"",
+				imgName:"",
+				zongjine:{
+					serdetalist:[],
+					service:{}
+				},
+				yfmoney:0,
+				dh:"",
+				huiyuanObj:{
+					cdoublerk:0,
+					ckahaok:0
+				},
+				type:""
+				
+			},
+			methods: {
+				colse(){
+					 window.close();
+				},
+				getImg(numbersId,money){
+					let _this=this;
+					$.getJSON(`http://127.0.0.1:8080/AlipayAction/api/getImg/${numbersId}/${money}`, function(data) {
+						_this.imgName=data;
+						_this.img ="http://127.0.0.1:8080/"+data;
+					});
+					this.getStatuc();
+				},
+				getStatuc(){
+					let _this=this;
+					$.getJSON(`http://127.0.0.1:8080/AlipayAction/api/queryStatuc/${this.dh}`, function(data) {
+						/*_this.statuc=data;*/
+						if(data=="FAILED"){
+							setTimeout(()=>{
+											_this.getStatuc();
+									},"2000")
+						
+						}
+						if(data=="SUCCESS"){
+							sessionStorage.setItem("type","SUCCESS");
+							_this.type=data;
+							_this.add();
+						}
+					});
+				}
+				,
+				add(){
+					var _this=this;
+					_this.jiesuandan.service.wstatic=4;
+						_this.jiesuandan.service.wpayment=this.yfmoney<_this.jiesuandan.service.wsumprice?4:5;
+						_this.jiesuandan.service.deductionmoney=parseFloat(_this.jiesuandan.service.wsumprice-_this.yfmoney).toFixed(2);
+					console.log(JSON.stringify(this.huiyuanObj.ckahaok))
+					console.log(JSON.stringify(this.jiesuandan.service))
+					//return;
+					$.ajax(`http://127.0.0.1:8080/CqqServiceAction/api/update/${this.huiyuanObj.ckahaok}`, {
+							type: "post",
+							contentType: "application/json",
+							data: JSON.stringify(_this.jiesuandan.service),
+							dataType: "json",
+							success(date) {
+								if(date > 0) {
+								   _this.$message({
+          showClose: true,
+          message: '支付成功！',
+          type: 'success'
+        });
+								} else {
+									_this.$message('不成功');
+								}
+							}
+					});
+				}
+				
+			},
+			mounted() {
+			this.obj=JSON.parse(sessionStorage.getItem("erweima"));
+			this.jiesuandan=JSON.parse(sessionStorage.getItem("jiesuandan"));
+			this.statuc=sessionStorage.getItem("statuc");
+			this.zongjine=JSON.parse(sessionStorage.getItem("zongjine"));
+			this.yfmoney=JSON.parse(sessionStorage.getItem("yfmoney"));
+			this.huiyuanObj=JSON.parse(sessionStorage.getItem("huiyuanObj"));
+		/*		var date=new Date();
+						now=date.getFullYear()+""+(date.getMonth()+1)+""+date.getDate()+""+date.getHours()+""+date.getMinutes()+""+date.getSeconds();
+						this.dh=now+""+this.zongjine.service.wid*/
+			this.dh=JSON.parse(sessionStorage.getItem("dh"));
+			this.getImg(this.dh,this.yfmoney); ///执行获取二维码
+
+			}
+		})
+		
+	</script>
+	
+</html>
