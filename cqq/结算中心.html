@@ -488,7 +488,6 @@
 				handleClose3(done) {
 					this.$confirm('确认关闭？')
 						.then(_ => {
-							this.radio = "";
 							done();
 						})
 						.catch(_ => {});
@@ -500,8 +499,8 @@
 							this.radio = "";
 							done();
 							_this.zhekou=1;
-							//_this.huiyuanObj =null;
 							_this.isshow3=true;
+								_this.zfb=false;
 						})
 						.catch(_ => {});
 				},

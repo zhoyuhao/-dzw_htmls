@@ -6,7 +6,7 @@
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
 		<style>
 			#erweima {
-				background: url(../images/bg.png) no-repeat center center;
+				/*background: url(../images/bg.png) no-repeat center center;*/
 				background-size: cover;
 				background-attachment: fixed;
 				width: 100%;
@@ -21,6 +21,7 @@
 				overflow: auto;
 				position: fixed;
 				z-index: -1;
+				background-color: #EBEEF5;
 			}
 			[v-cloak]{
 				display: none;
@@ -31,10 +32,12 @@
 		<div id="erweima" style="text-align: center;" v-cloak>
 			
 			<div>
-				<!--<el-image src="zyhImgs/log.png" fit="fill" style="width: 300px;"></el-image>-->
-				<!--<h3 style="color: #C0A16B;">德召文交易支付</h3>-->
+				
+				<div  v-if="type!='SUCCESS'" style="background-color: white; width: 800px;margin: 5% auto;height: 550px;">
+					<h4  style="float: left;margin-left: 3ex;font-weight: 500;margin-bottom: 3ex;"> 
+						<img src="zyhImgs/u=436937017,337546424&fm=26&gp=0.jpg" style="vertical-align:middle;margin-right: 1ex;" width="20" height="20"/>支付宝支付|德召文收银台</h4>
 				<div  v-if="type!='SUCCESS'" style="border: 0px solid; width: 300px;margin: 100px auto;background-color: white;">
-					<h4  style="padding-top: 4ex;font-size: 20px;font-weight: 500;">扫一扫付款(<span style="color: red;">{{yfmoney}}元</span>)</h4>
+					<h4  style="padding-top: 8ex;font-size: 20px;font-weight: 500;height: 50px;">扫一扫付款(<span style="color: red;">{{yfmoney}}元</span>)</h4>
 						<div>
 							<h1 v-if="img==''" class="el-icon-loading"></h1>
 							
@@ -50,8 +53,12 @@
 					<!--<h2 class="el-icon-check" style="color: seagreen;font-size: 25px;"></h2>-->
 					
 				</div>
-				
-				<div  v-if="type=='SUCCESS'" style="border: 0px solid; width: 300px;margin: 100px auto;background-color: white;">
+				</div>
+				<!--完成页面-->
+				<div  v-if="type=='SUCCESS'" style="background-color: white; width: 800px;margin: 5% auto;height: 550px;">
+					<h4  style="float: left;margin-left: 3ex;font-weight: 500;margin-bottom: 1ex;"> 
+						<img src="zyhImgs/u=436937017,337546424&fm=26&gp=0.jpg" style="vertical-align:middle;margin-right: 1ex;" width="20" height="20"/>支付宝支付|德召文收银台</h4>
+					<div  v-if="type=='SUCCESS'" style="border: 0px solid; width: 300px;margin: 100px auto;background-color: white;clear: both;">
 				
 						
 						<img style="margin-top:3ex;border-radius:100%"
@@ -69,6 +76,10 @@
 					<!--<h2 class="el-icon-check" style="color: seagreen;font-size: 25px;"></h2>-->
 						<el-button   v-if="type=='SUCCESS'" type="primary" style="width: 300px;margin-top: 4ex;" @click="colse">完成</el-button>
 				</div>
+					
+				</div>
+				
+				
 				
 			
 			</div>
