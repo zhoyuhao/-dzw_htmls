@@ -236,7 +236,7 @@
 						<el-button   v-if="huiyuanObj.cdoublerk>=yfmoney" type="primary" :disabled="zfb" size="mini" @click="chengjiao(3)">使用积分抵扣</el-button>
 						<el-button v-if="isshow3==true" type="primary" size="mini"  :disabled="zfb" v-if="isshow3==true" @click="xuanzehuiyuan">会员9折优惠，选择会员</el-button>
 						<el-button type="primary" size="mini" @click="chengjiao(1)" :disabled="zfb">成交</el-button>
-						<el-button type="primary" size="mini" @click="zhifubao(4)" :loading="zfb">支付宝支付</el-button>
+						<el-button type="primary" size="mini" @click="zhifubao(4)" :loading="zfb">支付宝扫码</el-button>
 				</div>
 
 			</el-dialog>
@@ -317,7 +317,8 @@
 					ckahaok:0
 				}
 				,jiesuandan:{},zhekou:1,
-				dh:""
+				dh:"",
+				i:0
 			},
 			methods: {
 				dayin(obj){
@@ -375,6 +376,7 @@
 					if(this.yfmoney<this.zongjine.service.wsumprice){
 						statuc=4;
 					}
+					sessionStorage.setItem("YUE","no");
 					sessionStorage.setItem("statuc",statuc);
 					sessionStorage.setItem("jiesuandan",JSON.stringify(this.jiesuandan));
 					sessionStorage.setItem("zongjine",JSON.stringify(this.zongjine));
@@ -395,6 +397,10 @@
 						/*_this.statuc=data;*/
 						if(data=="FAILED"){
 							setTimeout(()=>{
+									_this.i++;
+									if(_this.i==61){
+										return
+									}
 											_this.typeif();
 									},"2000")
 						
@@ -414,7 +420,11 @@
           message: '支付成功',
           type: 'success'
         });
-        		_this.goToPage(1,_this.pageInfo.pageSize, 0, null);
+         setTimeout(()=>{
+        	_this.goToPage(1,_this.pageInfo.pageSize, 0, null);
+        },"1000")
+        
+        		//_this.goToPage(1,_this.pageInfo.pageSize, 0, null);
 									_this.isshow2=false;
 									_this.isshow1=false;
 									_this.isshow3=true;

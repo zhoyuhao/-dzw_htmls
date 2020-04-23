@@ -111,7 +111,8 @@
 					cdoublerk:0,
 					ckahaok:0
 				},
-				type:""
+				type:"",
+				objects:null
 				
 			},
 			methods: {
@@ -137,11 +138,42 @@
 						
 						}
 						if(data=="SUCCESS"){
-							sessionStorage.setItem("type","SUCCESS");
+							if(sessionStorage.getItem("YUE")=="yes"){
+								_this.querenchongzhi();
+									_this.type=data;
+								
+							}else{
+								sessionStorage.setItem("type","SUCCESS");
 							_this.type=data;
 							_this.add();
+							}
+							
+							
 						}
 					});
+				},
+				querenchongzhi(){
+					var this_=this;
+						var suns=parseInt(JSON.stringify(this_.objects.cmoneyk))+parseInt(this.yfmoney);
+						this.objects.cmoneyk=suns;
+						$.ajax(`http://127.0.0.1:8080/CqqCustomerAction/api/update`, {
+						type: "post",
+						contentType: "application/json",
+						data: JSON.stringify(this_.objects),
+						dataType: "json",
+						success(date) {
+							if(date > 0) {
+							this_.$message({
+          showClose: true,
+          message: '支付成功！',
+          type: 'success'
+        });
+							} else {
+								this_.$alert("充值不成功")
+							}
+						}
+					});
+					
 				}
 				,
 				add(){
@@ -173,17 +205,22 @@
 				
 			},
 			mounted() {
+				this.dh=JSON.parse(sessionStorage.getItem("dh"));
+				if(sessionStorage.getItem("YUE")=="yes"){
+					this.yfmoney=JSON.parse(sessionStorage.getItem("yfmoney"));
+					this.objects=JSON.parse(sessionStorage.getItem("objects"));
+					this.getImg(this.dh,this.yfmoney); ///执行获取二维码
+				}else{
+							
 			this.obj=JSON.parse(sessionStorage.getItem("erweima"));
 			this.jiesuandan=JSON.parse(sessionStorage.getItem("jiesuandan"));
 			this.statuc=sessionStorage.getItem("statuc");
 			this.zongjine=JSON.parse(sessionStorage.getItem("zongjine"));
 			this.yfmoney=JSON.parse(sessionStorage.getItem("yfmoney"));
 			this.huiyuanObj=JSON.parse(sessionStorage.getItem("huiyuanObj"));
-		/*		var date=new Date();
-						now=date.getFullYear()+""+(date.getMonth()+1)+""+date.getDate()+""+date.getHours()+""+date.getMinutes()+""+date.getSeconds();
-						this.dh=now+""+this.zongjine.service.wid*/
-			this.dh=JSON.parse(sessionStorage.getItem("dh"));
 			this.getImg(this.dh,this.yfmoney); ///执行获取二维码
+				}
+		
 
 			}
 		})

@@ -95,6 +95,7 @@
 							}
 							
 							/*保存当前登入的用户信息*/
+							sessionStorage.setItem("qk","yes");
 							sessionStorage.setItem("user", JSON.stringify(data));
 							location.href='/dzw/index.html'
 						} else {

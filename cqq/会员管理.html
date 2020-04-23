@@ -62,15 +62,21 @@
 								:total="pageInfo.total">
 							</el-pagination>
 						</div>
-			<el-dialog  style="text-align: center;" align="center"  title="充值" :visible.sync="isshow1" width="33%" :before-close="handleClose">
+			<el-dialog  style="text-align: center;height: 300px;" align="center"  title="充值" :visible.sync="isshow1"  width="33%" :before-close="handleClose">
 				<span style="display: block;margin-bottom: 3ex;margin-left: 5ex;">充值余额：
     <el-input
-    	style="width: 200px;"
+    	style="width: 150px;"
     	size="mini"
   placeholder="请输入充值余额"
   v-model="chonzhiyve"
   clearable>
-</el-input>     <el-button type="primary"  size="mini" @click="querenchongzhi">充值</el-button>
+</el-input>     
+<div style="text-align: center;margin-top: 5ex;">
+	<el-button style="margin-right: 3ex;" type="primary"  size="mini" :disabled="zfb" @click="querenchongzhi">现金充值</el-button>
+<el-button type="primary" size="mini" @click="zhifu" :loading="zfb">支付宝扫码</el-button>
+	
+</div>
+
 
 			</el-dialog>
 		</div>
@@ -83,12 +89,16 @@
 		var gangwei = new Vue({
 			el: "#kehuziliao",
 			data: {
+				zfb:false,
 				currentPage5:1,
 				input:'',
 				pageInfo: {},
 				isshow1: false,
 				chonzhiyve:'',
-				objects:''
+				objects:'',
+				dh:"",
+				i:0
+				
 			},
 			methods: {
 				handleSizeChange(val) {
@@ -103,6 +113,67 @@
 				queryClick(){
 					this.goToPage(1,10);
 				},
+				zhifu(){
+					var this_=this;
+					if (this.chonzhiyve=="") {
+						this.$alert("请输入余额");
+					}else{
+					this.zfb=true;
+					sessionStorage.setItem("yfmoney",this.chonzhiyve);
+					sessionStorage.setItem("YUE","yes");
+					var date=new Date();
+					var date=new Date();
+					now=date.getFullYear()+""+(date.getMonth()+1)+""+date.getDate()+""+date.getHours()+""+date.getMinutes()+""+date.getSeconds();
+					this.dh=now;
+					sessionStorage.setItem("dh",this.dh);
+					sessionStorage.setItem("objects",JSON.stringify(this.objects));
+					this.zfb=true;
+					this.typeif();
+					window.open("../zyh/二维码支付.html");
+					
+					}
+				},
+				typeif(){
+					let _this=this;
+					$.getJSON(`http://127.0.0.1:8080/AlipayAction/api/queryStatuc/${this.dh}`, function(data) {
+						/*_this.statuc=data;*/
+						console.log(data)
+						if(data=="FAILED"){
+							setTimeout(()=>{
+								_this.i++;
+								if(_this.i==61){
+									return
+								}
+								_this.typeif();
+									},"2000")
+						
+						}
+						if(data=="SUCCESS"){
+							
+										_this.zfb=false;
+										_this.isshow1 = false;
+										_this.chonzhiyve="";
+								 setTimeout(()=>{
+        	_this.goToPage(1, 10);
+        },"1000")
+        
+							_this.closetypey();
+						}
+					});
+					
+					
+					
+				},
+							closetypey(){
+					 this.$notify({
+          title: '支付提示',
+          message: '支付成功',
+          type: 'success'
+        });
+       
+        
+				}
+				,
 				querenchongzhi(){
 			
 					var this_=this;
@@ -137,12 +208,15 @@
 					let _this = this;
 					$.getJSON(`http://127.0.0.1:8080/CqqCustomerAction/api/${n}/${s}/${val}`, function(date) {
 						_this.pageInfo = date;
+						console.log(JSON.stringify(date.list))
 						_this.currentPage5 = date.pageNum;
 					});
 				},/*详细信息关闭*/
 				handleClose(done) {
+					let _this=this;
 					this.$confirm('确认关闭？')
 						.then(_ => {
+							_this.zfb=false;
 							done();
 						})
 						.catch(_ => {});
