@@ -28,6 +28,7 @@
 								<template>
 									<el-table :data="this.page.list" style="width: 100%">
 										<el-table-column label="车辆编号" align="center" prop="legworkid">
+												<template slot-scope="temp">{{temp.$index+1}}</template>
 										</el-table-column>
 										<el-table-column label="车牌号" prop="platenumber">
 										</el-table-column>

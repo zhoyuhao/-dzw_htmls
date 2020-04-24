@@ -8,9 +8,8 @@
 	<body>
 		<div id="personAdd" style="width: 70%;margin: 0 auto;">
 			<el-form :inline="true" :model="user"    :rules="rules" ref="ruleForm"  class="demo-form-inline">
-		<!--	<el-form style="width: 70%;margin: 0 auto;" :inline="true" label-position="left" label-width="100px" style="text-align: center;">-->
 				<el-form-item label="员工姓名" prop="pname">
-					<el-select style="width: 206px;" v-model="user.pname" placeholder="请选择" @change="qid(pname)">
+					<el-select style="width: 206px;" v-model="user.pname" placeholder="请选择" @change="qid">
 						<el-option v-for="(item,i) in id" :label="item.pname" :value="i"></el-option>
 					</el-select>
 				</el-form-item>
@@ -35,7 +34,6 @@
 					pid: ""
 					},
 					pphone: "",
-					pname: "",
 					pid: "",
 					id: [],
 					rules: {
@@ -63,11 +61,12 @@
 					
 					//新增通讯录信息
 					add(pid,pname,pphone,formName) {
-						pname=this.id[pname].pname;
+						
 						let _this = this;
 						 this.$refs[formName].validate((valid) => {
           if (valid) {
  		
+						pname=_this.id[_this.user.pname].pname;
 							$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/add/${pid}/${pname}/${pphone}`, function(res) {
 								if(res > 0) {
 									
@@ -104,7 +103,7 @@
 						personApp.isshow1 = false;
 						  
 					},
-					qid(pname){
+					qid(){
 						let _this=this;	
 						this.user.pid=this.id[this.user.pname].pid;
 					}

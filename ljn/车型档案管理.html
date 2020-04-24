@@ -31,6 +31,7 @@
 								<template>
 									<el-table :data="this.page.list" style="width: 100%">
 										<el-table-column label="车辆编号" align="center" prop="legworkid">
+											<template slot-scope="temp">{{temp.$index+1}}</template>
 										</el-table-column>
 										<el-table-column label="车牌号" prop="platenumber">
 										</el-table-column>
@@ -161,14 +162,31 @@
 				//删除外勤车辆信息
 				delInfo(legworkid) {
 					let _this = this;
-					if(confirm("是否删除")) {
-						$.getJSON(`http://localhost:8080/ljn/api/ljnlegworkAction/delete/${legworkid}`, function(res) {
+						
+					this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+         $.getJSON(`http://localhost:8080/ljn/api/ljnlegworkAction/delete/${legworkid}`, function(res) {
 							if(res > 0) {
-								_this.$alert("删除成功")
+							_this.$message({
+								 		 duration:"1000",
+            type: 'success',
+            message: '删除成功!'
+          });
 								_this.query(1, _this.page.pageSize, _this.activeName)
 							}
 						});
-					}
+					
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            duration:"1000",
+            message: '已取消删除'
+          });          
+        });
+					
 				},
 				//查询指定外勤车辆信息
 				showView(legworkid) {
