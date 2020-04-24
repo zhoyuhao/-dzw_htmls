@@ -50,7 +50,7 @@
 					</el-table-column>
 					<el-table-column label="操作">
 						<template slot-scope="temp">
-							<el-button size="mini" type="primary" @click="suppUpdate(temp.row.ghsid)">修改</el-button>
+							<el-button size="mini" type="primary" @click="suppUpdate(temp.row)">修改</el-button>
 							<el-button size="mini" type="danger" @click="suppDelete(temp.row.ghsid)">删除</el-button>
 						</template>
 					</el-table-column>
@@ -69,7 +69,7 @@
 			<el-dialog  @opened="handlerOpen1" title="添加供货单位" :visible.sync="isshow1" width="700px" :before-close="handleClose">
 				<div id="cnt1"></div>
 			</el-dialog>
-			<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="修改供货单位" :visible.sync="isshow2" width="700px" :before-close="handleClose">
+			<el-dialog   title="修改供货单位" :visible.sync="isshow2" width="700px" :before-close="handleClose">
 				<div id="cnt2"></div>
 			</el-dialog>
 		</div>
@@ -107,11 +107,7 @@
 					var _this=this;
 					this.$confirm('确认关闭？')
 						.then(_ => {
-							this.radio = "";
 							done();
-							_this.zhekou=1;
-							//_this.huiyuanObj =null;
-							_this.isshow3=true;
 						})
 						.catch(_ => {});
 				},
@@ -130,8 +126,12 @@
 					this.isshow1 = true;
 				},
 				suppUpdate(id) {
-					sessionStorage.setItem("id", id);
-					this.isshow2 = true;
+					this.isshow2 = true;	
+					setTimeout(()=>{
+						sessionStorage.setItem("id", JSON.stringify(id));
+					$("#cnt2").load('供货单位修改.html'); //ajax读取页面
+					},"1000")
+					
 				},
 				suppDelete(id) {
 					let _this = this;

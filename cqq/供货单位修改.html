@@ -16,7 +16,7 @@
 	</head>
 
 	<body>
-		<div id="gonghuodanweitianjia">
+		<div id="gonghuodanweiUpdate">
 			<el-row>
 				<template>
 					<el-form :model="Supplier" :inline="true" :rules="rules" ref="ruleForm"   class="demo-form-inline">
@@ -53,7 +53,7 @@
 	</body>
 	<script>
 		var lzdjApp = new Vue({
-			el: '#gonghuodanweitianjia',
+			el: '#gonghuodanweiUpdate',
 			data: {
 				Supplier: {},
 				rules: {
@@ -140,7 +140,8 @@
 				}
 			},
 			mounted() {
-				this.selectPojo(sessionStorage.getItem("id"));
+				this.Supplier=JSON.parse(sessionStorage.getItem("id"));
+				//this.selectPojo(sessionStorage.getItem("id"));
 			}
 		});
 	</script>
