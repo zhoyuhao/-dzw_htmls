@@ -24,7 +24,7 @@
 				<div class="layui-col-md12">
 					<div class="layui-card">
 						<div class="layui-card-body " style="text-align: center;">
-							<span style="margin-right: 3ex;  font-size:18px">请输入员工姓名：</span>
+							<span style="margin-right: 3ex; color: red; font-size:15px">请输入员工姓名：</span>
 							<div class="layui-input-inline layui-show-xs-block">
 								<input type="text" v-model="pname" name="username" placeholder="" autocomplete="off" class="layui-input"></div>
 							<div class="layui-input-inline layui-show-xs-block">
@@ -62,8 +62,8 @@
 										</el-form>
 									</template>
 								</el-table-column>
-								<el-table-column label="通讯编号" prop="txlid">
-								</el-table-column>
+							<!--	<el-table-column label="通讯编号" prop="txlid">
+								</el-table-column>-->
 								<el-table-column label="员工编号" prop="pid">
 								</el-table-column>
 								<el-table-column label="名称" prop="txlname">
@@ -147,8 +147,8 @@
 					if(confirm("是否删除")) {
 						$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/remove/${id}`, function(res) {
 							if(res > 0) {
+								_this.query(1,_this.page.pageSize, "null");
 								_this.$alert("删除成功")
-								_this.query(1,this.page.pageSize, "null");
 							}
 						});
 					}

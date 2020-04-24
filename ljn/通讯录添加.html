@@ -11,13 +11,13 @@
 	<body>
 		<div id="personAdd" style="width: 70%;margin: 0 auto;">
 			<el-form style="width: 70%;margin: 0 auto;" :inline="true" label-position="left" label-width="100px" style="text-align: center;">
-				<el-form-item label="员工编号">
-					<el-select v-model="pid" placeholder="请选择">
-						<el-option v-for="item in id" :label="item.pid" :value="item.pid"></el-option>
+				<el-form-item label="员工姓名">
+					<el-select v-model="pname" placeholder="请选择" @change="qid(pname)">
+						<el-option v-for="item in id" :label="item.pname" :value="item.pname"></el-option>
 					</el-select>
 				</el-form-item>
-				<el-form-item label="员工名称:">
-					<el-input v-model="pname"></el-input>
+				<el-form-item label="员工编号:">
+					<el-input v-model="pid"></el-input>
 				</el-form-item>
 				<el-form-item label="联系电话:">
 					<el-input v-model="pphone"></el-input>
@@ -56,8 +56,8 @@
 							$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/add/${pid}/${pname}/${pphone}`, function(res) {
 								if(res > 0) {
 									_this.$alert("新增成功");
-									legworkApp.isshow1 = false;
-									legworkApp.query(1, 9, "null");
+									personApp.isshow1 = false;
+									personApp.query(1, 9, "null");
 								}
 							});
 						})
@@ -72,6 +72,13 @@
 					},
 					qu() {
 						personApp.isshow1 = false;
+					},
+					qid(pname){
+						let _this=this;						
+						$.getJSON(`http://localhost:8080/ljn/api/ljnPersonnelAction/queryid/${pname}`, function(res) {
+						_this.pphone=res.pphone;
+						_this.pid=res.pid;
+					})
 					},
 				},
 				mounted() {
