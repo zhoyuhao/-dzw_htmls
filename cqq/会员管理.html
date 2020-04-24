@@ -47,6 +47,7 @@
 					<el-table-column label="操作">
 						<template slot-scope="temp">
 							<el-button size="mini" type="primary" @click="chongzhi(temp.row)">充值</el-button>
+							<el-button size="mini" type="primary" @click="queryJilu(temp.row)"><span >余额记录</span></el-button>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -79,6 +80,46 @@
 
 
 			</el-dialog>
+			<el-dialog
+  title="充值记录"
+  align="center"
+  :visible.sync="dialog"
+  width="600px"
+  :before-close="handleClose">
+				<template>
+		<p style="margin-top: -3ex;font-size: 15px;float:left;margin-left: 2ex;">会员卡号：{{name}}</p>			
+    <el-table
+      :data="tableData"
+      max-height="380px"
+      style="width: 100%;">
+      
+       <el-table-column
+        label="序号"
+        width="180">
+        <template slot-scope="temp">{{temp.$index+1}}</template>
+      </el-table-column>
+      <el-table-column
+        prop="time"
+        label="日期"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="money"
+        label="余额状态"
+        align="center"
+        width="180">
+        <template slot-scope="temp">
+        	<span style="color: red;" v-if="temp.row.money.substring(0,1)=='+'">{{temp.row.money}}</span>
+        	<span style="color: #00FF00;" v-if="temp.row.money.substring(0,1)=='-'">{{temp.row.money}}</span>
+        </template>
+      </el-table-column>
+   
+    </el-table>
+  </template>
+
+
+			</el-dialog>
+			
 		</div>
 	</body>
 	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
@@ -89,6 +130,7 @@
 		var gangwei = new Vue({
 			el: "#kehuziliao",
 			data: {
+				dialog:false,
 				zfb:false,
 				currentPage5:1,
 				input:'',
@@ -97,10 +139,17 @@
 				chonzhiyve:'',
 				objects:'',
 				dh:"",
-				i:0
+				i:0,
+				tableData:[],
+				name:""
 				
 			},
 			methods: {
+				queryJilu(row){
+					this.dialog=true;
+					this.name=row.ckahaok;
+					this.tableData=row.list;
+				},
 				handleSizeChange(val) {
 					this.currentPage5= 1;
 					this.goToPage(1, val);
@@ -182,16 +231,22 @@
 					}else{
 						var suns=parseInt(JSON.stringify(this_.objects.cmoneyk))+parseInt(this_.chonzhiyve);
 						this.objects.cmoneyk=suns;
-						$.ajax(`http://127.0.0.1:8080/CqqCustomerAction/api/update`, {
-						type: "post",
+						$.ajax(`http://127.0.0.1:8080/CqqCustomerAction/api/update/${this_.chonzhiyve}`, {
+						type: "put",
 						contentType: "application/json",
 						data: JSON.stringify(this_.objects),
 						dataType: "json",
 						success(date) {
 							if(date > 0) {
-								this_.$alert("充值成功")
-								this.objects='';
+								this_.$message({
+										duration:"1000",
+            type: 'success',
+            message: '充值成功!'
+          });
+          this_.chonzhiyve='';
+								this_.objects='';
 								this_.isshow1=false;
+								this_.goToPage(1, 10);
 							} else {
 								this_.$alert("充值不成功")
 							}

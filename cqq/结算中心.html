@@ -73,6 +73,7 @@
 							<span style="color: red;" v-if="temp.row.service.wpayment==3">会员积分</span>
 							<span style="color: red;" v-if="temp.row.service.wpayment==4">支付宝扫码(会员)</span>
 							<span style="color: red;" v-if="temp.row.service.wpayment==5">支付宝扫码</span>
+							<span style="color: red;" v-if="temp.row.service.wpayment==6">会员余额</span>
 							<!--{{temp.row.service.wpayment |jiesuanfangshi}}-->
 							
 						</template>
@@ -82,7 +83,7 @@
 							{{temp.row.service.wstatic |changSex1}}
 						</template>
 					</el-table-column>
-					<el-table-column label="付款时间" width="160px"  sortable prop="service.paymenttirm">
+					<el-table-column label="付款时间" width="160px" type="date" sortable prop="service.paymenttirm">
 					</el-table-column>
 					<el-table-column label="结算金额" width="" prop="service.wsumprice">
 					</el-table-column>
@@ -232,10 +233,11 @@
 							</el-row>
 						</el-col>
 						</el-col>
-						<div style="height: 30px;"></div>
-						<el-button   v-if="huiyuanObj.cdoublerk>=yfmoney" type="primary" :disabled="zfb" size="mini" @click="chengjiao(3)">使用积分抵扣</el-button>
+						<div style="height: 30px;width: 500px;"></div>
+						<el-button type="primary"   v-if="huiyuanObj.cmoneyk>=yfmoney" size="mini" @click="chengjiao(6)" :loading="zfb">余额支付</el-button>
+						<el-button   v-if="huiyuanObj.cdoublerk>=yfmoney" type="primary" :disabled="zfb" size="mini" @click="chengjiao(3)">积分支付</el-button>
 						<el-button v-if="isshow3==true" type="primary" size="mini"  :disabled="zfb" v-if="isshow3==true" @click="xuanzehuiyuan">会员9折优惠，选择会员</el-button>
-						<el-button type="primary" size="mini" @click="chengjiao(1)" :disabled="zfb">成交</el-button>
+						<el-button type="primary" size="mini" @click="chengjiao(1)" :disabled="zfb">现金支付</el-button>
 						<el-button type="primary" size="mini" @click="zhifubao(4)" :loading="zfb">支付宝扫码</el-button>
 				</div>
 
@@ -436,7 +438,10 @@
 				chengjiao(val){
 					var _this=this;
 					_this.jiesuandan.service.wstatic=4;
-					if(val==3){
+					if(val==6){
+						_this.jiesuandan.service.wpayment=6;
+						_this.jiesuandan.service.deductionmoney=parseFloat(_this.jiesuandan.service.wsumprice-_this.yfmoney).toFixed(2);
+					}else if(val==3){
 						_this.jiesuandan.service.wpayment=3;
 						_this.jiesuandan.service.deductionmoney=parseFloat(_this.yfmoney).toFixed(2);
 					}else{
@@ -525,7 +530,15 @@
 				goToPage(n, s, wid, name) {
 					let _this = this;
 					$.getJSON(`http://127.0.0.1:8080/CqqServiceAction/api/${n}/${s}/${wid}/${name}`, function(date) {
-						_this.pageInfo = date;
+					//alert(JSON.stringify(date))
+						date.list.forEach(row=>{
+							if(row.service.paymenttirm!=null){
+								row.service.paymenttirm=row.service.paymenttirm.substring(0,10);
+							}
+							
+							
+						})
+							_this.pageInfo = date;
 						_this.currentPage5=date.pageNum;
 					});
 				}

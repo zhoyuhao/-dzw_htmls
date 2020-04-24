@@ -19,31 +19,31 @@
 		<div id="gonghuodanweitianjia">
 			<el-row>
 				<template>
-					<el-form :inline="true" :model="formInline" class="demo-form-inline">
-						<el-form-item label="">
+					<el-form :model="Supplier" :inline="true" :rules="rules" ref="ruleForm"   class="demo-form-inline">
+						<!--<el-form-item label="">
 							<el-input v-model="Supplier.ghsid" placeholder="供货商id"></el-input>
-						</el-form-item>
-						<el-form-item label="">
+						</el-form-item>-->
+						<el-form-item label="供货商名" prop="ghsname">
 							<el-input v-model="Supplier.ghsname" placeholder="供货商名称"></el-input>
 						</el-form-item>
-						<el-form-item label="">
+						<el-form-item label="供货地址" prop="ghsaddress">
 							<el-input v-model="Supplier.ghsaddress" placeholder="供货商地址"></el-input>
 						</el-form-item>
-						<el-form-item label="">
-							<el-input v-model="Supplier.ghsphone" placeholder="供货商联系电话"></el-input>
+						<el-form-item label="联系电话" prop="ghsphone">
+							<el-input v-model="Supplier.ghsphone" placeholder="联系电话"></el-input>
 						</el-form-item>
-						<el-form-item label="">
+						<el-form-item label="联  系  人 " prop="ghsuser">
 							<el-input v-model="Supplier.ghsuser" placeholder="联系人"></el-input>
 						</el-form-item>
-						<el-form-item label="">
+						<el-form-item label="打款账号" prop="ghsaccount">
 							<el-input v-model="Supplier.ghsaccount" placeholder="打款账号"></el-input>
 						</el-form-item>
 					</el-form>
 				</template>
 			</el-row>
-			<div>
-				<el-button type="warning" plain @click="baocun">保存</el-button>
-				<el-button type="info" plain @click="guanbi">关闭</el-button>
+			<div style="text-align: right;">
+				<el-button type="primary" style="width: 150px;"  @click="baocun('ruleForm')">保存</el-button>
+				<el-button type="info" style="width: 150px;" plain @click="guanbi('ruleForm')">关闭</el-button>
 			</div>
 		</div>
 	</body>
@@ -52,11 +52,40 @@
 			el: '#gonghuodanweitianjia',
 			data: {
 				Supplier: {},
+				 rules: {
+          ghsname: [
+           { required: true, message: '请输入供货商名称', trigger: 'blur' }
+          ],
+           ghsaddress: [
+           { required: true, message: '请输入供货商地址', trigger: 'blur' }
+          ],
+             ghsphone1: [
+           { required: true, message: '请输入供货商名称', trigger: 'blur' }
+          ],
+          ghsuser: [
+           { required: true, message: '请输入联系人', trigger: 'blur' }
+          ],ghsaccount: [
+           { required: true, message: '请输入打款账号', trigger: 'blur' }
+          ],
+          ghsphone: [
+          { required: true, message: "请输入手机号码", trigger: "blur" },
+          { min: 11, max: 11, message: "请输入11位手机号码", trigger: "blur" },
+          {
+            pattern: /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/,
+            message: "请输入正确的手机号码"
+          }
+        ]
+
+          }
 			},
 			methods: {
-				baocun() {
-					var this_ = this;
+				baocun(formName) {
+						var this_ = this;
+					this.$refs[formName].validate((valid) => {
+          if (valid) {
+          
 					kehuziliao.isshow1 = false;
+					this.Supplier.ghsid=0;
 					$.ajax(`http://127.0.0.1:8080/CqqSupplierAction/api/add`, {
 						type: "post",
 						contentType: "application/json",
@@ -64,24 +93,36 @@
 						dataType: "json",
 						success(date) {
 							if(date > 0) {
-								alert("成功")
-								kehuziliao.isshow1 = false;
+							this_.$message({
+										duration:"1000",
+            type: 'success',
+            message: '添加成功!'
+          });
+								gangwei.isshow1 = false;
+									gangwei.goToPage(1, 8, null);
 							} else {
-								alert("不成功")
+								this_.alert("不成功")
 							}
 						}
 					});
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+					
+				
 				},
 				handleClose(done) {
 					this.$confirm('确认关闭？').then(_ => {
 						done();
 					}).catch(_ => {});
 				},
-				guanbi() {
+				guanbi(formName) {
 					//alert();
-					kehuziliao.isshow1 = false;
-
-					kehuziliao.isshow2 = false;
+					gangwei.isshow1 = false;
+					gangwei.isshow2 = false;
+					 this.$refs[formName].resetFields();
 				},
 				handleCurrentChange(val) {
 					this.currentRow = val;

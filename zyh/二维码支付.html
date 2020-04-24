@@ -156,8 +156,8 @@
 					var this_=this;
 						var suns=parseInt(JSON.stringify(this_.objects.cmoneyk))+parseInt(this.yfmoney);
 						this.objects.cmoneyk=suns;
-						$.ajax(`http://127.0.0.1:8080/CqqCustomerAction/api/update`, {
-						type: "post",
+						$.ajax(`http://127.0.0.1:8080/CqqCustomerAction/api/update/${this.yfmoney}`, {
+						type: "put",
 						contentType: "application/json",
 						data: JSON.stringify(this_.objects),
 						dataType: "json",

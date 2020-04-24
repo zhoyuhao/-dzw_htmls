@@ -16,15 +16,29 @@
 		<link rel="stylesheet" href="../css/xadmin.css">
 		<script src="../lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../js/xadmin.js"></script>
+			<style>
+ .demo-table-expand {
+    font-size: 0;
+  }
+  .demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+  .demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 33%;
+  }
+</style>
 	</head>
 
 	<body>
-		<div class="layui-fluid" id="personApp">
+		<div class="layui-fluid" id="personApp" >
 			<div class="layui-row layui-col-space15">
 				<div class="layui-col-md12">
 					<div class="layui-card">
-						<div class="layui-card-body " style="text-align: center;">
-							<span style="margin-right: 3ex; color: red; font-size:15px">请输入员工姓名：</span>
+						<div class="layui-card-body " style="text-align: center;padding-top: 5ex;margin-bottom: 3ex;">
+							<span style="margin-right: 3ex;  font-size:18px;">请输入员工姓名：</span>
 							<div class="layui-input-inline layui-show-xs-block">
 								<input type="text" v-model="pname" name="username" placeholder="" autocomplete="off" class="layui-input"></div>
 							<div class="layui-input-inline layui-show-xs-block">
@@ -64,7 +78,10 @@
 								</el-table-column>
 							<!--	<el-table-column label="通讯编号" prop="txlid">
 								</el-table-column>-->
-								<el-table-column label="员工编号" prop="pid">
+								<el-table-column label="序号">
+									<template slot-scope="temp">
+										{{temp.$index+1}}
+									</template>
 								</el-table-column>
 								<el-table-column label="名称" prop="txlname">
 								</el-table-column>
@@ -72,42 +89,34 @@
 								</el-table-column>
 								<el-table-column label="操作">
 									<template slot-scope="temp">
-										<el-button icon="el-icon-edit" size="mini" type="primary" @click="showView(temp.row.txlid)">编辑</el-button>
+										<el-button icon="el-icon-edit" size="mini" type="primary" @click="showView(temp.row)">编辑</el-button>
 										<el-button icon="el-icon-delete" size="mini" type="danger" @click="delInfo(temp.row.txlid)">删除</el-button>
 									</template>
 								</el-table-column>
 							</el-table>
 						</template>
 						<div class="block" style="text-align: center;margin-top: 3ex;">
-							<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[9,6,3]" :page-size="9" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
+							<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[8,6,3]" :page-size="9" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 							</el-pagination>
 						</div>
 					</div>
 
 				</div>
 			</div>
-			<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="通讯录添加" :visible.sync="isshow1" width="55%">
+			<el-dialog
+  title="通讯录添加"
+  :visible.sync="isshow1"
+  width="40%"
+  :before-close="handleClose" >
+			
 				<div id="cnt1"></div>
 			</el-dialog>
-			<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="通讯录修改" :visible.sync="isshow2" width="55%" >
+			<el-dialog  @opened="handlerOpen2" title="通讯录修改" :visible.sync="isshow2" width="40%" >
 				<div id="cnt2"></div>
 			</el-dialog>
 		</div>
 	</body>
-	<style>
-  .demo-table-expand {
-    font-size: 0;
-  }
-  .demo-table-expand label {
-    width: 90px;
-    color: #99a9bf;
-  }
-  .demo-table-expand .el-form-item {
-    margin-right: 0;
-    margin-bottom: 0;
-    width: 33%;
-  }
-</style>
+
 	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
 	<script type="text/javascript" src="../js/vue.js"></script>
 	<script type="text/javascript" src="../js/index.js"></script>
@@ -125,6 +134,13 @@
 				isshow2: false,
 			},
 			methods: {
+				 handleClose(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+     },
 				//查询根据条件分页查询通讯录信息
 				query(pageNum, pageSize, pname) {
 					if(pname == "") {
@@ -134,6 +150,7 @@
 					$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/query/${pageNum}/${pageSize}/${pname}`, function(res) {
 						_this.currentPage4 = res.pageNum;
 						_this.page = res;
+						//alert(JSON.stringify(res))
 					});
 				},
 				//根据姓名查询通讯录信息
@@ -144,22 +161,38 @@
 				//根据编号删除通讯录信息
 				delInfo(id) {
 					let _this = this;
-					if(confirm("是否删除")) {
-						$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/remove/${id}`, function(res) {
+					
+					this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+         
+          $.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/remove/${id}`, function(res) {
 							if(res > 0) {
 								_this.query(1,_this.page.pageSize, "null");
-								_this.$alert("删除成功")
+								 _this.$message({
+								 		 duration:"1000",
+            type: 'success',
+            message: '删除成功!'
+          });
 							}
 						});
-					}
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            duration:"1000",
+            message: '已取消删除'
+          });          
+        });
+					
 				},
 				//查询需要编辑的通讯录信息
 				showView(txlid) {
 					let _this = this;
-					$.getJSON(`http://localhost:8080/ljn/api/ljnUserphoneAction/queryid/${txlid}`, function(res) {
-						window.sessionStorage.setItem('us', JSON.stringify(res));
+						window.sessionStorage.setItem('us', JSON.stringify(txlid));
 						_this.isshow2 = true;
-					})
+				
 				},
 				handleSizeChange(val) {
 					let _this = this;
@@ -180,11 +213,15 @@
 				//添加通讯录信息
 				addClick() {
 					this.isshow1 = true;
+					setTimeout(()=>{
+						$("#cnt1").load('通讯录添加.html'); //ajax读取页面
+						
+					},"500");
 				},
 			},
 			mounted() {
 				let _this = this;
-				_this.query(1, 9, "null");
+				_this.query(1, 8, "null");
 			},
 		})
 	</script>
