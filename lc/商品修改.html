@@ -58,17 +58,30 @@
 				</el-form-item>
 				<el-form-item label="商品品牌" class="gbrand">
 
-					<el-select v-if="bool" v-model="staff.gbrand" placeholder="请选择" style="width: 250px;">
-						<el-option v-for="item in pp" :label="item.ename" :value="item.eid" style="width: 250px;">
+					<el-select v-if="staff.gtype!='其他'"  @change="typechange" v-model="staff.gbrand" placeholder="请选择" style="width: 250px;">
+						<el-option v-for="item in pp" :label="item.ename" :value="item.ename" style="width: 250px;">
 						</el-option>
 					</el-select>
-					<el-input v-if="bool==true?false:true" v-model="staff.ename" style="width: 250px;"></el-input>
+					<el-input v-if="staff.gtype=='其他'" v-model="staff.gbrand" style="width: 250px;"></el-input>
 				</el-form-item>
 
-				<el-form-item label="适用车辆" class="gsuitable">
+				<el-form-item label="适用车辆"  class="gsuitable">
 					<el-select v-model="staff.gsuitable" placeholder="请选择" style="width: 250px;">
-						<el-option label="上海大众" value="上海大众"></el-option>
-						<el-option label="红旗" value="红旗"></el-option>
+												
+											<el-option key="宝马" label="宝马" value="宝马">
+									</el-option>
+									<el-option key="大众" label="大众" value="大众">
+									</el-option>
+									<el-option key="奔驰" label="奔驰" value="奔驰">
+									</el-option>
+									<el-option key="本田" label="本田" value="本田">
+									</el-option>
+									<el-option key="奥迪" label="奥迪" value="奥迪">
+									</el-option>
+									<el-option key="比亚迪" label="比亚迪" value="比亚迪">
+									</el-option>
+									<el-option key="通用车型" label="通用车型" value="通用车型">
+									</el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item label="商品数量" prop="gnumber">
@@ -162,7 +175,12 @@
 			},
 
 			methods: {
-				typechange(){},
+				typechange(){
+					if(this.staff.gtype=="其他"){
+						this.staff.gbrand ="";
+					}
+					
+				},
 				change(){
 					
 				},
@@ -183,9 +201,10 @@
 				},
 				submitForm() {
 					let _this = this;
+					
 						this.$refs['ruleForm'].validate(valid => {
 						if(valid) {
-							
+							_this.$delete(_this.staff,'lcSupplier')
 							$.ajax(`http://127.0.0.1:8080/lc/api/Goods/modeil`, {
 						type: "put",
 						contentType: "application/json",
@@ -197,7 +216,7 @@
 												type: 'success',
 												message: '操作成功'
 											});
-									yggl.lcgoTopage(1, 6,"");		
+									yggl.lcgoTopage(1, 8,"");		
 								yggl.isshow2 = false;
 
 							} else {
@@ -221,6 +240,9 @@
 				},
 				gysid() {
 					let _this = this;
+						$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sss`, function(data) {
+						_this.pp = data;
+					});
 					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sup`, function(data) {
 						//console.info(data);
 						_this.ssh = data;
@@ -234,9 +256,7 @@
 				_this.gid = sessionStorage.getItem('iss');
 				sessionStorage.setItem('iss', null);
 				_this.staff=JSON.parse(sessionStorage.getItem('goods'));
-				/*if(_this.gid != null) {
-					this.goodsByid();
-				}*/
+				
 
 			}
 		})

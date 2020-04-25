@@ -46,7 +46,7 @@
 							<template>
 								<el-table :data="pageInfo.list" style="width: 100%; ">
 									<el-table-column label="员工资料管理" align="center">
-										<el-table-column prop="pId" align="center" label="员工编号" width="120">
+										<el-table-column prop="pId" align="center" label="员工编号" width="130">
 										</el-table-column>
 										<el-table-column prop="pentry" align="center" label="入职日期" width="200">
 										</el-table-column>
@@ -76,13 +76,14 @@
 							<div style="text-align: center;">
 								<template>
 									<div class="block">
-										<el-pagination v-if="pageInfo.total!=0" :background="true" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[6,3]" layout="total, sizes, prev, pager, next, jumper">
+										<el-pagination v-if="pageInfo.total!=0" :background="true" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-size="pageInfo.pageSize"
+											 :total="pageInfo.total" :page-sizes="[8,6,3]" layout="total, sizes, prev, pager, next, jumper">
 										</el-pagination>
 									</div>
 								</template>
 							</div>
 						</div>
-						<el-dialog  title="商品资料添加" :visible.sync="isshow1" width="900px" :before-close="handleClose">
+						<el-dialog  title="员工资料填写" :visible.sync="isshow1" width="900px" :before-close="handleClose">
 							<el-form :model="staff" :inline="true" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm.inline">
 								<el-form-item label="员工编号" prop="pId">
 									<el-input v-model="staff.pId" :disabled="true" placeholder="请输入" style="width: 250px;"></el-input>
@@ -102,7 +103,7 @@
 								</el-form-item>
 								<el-form-item label="员工岗位" prop="ppost" required>
 									<el-select v-model="staff.ppost" style="width: 250px;">
-										<el-option v-for="item in jg" :label="item.gwname" :value="item.gwid" style="width: 250px;">
+										<el-option v-for="item in jg" :label="item.gwname" :value="item.pid" style="width: 250px;">
 										</el-option>
 									</el-select>
 								</el-form-item>
@@ -248,12 +249,13 @@
 						success(date) {
 							if(date.code == "200") {
 								_this.$message({
+										duration:"1000",
 										type: 'success',
 										message: '新增成功!'
 									});
 									_this.resetForm('ruleForm');
 									_this.isshow1 = false;
-								_this.lcgoTopage(1, 6, _this.goods.pname);
+								_this.lcgoTopage(1, 8, _this.goods.pname);
 
 							} else {
 								_this.$message(date.msg);
@@ -266,9 +268,6 @@
 						}
 					});
 				},
-				  resetForm(formName) {
-        this.$refs[formName].resetFields();
-      },
 				resetForm(formName) {
 					this.$refs[formName].resetFields();
 				},
@@ -291,8 +290,14 @@
 					let _this=this;
 					this.isshow1 = true;
 					setTimeout(()=>{
-						_this.resetForm('ruleForm');
-					},"500")
+							var date = new Date();
+				now = date.getFullYear() + "" + (date.getMonth() + 1) + "" + date.getDate() + "" + date.getHours() + "" + date.getMinutes() + "" + date.getSeconds();
+					_this.resetForm('ruleForm');
+				_this.staff.pId = now;
+				_this.staff.ppwd=now;
+				_this.staff.psex='男';
+					
+					},"300")
 				},
 				names() {
 					this.lcgoTopage(1, this.pageInfo.pageSize, this.goods.pname);
@@ -309,6 +314,14 @@
 					let _this = this;
 					pname = pname == "" ? 'null' : pname;
 					$.getJSON(`http://127.0.0.1:8080/lc/api/lcpersonnels/${p}/${s}/${pname}`, function(page) {
+						
+						page.list.forEach(row=>{
+							if(row.pentry!=null){
+								row.pentry=row.pentry.substring(0,10);
+							}
+							
+							
+						})
 						_this.pageInfo = page;
 						_this.currentPage4 = page.pageNum;
 
@@ -333,12 +346,13 @@
 														type: 'success',
 														message: '刪除成功!'
 													});
-									_this.lcgoTopage(1, 6, _this.goods.pname);
+									_this.lcgoTopage(1, 8, _this.goods.pname);
 								}
 							}
 						});
 					}).catch(() => {
 						this.$message({
+								duration:"1000",
 							type: 'info',
 							message: '已取消删除'
 						});
@@ -369,7 +383,7 @@
 			},
 			mounted() {
 				let _this = this; //非常重要
-				_this.lcgoTopage(1, 6, _this.goods.pname);
+				_this.lcgoTopage(1, 8, _this.goods.pname);
 				var date = new Date();
 				now = date.getFullYear() + "" + (date.getMonth() + 1) + "" + date.getDate() + "" + date.getHours() + "" + date.getMinutes() + "" + date.getSeconds();
 				_this.staff.pId = now;

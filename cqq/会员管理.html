@@ -40,14 +40,14 @@
 					</el-table-column>
 					<el-table-column label="号码" width="" prop="cphonek">
 					</el-table-column>
-					<el-table-column label="积分" width="" prop="cdoublerk">
+					<el-table-column label="积分" width="100px"  prop="cdoublerk">
 					</el-table-column>
-					<el-table-column label="余额" width="" prop="cmoneyk">
+					<el-table-column label="余额" prop="cmoneyk" width="100px" >
 					</el-table-column>
-					<el-table-column label="操作">
+					<el-table-column label="操作" align="center">
 						<template slot-scope="temp">
 							<el-button size="mini" type="primary" @click="chongzhi(temp.row)">充值</el-button>
-							<el-button size="mini" type="primary" @click="queryJilu(temp.row)"><span >余额记录</span></el-button>
+							<el-button size="mini" type="primary" @click="queryJilu(temp.row)"><span >余额消/存记录</span></el-button>
 						</template>
 					</el-table-column>
 				</el-table>

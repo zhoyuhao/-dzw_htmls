@@ -208,12 +208,12 @@
 						if(valid) {
 							//验证通过
 							//自定义加载块
-							const loading = this.$loading({
+					/*		const loading = this.$loading({
 								lock: true,
 								text: '努力更新中....',
 								spinner: 'el-icon-loading',
 								background: 'rgba(0, 0, 0, 0.5)'
-							});
+							});*/
 							//延迟2秒，模拟网络延迟
 							setTimeout(() => {
 								$.ajax('http://localhost:8080/lc/api/Goods/addGoods', {
@@ -233,7 +233,7 @@
 										}
 									}
 								});
-							}, 1000);
+							}, 1);
 						} else {
 							//验证失败
 							//this.$alert('请按格式正确填写信息', '系统提示');

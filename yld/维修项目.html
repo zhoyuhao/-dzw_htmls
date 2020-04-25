@@ -50,8 +50,8 @@
 								</el-table-column>
 								<el-table-column label="材料价格" prop="gprice" align="center">
 								</el-table-column>
-								<el-table-column label="材料数量" prop="gnumber" align="center">
-								</el-table-column>
+								<!--<el-table-column label="材料数量" prop="gnumber" align="center">
+								</el-table-column>-->
 								<el-table-column label="材料简介" align="center">
 									<template slot-scope="temp">
 										{{temp.row.gdescribe == ''?'暂无介绍':temp.row.gdescribe}}
@@ -63,8 +63,10 @@
 									</template>
 								</el-table-column>
 							</el-table>
+							
+							
 							<div style="margin-top: 20px;">
-								<el-pagination @current-change="getFixGoodsData" background layout="total, prev, pager, next, jumper" :page-size="4" :total="fixgoods.total">
+								<el-pagination @current-change="getFixGoodsData" background layout="total, prev, pager, next, jumper" :page-size="fixgoods.pageSize" :total="fixgoods.total">
 								</el-pagination>
 							</div>
 						</el-tab-pane>
@@ -113,7 +115,7 @@
 								</el-input>
 							</el-form-item>
 							<el-form-item label="所属类型：">
-								<el-select v-model="updategoodsdata.gtype" clearable placeholder="请选择" style="width: 100%;">
+								<el-select v-model="updategoodsdata.type" clearable placeholder="请选择" style="width: 100%;">
 									<el-option v-for="item in fixgoodsitem" :key="item.xmid" :label="item.xnames" :value="item.xmid">
 									</el-option>
 								</el-select>
@@ -203,6 +205,10 @@
 					$.getJSON("http://127.0.0.1:8080/yldaction/api/queryAllGoodsItem",
 						function(msg) {
 							_this.fixgoodsitem = msg;
+							_this.fixgoodsitem.push({
+								xnames:"暂未分类",
+								xmid:0
+							})
 							console.info(msg);
 						});
 				},
@@ -219,6 +225,7 @@
 				},
 				updateGoods() {
 					let _this = this;
+					this.updategoodsdata.type=this.updategoodsdata.type==""?0:this.updategoodsdata.type;
 					$.ajax('http://127.0.0.1:8080/yldaction/api/updateGoods', {
 						type: 'post',
 						dataType: 'json',
@@ -232,6 +239,7 @@
 									type: 'success'
 								});
 								_this.getFixGoodsData(1);
+								_this.getFixGoodsItemDataPage(1);
 								_this.ugoodsdialog = false;
 							} else {
 								_this.$message({

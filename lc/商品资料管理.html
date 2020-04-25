@@ -56,7 +56,7 @@
 							</el-form>
 						</div>
 						<div class="layui-card-body layui-table-body layui-table-main" style="margin-top: -5ex;">
-							<el-table :data="pageInfo.list" style="width: 100%; ">
+							<el-table :data="pageInfo.list"  style="width: 100%; ">
 								<el-table-column label="商品资料管理" align="center">
 									<el-table-column type="expand">
 										<template slot-scope="props">
@@ -85,11 +85,11 @@
 
 									<el-table-column prop="gid" align="center" label="商品编号" width="120">
 									</el-table-column>
-									<el-table-column prop="gname" align="center" label="商品名称" width="120">
+									<el-table-column prop="gname" align="center" label="商品名称">
 									</el-table-column>
 									<el-table-column prop="gtime" align="center" label="出产日器" width="120">
 									</el-table-column>
-									<el-table-column prop="gbrand" align="center" label="商品品牌" width="120">
+									<el-table-column prop="gbrand" align="center" label="商品品牌">
 									</el-table-column>
 									<el-table-column prop="gsuitable" align="center" label="适用车辆" width="120">
 									</el-table-column>
@@ -99,7 +99,7 @@
 									</el-table-column>
 									<el-table-column prop="gdescribe" align="center" label="商品简介" width="180">
 									</el-table-column>
-									<el-table-column label="操作" align="center">
+									<el-table-column label="操作" align="center"  width="100">
 										<template slot-scope="temp">
 											<i class="el-icon-s-tools" @click="xiugai(temp.row.gid,temp.row)"></i>&nbsp;&nbsp;
 											<i class="el-icon-delete" @click="shanchu(temp.row.gid)"></i>
@@ -115,7 +115,7 @@
 								<template>
 									<div class="block">
 
-										<el-pagination v-if="pageInfo.total!=0" :background="true" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[6,3]" layout="total, sizes, prev, pager, next, jumper">
+										<el-pagination v-if="pageInfo.total!=0" :background="true" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-size="pageInfo.pageSize" :total="pageInfo.total" :page-sizes="[8,6,3]" layout="total, sizes, prev, pager, next, jumper">
 										</el-pagination>
 									</div>
 								</template>
@@ -157,25 +157,38 @@
 
 									</el-form-item>
 
-									<el-form-item label="商品分类" class="gtype">
+									<el-form-item label="商品分类" class="gtype" prop="gtype">
 										<el-select v-model="staff.gtype" placeholder="请选择" @change="typechange" style="width: 250px;">
 											<el-option label="发动机" value="发动机"></el-option>
 											<el-option label="其他" value="其他"></el-option>
 										</el-select>
 									</el-form-item>
-									<el-form-item label="商品品牌" class="gbrand">
+									<el-form-item label="商品品牌" class="gbrand" >
 
 										<el-select v-if="bool" v-model="staff.gbrand" placeholder="请选择" style="width: 250px;">
-											<el-option v-for="item in pp" :label="item.ename" :value="item.eid" style="width: 250px;">
+											<el-option v-for="item in pp" :label="item.ename" :value="item.ename" style="width: 250px;">
 											</el-option>
 										</el-select>
 										<el-input v-if="bool==true?false:true" v-model="staff.gbrand" style="width: 250px;"></el-input>
 									</el-form-item>
 
-									<el-form-item label="适用车辆" class="gsuitable">
+									<el-form-item label="适用车辆" class="gsuitable" >
 										<el-select v-model="staff.gsuitable" placeholder="请选择" style="width: 250px;">
-											<el-option label="上海大众" value="上海大众"></el-option>
-											<el-option label="红旗" value="红旗"></el-option>
+											
+											<el-option key="宝马" label="宝马" value="宝马">
+									</el-option>
+									<el-option key="大众" label="大众" value="大众">
+									</el-option>
+									<el-option key="奔驰" label="奔驰" value="奔驰">
+									</el-option>
+									<el-option key="本田" label="本田" value="本田">
+									</el-option>
+									<el-option key="奥迪" label="奥迪" value="奥迪">
+									</el-option>
+									<el-option key="比亚迪" label="比亚迪" value="比亚迪">
+									</el-option>
+									<el-option key="通用车型" label="通用车型" value="通用车型">
+									</el-option>
 										</el-select>
 									</el-form-item>
 									<el-form-item label="商品数量" prop="gnumber">
@@ -230,6 +243,14 @@
 					gnumber: '',
 				},
 				rules: {
+					
+					gbrand:[
+					{
+						required: true,
+						message: '请填写',
+						trigger: 'blur'
+					}
+					],
 					gid: [{
 						required: true,
 						message: '请输入商品编号',
@@ -255,6 +276,15 @@
 						type: 'date',
 						required: true,
 						message: '请选择日期',
+						trigger: 'change'
+					}],
+					gtype:[{
+						required: true,
+						message: '请选择',
+						trigger: 'change'
+					}],gsuitable:[{
+						required: true,
+						message: '请选择',
 						trigger: 'change'
 					}],
 					gsuitable: [{
@@ -341,12 +371,7 @@
 						if(valid) {
 							//验证通过
 							//自定义加载块
-							const loading = this.$loading({
-								lock: true,
-								text: '努力更新中....',
-								spinner: 'el-icon-loading',
-								background: 'rgba(0, 0, 0, 0.5)'
-							});
+						
 							this.staff.gid=0;
 							//延迟2秒，模拟网络延迟
 							setTimeout(() => {
@@ -357,17 +382,17 @@
 									contentType: 'application/json',
 									success(msg) {
 										if(msg.code == "200") {
-											loading.close(); //关闭加载块【非常重要】
 											_this.$message({
 												type: 'success',
 												message: '新增成功'
 											});
+											_this.$refs['ruleForm'].resetFields();
 											_this.isshow1 = false;
-											_this.lcgoTopage(1, 6, _this.goods.gname);
+											_this.lcgoTopage(1, 8, _this.goods.gname);
 										}
 									}
 								});
-							}, 2000);
+							}, 1);
 						} else {
 							//验证失败
 							//this.$alert('请按格式正确填写信息', '系统提示');
@@ -379,7 +404,13 @@
 					this.isshow1 = false;
 				},
 				addgoods() {
+					let _this=this;
 					this.isshow1 = true;
+					setTimeout(()=>{
+						_this.staff.gbrand=""
+						_this.staff.gsuitable=''
+						_this.$refs['ruleForm'].resetFields();
+					},"200")
 				},
 				names() {
 					this.lcgoTopage(1, this.pageInfo.pageSize, this.goods.gname);
@@ -396,6 +427,13 @@
 					let _this = this;
 					gname = gname == "" ? 'null' : gname;
 					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/${p}/${s}/${gname}`, function(page) {
+							page.list.forEach(row=>{
+							if(row.gtime!=null){
+								row.gtime=row.gtime.substring(0,10);
+							}
+							
+							
+						})
 						_this.pageInfo = page;
 						_this.currentPage4 = page.pageNum;
 					});
@@ -419,7 +457,7 @@
 										type: 'success',
 										message: '删除成功!'
 									});
-									_this.lcgoTopage(1, 6, name);
+									_this.lcgoTopage(1, 8, name);
 								}
 							}
 						});
@@ -459,7 +497,7 @@
 			/*	var date = new Date();
 				now = date.getFullYear() + "" + (date.getMonth() + 1) + "" + date.getDate() + "" + date.getHours() + "" + date.getMinutes() + "" + date.getSeconds();
 				_this.staff.gid = now;*/
-				_this.lcgoTopage(1, 6, this.goods.gname);
+				_this.lcgoTopage(1,8, this.goods.gname);
 
 			}
 		})
