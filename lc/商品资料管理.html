@@ -210,7 +210,7 @@
 	<script type="text/javascript" src="../js/index.js"></script>
 	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
 	<script>
-		var yggl = new Vue({
+		var spgl = new Vue({
 			el: "#spgl",
 			data: {
 				bool: true,
@@ -317,7 +317,6 @@
 					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sup`, function(data) {
 						console.info(data);
 						_this.ssh = data;
-						console.info(ssh);
 						/*$.each(data, function(i,obj) {
 							var a=$("#sel").html();
 							alert(a);
@@ -441,7 +440,6 @@
 				handleClose(done) {
 					this.$confirm('确认关闭？')
 						.then(_ => {
-							this.radio = "";
 							done();
 						})
 						.catch(_ => {});

@@ -32,8 +32,7 @@
 					<el-input v-model="staff.gname" style="width: 250px;"></el-input>
 
 				</el-form-item>
-
-				<el-form-item label="出产日期" required>
+					<el-form-item label="出产日期" required>
 
 					<el-form-item prop="gtime" style="width: 242px;">
 						<el-date-picker type="date" placeholder="请输入" v-model="staff.gtime" style="width: 250px;"></el-date-picker>
@@ -106,6 +105,7 @@
 				dialogVisible: false,
 				gid: null,
 				ssh: [],
+				pp:[],
 				staff: {
 					gid: '',
 					ghsid: '',
@@ -117,12 +117,51 @@
 					gtype: '',
 					gdescribe: '',
 					gnumber: '',
+				},
+				rules: {
+					gid: [{
+						required: true,
+						message: '请输入商品编号',
+						trigger: 'blur'
+					}],
+					gname: [{
+						required: true,
+						message: '请输入商品名称',
+						trigger: 'blur'
+					}],
+					/*gtype: [{
+						required: true,
+						message: '请选择',
+						trigger: 'change'
+					}],*/
+					gtime: [{
+						type: 'date',
+						required: true,
+						message: '请选择日期',
+						trigger: 'change'
+					}],
+					gsuitable: [{
+						required: true,
+						message: '请填写',
+						trigger: 'blur'
+					}],
+					gprice: [{
+							required: true,
+							message: '请填写价格',
+							trigger: 'blur'
+						}
+						/*,
+												{
+													type: 'number',
+													message: '必须为数字值'
+												}*/
+					]
 				}
 			},
 
 			methods: {
 				qu(){
-					yggl.isshow1 = false;
+					spgl.isshow2 = false;
 				},
 				goodsByid() {
 					let _this = this;
@@ -150,7 +189,7 @@
 												type: 'success',
 												message: '操作成功'
 											});
-								yggl.isshow1 = false;
+								spgl.isshow2 = false;
 
 							} else {
 								_this.$message(date.msg);
