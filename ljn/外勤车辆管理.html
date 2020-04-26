@@ -27,7 +27,8 @@
 							<el-tab-pane label="未出车" name="未出车">
 								<template>
 									<el-table :data="this.page.list" style="width: 100%">
-										<el-table-column label="车辆编号" prop="legworkid">
+										<el-table-column label="车辆编号" align="center" prop="legworkid">
+												<template slot-scope="temp">{{temp.$index+1}}</template>
 										</el-table-column>
 										<el-table-column label="车牌号" prop="platenumber">
 										</el-table-column>
@@ -52,7 +53,7 @@
 							<el-tab-pane label="已出车" name="已出车">
 								<template>
 									<el-table :data="this.page.list" style="width: 100%">
-										<el-table-column label="车辆编号" prop="legworkid">
+										<el-table-column label="车辆编号" align="center" prop="legworkid">
 										</el-table-column>
 										<el-table-column label="车牌号" prop="platenumber">
 										</el-table-column>
@@ -78,7 +79,7 @@
 							<el-tab-pane label="维修中" name="维修中">
 								<template>
 									<el-table :data="this.page.list" style="width: 100%">
-										<el-table-column label="车辆编号" prop="legworkid">
+										<el-table-column label="车辆编号" align="center" prop="legworkid">
 										</el-table-column>
 										<el-table-column label="车牌号" prop="platenumber">
 										</el-table-column>
@@ -175,7 +176,13 @@
 				//完成接车任务
 				hai(legworkid,wid) {
 					let _this = this;
-					if(confirm("是否确定接车成功")) {
+					
+        this.$confirm('是否确定还车, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+         
 					//修改维修信息
 					$.getJSON(`http://localhost:8080/ljn/api/ljnServiceAction/update/2/${wid}`, function(res) {
 					})
@@ -188,12 +195,22 @@
 								url: `http://127.0.0.1:8080/ljn/api/ljnlegworkAction/update`,
 								success: function(res) {
 									if(res != 0) {
-										_this.$alert("还车成功");
+										 _this.$message({
+										 	duration:"1000",
+            type: 'success',
+            message: '操作成功!'
+          });
 										_this.query(1, _this.page.pageSize, "已出车");
 									}
 								}
 							});
-					}
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消还车车'
+          });          
+        });
+					
 				},
 				//翻页实现
 				handleSizeChange(val) {

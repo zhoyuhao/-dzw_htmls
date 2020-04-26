@@ -5,10 +5,6 @@
 		<meta charset="UTF-8">
 		<title></title>
 
-		<link rel="stylesheet" href="../css/bootstrap.min.css" />
-		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
-		<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
-		<link rel="stylesheet" type="text/css" href="../css/index.css" />
 		<style>
 			i {
 				color: #27A9E3;
@@ -33,9 +29,15 @@
 				<!--<el-form-item label="岗位" prop="gwname">
 						<el-input v-model="staff.gwname" placeholder="请输入" style="width: 250px;"></el-input>
 				</el-form-item>-->
+				<el-form-item label="角色" prop="cid">
+					<el-select v-model="staff.cid" style="width: 250px;">
+						<el-option v-for="item in js" :label="item.cname" :value="item.cid">
+						</el-option>
+					</el-select>
+				</el-form-item>
 				<el-form-item label="员工岗位" prop="ppost" required>
 					<el-select v-model="staff.ppost" style="width: 250px;">
-						<el-option v-for="item in jg" :label="item.gwname" :value="item.gwid" style="width: 250px;">
+						<el-option v-for="item in jg" :label="item.gwname" :value="item.pid" style="width: 250px;">
 						</el-option>
 					</el-select>
 				</el-form-item>
@@ -61,12 +63,7 @@
 				<el-form-item label="员工地址" prop="paddress">
 					<el-input v-model="staff.paddress" style="width: 250px;"></el-input>
 				</el-form-item>
-				<el-form-item label="角色" prop="cid">
-					<el-select v-model="staff.cid" style="width: 250px;">
-						<el-option v-for="item in js" :label="item.cname" :value="item.cid">
-						</el-option>
-					</el-select>
-				</el-form-item>
+				
 				<el-form-item label="员工密码" prop="ppwd">
 					<el-input v-model="staff.ppwd" style="width: 250px;"></el-input>
 				</el-form-item>
@@ -78,19 +75,15 @@
 
 				<el-form-item style="margin: 0px auto;width: 700px; text-align: right;">
 					<el-button style="width: 150px;" type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-					<el-button style="width: 150px;" @click="isshow2=false">取消</el-button>
+					<el-button style="width: 150px;" @click="colse">取消</el-button>
 				</el-form-item>
 			</el-form>
 
 		</div>
 
 	</body>
-	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
-	<script type="text/javascript" src="../js/vue.js"></script>
-	<script type="text/javascript" src="../js/index.js"></script>
-	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
 	<script>
-		var yggl = new Vue({
+		var yggl2 = new Vue({
 			el: "#sss",
 			data: {
 				jg: [],
@@ -131,11 +124,22 @@
 						message: '请输入名称',
 						trigger: 'blur'
 					}],
+					pphone: [
+          { required: true, message: "请输入手机号码", trigger: "blur" },
+          { min: 11, max: 11, message: "请输入11位手机号码", trigger: "blur" },
+          {
+            pattern: /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/,
+            message: "请输入正确的手机号码"
+          }
+        ]
 				}
 
 			},
 
 			methods: {
+				colse(){
+					yggl.isshow2=false;
+				},
 				//最大值
 				getServiceMaxWid() {
 					let _this = this;
@@ -147,12 +151,13 @@
 				//提供的班组
 				jgbz() {
 					let _this = this;
-					$.getJSON(`http://127.0.0.1:8080/lc/api/lcpersonnels/${_this.pids}`, function(date) {
+			/*		$.getJSON(`http://127.0.0.1:8080/lc/api/lcpersonnels/${_this.pids}`, function(date) {
 						_this.staff = date;
 
-					});
+					});*/
 					$.getJSON(`http://127.0.0.1:8080/lc/api/workergroups/zw`, function(date) {
 						_this.jg = date;
+				
 						console.info(date);
 					});
 					$.getJSON(`http://127.0.0.1:8080/lc/api/lcRoles/ssb`, function(date) {
@@ -173,7 +178,8 @@
 									if(data.code == "500") {
 										_this.$message(data.msg);
 									} else {
-
+										
+									//	_this.staff.ppost=_this.staff.postid
 										$.ajax(`http://127.0.0.1:8080/lc/api/lcpersonnels/addGoods`, {
 											type: "post",
 											contentType: "application/json",
@@ -182,12 +188,13 @@
 											success(date) {
 												if(date.code == "200") {
 													_this.$message({
+														duration:"1000",
 														type: 'success',
 														message: '操作成功!'
 													});
-													/*_this.isshow1 = false;*/
-													yggl.isshow1 = false;
-													yggl.lcgoTopage(1, 6, yggl.goods.pname)
+													
+													_this.colse();
+													yggl.lcgoTopage(1, 8,"")
 
 												} else {
 													_this.$message(date.msg);
@@ -220,10 +227,9 @@
 			mounted() {
 				let _this = this; //非常重要
 				_this.pids = sessionStorage.getItem('iss');
-
+				_this.staff=JSON.parse(sessionStorage.getItem('userUpdate'));
+				//alert(JSON.stringify(this.staff))
 				if(_this.pids != null) {
-					/*_this.isshow2=sessionStorage.getItem('isso');
-					alert(_this.isshow2);*/
 					_this.jgbz();
 				}
 			}

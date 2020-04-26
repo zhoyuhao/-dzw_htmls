@@ -30,14 +30,15 @@
 								</div>
 								<template>
 									<el-table :data="this.page.list" style="width: 100%">
-										<el-table-column label="车辆编号" prop="legworkid">
+										<el-table-column label="车辆编号" align="center" prop="legworkid">
+											<template slot-scope="temp">{{temp.$index+1}}</template>
 										</el-table-column>
 										<el-table-column label="车牌号" prop="platenumber">
 										</el-table-column>
 										<el-table-column label="品牌" prop="brand">
 										</el-table-column>
-										<!--<el-table-column label="技工" prop="artisan">
-										</el-table-column>-->
+										<el-table-column label="调度费用" prop="momey">
+										</el-table-column>
 										<el-table-column label="状态" prop="state">
 										</el-table-column>
 										<el-table-column label="操作" width="300px">
@@ -49,70 +50,11 @@
 									</el-table>
 								</template>
 								<div class="block" style="text-align: center;margin-top: 3ex;">
-									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[9,6,3]" :page-size="9" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
+									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[8,6,3]" :page-size="9" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
 									</el-pagination>
 								</div>
 							</el-tab-pane>
-							<el-tab-pane label="已出车" name="已出车">
-								<div class="layui-card-header">
-									<el-button icon="el-icon-edit" size="mini" type="primary" @click="addClick">添加</el-button>
-								</div>
-								<template>
-									<el-table :data="this.page.list" style="width: 100%">
-										<el-table-column label="车辆编号" prop="legworkid">
-										</el-table-column>
-										<el-table-column label="车牌号" prop="platenumber">
-										</el-table-column>
-										<el-table-column label="品牌" prop="brand">
-										</el-table-column>
-										<!--<el-table-column label="技工" prop="artisan">
-										</el-table-column>-->
-										<el-table-column label="状态" prop="state">
-										</el-table-column>
-										<el-table-column label="操作" width="300px">
-											<template slot-scope="temp">
-												<el-button icon="el-icon-edit" size="mini" type="primary" @click="showView(temp.row.legworkid)">编辑</el-button>
-												<el-button icon="el-icon-delete" size="mini" type="danger" @click="delInfo(temp.row.legworkid)">删除</el-button>
-											</template>
-										</el-table-column>
-									</el-table>
-								</template>
-								<div class="block" style="text-align: center;margin-top: 3ex;">
-									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[9,6,3]" :page-size="9" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
-									</el-pagination>
-								</div>
-
-							</el-tab-pane>
-							<el-tab-pane label="维修中" name="维修中">
-								<div class="layui-card-header">
-									<el-button icon="el-icon-edit" size="mini" type="primary" onclick=@click="addClick">添加</el-button>
-								</div>
-								<template>
-									<el-table :data="this.page.list" style="width: 100%">
-										<el-table-column label="车辆编号" prop="legworkid">
-										</el-table-column>
-										<el-table-column label="车牌号" prop="platenumber">
-										</el-table-column>
-										<el-table-column label="品牌" prop="brand">
-										</el-table-column>
-										<!--<el-table-column label="技工" prop="artisan">
-										</el-table-column>-->
-										<el-table-column label="状态" prop="state">
-										</el-table-column>
-										<el-table-column label="操作">
-											<template slot-scope="temp">
-												<el-button icon="el-icon-edit" size="mini" type="primary" @click="showView(temp.row.legworkid)">编辑</el-button>
-												<el-button icon="el-icon-delete" size="mini" type="danger" @click="delInfo(temp.row.legworkid)">删除</el-button>
-											</template>
-										</el-table-column>
-									</el-table>
-								</template>
-								<div class="block" style="text-align: center;margin-top: 3ex;">
-									<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[9,6,3]" :page-size="9" layout="total, sizes, prev, pager, next, jumper" :total="page.total">
-									</el-pagination>
-								</div>
-
-							</el-tab-pane>
+							
 						</el-tabs>
 					</template>
 				</div>
@@ -161,14 +103,31 @@
 				//删除外勤车辆信息
 				delInfo(legworkid) {
 					let _this = this;
-					if(confirm("是否删除")) {
-						$.getJSON(`http://localhost:8080/ljn/api/ljnlegworkAction/delete/${legworkid}`, function(res) {
+						
+					this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+         $.getJSON(`http://localhost:8080/ljn/api/ljnlegworkAction/delete/${legworkid}`, function(res) {
 							if(res > 0) {
-								_this.$alert("删除成功")
+							_this.$message({
+								 		 duration:"1000",
+            type: 'success',
+            message: '删除成功!'
+          });
 								_this.query(1, _this.page.pageSize, _this.activeName)
 							}
 						});
-					}
+					
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            duration:"1000",
+            message: '已取消删除'
+          });          
+        });
+					
 				},
 				//查询指定外勤车辆信息
 				showView(legworkid) {
@@ -234,7 +193,7 @@
 			},
 			mounted() {
 				let _this = this;
-				_this.query(1, 9, "未出车");
+				_this.query(1, 8, "未出车");
 			},
 		})
 	</script>

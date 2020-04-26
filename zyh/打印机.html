@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>德召文汽修发票打印</title>
+	</head>
+	<link rel="stylesheet" type="text/css" href="../css/index.css" />
+	<style>
+		.uls >li{
+			
+			font-size: 15px;
+			margin-right: 3ex;
+			float: left;
+			list-style: none;
+			margin-bottom: 2ex;
+			padding-left: 0px;
+			margin-left: 0px;
+		}
+		.el-card__header {
+     padding:0px; 
+    border-bottom: 1px solid #EBEEF5;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+[ v-cloak]{
+	display: none;
+}
+	</style>
+	<body>
+		
+		
+	<div id="daying" style="width: 800px;margin: 10ex auto;" v-cloak>
+		<el-card class="box-card">
+
+<div slot="header" class="clearfix" style="text-align: center;max-height: 50px;">
+   
+    <h4>德召文汽修发票</h4>
+  </div>
+    <div class="text item" style="padding: 0px;">
+    	<ul class="uls" style="float: left;margin-top: -0px;">
+		<li>订单编号：{{obj.service.wid}}</li>
+		<li>客户姓名：{{obj.service.wname}}</li>
+		<li>维修类型：{{obj.service.wtype}}</li>
+		<li>接车单位：{{obj.service.wjname}}(人/组)</li>
+		<li>车牌号：{{obj.service.wcarid}}</li>
+		<li>结算时间：{{obj.service.paymenttirm}}</li>
+		
+		<li>是否会员：{{obj.service.wpayment==1?"否":"是"}}</li>
+		<li>付款类型：
+			<span v-if="obj.service.wpayment==1">
+				现金
+			</span>
+			<span v-if="obj.service.wpayment==2">
+				会员
+			</span>
+			<span v-if="obj.service.wpayment==3">
+				会员积分抵扣
+			</span>
+			<span v-if="obj.service.wpayment==4">支付宝扫码(会员)</span>
+			<span v-if="obj.service.wpayment==5">支付宝扫码</span>
+			<span  v-if="obj.service.wpayment==6">会员余额</span>
+			</li>
+		<li>应付金额：￥{{obj.service.wsumprice}}</li>
+		<li>实收金额：
+			<span v-if="obj.service.wpayment==1">
+				￥{{obj.service.wsumprice}}
+			</span>
+			<span v-if="obj.service.wpayment!=1">
+				￥{{obj.service.wsumprice*0.9}}
+			</span>
+			
+			</li>
+			
+		<li>抵扣金额：￥{{obj.service.deductionmoney}}</li>
+		
+	</ul>
+	<!--<h5 style="margin-left: 5ex;">详细费用</h5>-->
+	<el-table  :data="obj.serdetalist"  style="width: 700px;margin: 0px auto;">
+								<el-table-column label="维修项目" width="" prop="sdname">
+								</el-table-column>
+								<el-table-column label="维系项目价格" width="" prop="sdprice">
+								</el-table-column>
+								<el-table-column label="维修数量" width="" prop="sdnumber">
+								</el-table-column>
+								<el-table-column label="小计" width="" prop="">
+										<template slot-scope="temp">
+											{{temp.row.sdprice*temp.row.sdnumber}}
+										</template>
+								</el-table-column>
+				</el-table>
+				<p style="margin-top: 1ex;margin-left: 5ex;float: right">操作人：{{czuser}}</p>
+  </div>
+</el-card>
+
+		
+	<div style="width: 780px; text-align: right;margin: 0px auto;padding: 0px;margin-top: 2ex;">
+				<el-button type="primary" v-if="bool" style="width: 150px;" @click="show">启动打印机</el-button>
+			
+			<el-button v-if="bool"  @click="quxiao" style="width: 150px;">退出</el-button>
+	</div>
+	</div>
+	</body>
+	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../js/vue.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+	<script>
+	
+
+var dayingApp=new Vue({
+	el:"#daying",
+	data:{
+		bool:true,
+		czuser:"",
+		obj:{"serdetalist":[{"dprice":30,"sdid":14,"sdname":"工时费(1h)","sdnumber":1,"sdprice":100,"wid":"123136"},{"dprice":12,"sdid":15,"sdname":"调度费","sdnumber":2,"sdprice":24,"wid":"123136"},{"dprice":3000,"sdid":16,"sdname":"更换前稳定器","sdnumber":1,"sdprice":3000,"wid":"123136"},{"dprice":200,"sdid":17,"sdname":"润滑油发动机","sdnumber":1,"sdprice":200,"wid":"123136"}],"service":{"decide":0,"deductionmoney":2991.6,"paymenttirm":"2020-04-20 00:00:00","wcarid":"A123123","wenddate":"2020-04-20 14:54:00","wid":123136,"wjname":"测试3","wleixi":2,"wname":"袁良栋","wpayment":3,"wphone":"13678900987","wstatdate":"2020-04-20 14:53:21","wstatic":4,"wsumprice":3324,"wtype":"保养 ","wvipid":""},"sum":3348}
+	},
+	methods:{
+		colse(){
+	
+		},
+		show(){
+			this.bool=false;
+			setTimeout(()=>{
+				window.print();
+				/*var tata=document.execCommand("print");
+   				if(tata){  
+     				this.bool=true;
+  				 }*/ 
+  				 this.bool=true;
+			},"500");
+			
+			
+		},
+		quxiao(){
+			  window.close();
+		}
+	},
+	mounted(){
+		
+		this.obj=JSON.parse(sessionStorage.getItem("dy"));
+		console.log(JSON.stringify(this.obj))
+		this.czuser=JSON.parse(sessionStorage.getItem("user")).pname;
+		/*this.show();*/
+	}
+});
+</script>
+</html>

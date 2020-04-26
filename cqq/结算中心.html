@@ -40,10 +40,10 @@
 
     <el-button type="primary"size="mini" @click="queryClick(input,value)"><span class="el-icon-search"  ></span></el-button>
 
-			<el-button type="success" size="mini" @click="dayin">导出</el-button>
+			<!--<el-button type="success" size="mini" @click="dayin">导出</el-button>-->
 			</span>
 			<template>
-				<el-table max-height="500" :data="pageInfo.list" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
+				<el-table  :data="pageInfo.list" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
 					<!--<el-table-column type="expand" fixed>
 						<template slot-scope="temp">
 							<el-table :data="temp.row.serdetalist" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
@@ -60,24 +60,34 @@
 					<el-table-column label="单据类型" width="">
 						<template slot-scope="temp">
 							<!--{{temp.row..wleixi}}-->
-							{{temp.row.service.wleixi==1?'站内':'站外'}}
+							<span  v-if="temp.row.service.wleixi==1">站内</span>
+							<span style="color: #E6A23C;" v-if="temp.row.service.wleixi!=1">站外</span>
+					
 						</template>
 					</el-table-column>
 					<el-table-column label="结算方式" width="" prop="service.wpayment">
 						<template slot-scope="temp">
-							{{temp.row.service.wpayment |jiesuanfangshi}}
+							<span v-if="temp.row.service.wpayment==0">未结算</span>
+							<span v-if="temp.row.service.wpayment==1">现金</span>
+							<span style="color: red;" v-if="temp.row.service.wpayment==2">现金(会员)</span>
+							<span style="color: red;" v-if="temp.row.service.wpayment==3">会员积分</span>
+							<span style="color: red;" v-if="temp.row.service.wpayment==4">支付宝扫码(会员)</span>
+							<span style="color: red;" v-if="temp.row.service.wpayment==5">支付宝扫码</span>
+							<span style="color: red;" v-if="temp.row.service.wpayment==6">会员余额</span>
+							<!--{{temp.row.service.wpayment |jiesuanfangshi}}-->
 							
 						</template>
 					</el-table-column>
 					<el-table-column label="状态" width="70px" prop="service.wstatic">
-						<template slot-scope="temp">
-							
+						<template slot-scope="temp" row-style="">
 							{{temp.row.service.wstatic |changSex1}}
 						</template>
 					</el-table-column>
-					<el-table-column label="付款时间" width="160px" prop="service.paymenttirm">
+					<el-table-column label="付款时间" width="160px" type="date" sortable prop="service.paymenttirm">
 					</el-table-column>
 					<el-table-column label="结算金额" width="" prop="service.wsumprice">
+					</el-table-column>
+					<el-table-column label="抵扣金额" width="" prop="service.deductionmoney">
 					</el-table-column>
 					<el-table-column label="业务类型" width="" prop="service.wtype">
 					</el-table-column>
@@ -89,6 +99,7 @@
 						<template slot-scope="temp">
 							<el-button v-if="temp.row.service.wstatic==3" size="mini" type="success" @click="shouyin(temp.row)">收银</el-button>
 							<el-button size="mini" type="primary" @click="dakaidanju(temp.row)">打开</el-button>
+							<el-button v-if="temp.row.service.wstatic==4" size="mini" type="info" @click="dayin(temp.row)">打印</el-button>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -151,14 +162,14 @@
 						<el-table-column label="维修项目" width="" prop="sdname">
 							<aq></aq>
 						</el-table-column>
-						<el-table-column label="项目价格" width="" prop="sdprice">
+						<el-table-column label="项目价格" width="" prop="dprice">
 						</el-table-column>
-						<el-table-column label="维修数量" width="" prop="sdnumber">
+						<el-table-column label="(件数/小时)" width="" prop="sdnumber">
 						</el-table-column>
-						<el-table-column label="小计" width="" prop="">
-							<template slot-scope="temp">
+						<el-table-column label="小计" width="" prop="sdprice">
+							<!--<template slot-scope="temp">
 								{{temp.row.sdprice*temp.row.sdnumber}}
-							</template>
+							</template>-->
 						</el-table-column>
 					</el-table>
 				</template>
@@ -171,14 +182,14 @@
 								总计：
 							</el-col>
 							<el-col :span="12" style="text-align: right;">
-								{{zongjine.sum}}
+								{{zongjine.service.wsumprice}}
 							</el-col>
 						</el-row>
 					</el-col>
 					</el-col>
 				</el-row>
 				<div id="xxx" style="text-align: right">
-					<span id="" v-if="isshow3==false">
+					<span id="" v-if="!isshow3">
 						<el-row>
 							<el-col :span="12">&nbsp;
 							</el-col>
@@ -217,14 +228,17 @@
 									应付金额：
 								</el-col>
 								<el-col :span="12">
-									{{zongjine.sum-(zongjine.sum-zongjine.sum*zhekou)}}
+									{{yfmoney}}
 								</el-col>
 							</el-row>
 						</el-col>
 						</el-col>
-						<el-button v-if="huiyuanObj.cdoublerk>=zongjine.sum-(zongjine.sum-zongjine.sum*zhekou)" type="primary" size="mini" @click="chengjiao(2)">使用积分抵扣</el-button>
-						<el-button v-if="isshow3==true" type="primary" size="mini" v-if="isshow3==true" @click="xuanzehuiyuan">会员9折优惠，选择会员</el-button>
-						<el-button type="primary" size="mini" @click="chengjiao(1)">成交</el-button>
+						<div style="height: 30px;width: 500px;"></div>
+						<el-button type="primary"   v-if="huiyuanObj.cmoneyk>=yfmoney" size="mini" @click="chengjiao(6)" :loading="zfb">余额支付</el-button>
+						<el-button   v-if="huiyuanObj.cdoublerk>=yfmoney" type="primary" :disabled="zfb" size="mini" @click="chengjiao(3)">积分支付</el-button>
+						<el-button v-if="isshow3==true" type="primary" size="mini"  :disabled="zfb" v-if="isshow3==true" @click="xuanzehuiyuan">会员9折优惠，选择会员</el-button>
+						<el-button type="primary" size="mini" @click="chengjiao(1)" :disabled="zfb">现金支付</el-button>
+						<el-button type="primary" size="mini" @click="zhifubao(4)" :loading="zfb">支付宝扫码</el-button>
 				</div>
 
 			</el-dialog>
@@ -256,6 +270,9 @@
 				</el-table>
 			</el-dialog>
 
+			<el-dialog  title="订单详细" :visible.sync="dayinshow" width="" :before-close="handleClose3">
+			<div id="cnt1"></div>
+			</el-dialog>
 		</div>
 
 	</body>
@@ -266,7 +283,11 @@
 	<script>
 		var gangwei = new Vue({
 			el: "#kehuziliao",
-			data: {formInline:{},rules:{},
+			data: {
+				zfb:false,
+				dayinshow:false,
+				yfmoney:0,
+				formInline:{},rules:{},
 				index:{},
 				isshow5:false,
 				isshow3:true,
@@ -294,20 +315,21 @@
 					service:{}
 				},
 				huiyuanObj:{
-					cdoublerk:0
+					cdoublerk:0,
+					ckahaok:0
 				}
-				,jiesuandan:'',zhekou:1
+				,jiesuandan:{},zhekou:1,
+				dh:"",
+				i:0
 			},
 			methods: {
-				dayin(){
-					$.getJSON(`http://127.0.0.1:8080/CqqServiceAction/api/daochukhzl`, function() {
-					_this.$message('导出成功');
-					});
+				dayin(obj){
+					sessionStorage.setItem("dy",JSON.stringify(obj));
+					window.open("../zyh/打印机.html");
 				},
 				dakaidanju(val){
 					this.index=val;
 					this.isshow5=true;
-					//this.$message('这是一条消息提示');
 				},
 				querenhuiyuan(val){
 					var _this=this;
@@ -321,11 +343,13 @@
 								_this.isshow2=false;
 								_this.isshow3=false;
 								_this.zhekou=0.9;
+								_this.yfmoney=parseFloat(_this.yfmoney*_this.zhekou).toFixed(2);
 							}
 						
 					});
 					}
 				},
+				
 				xuanzehuiyuan(){
 					this.isshow2=true;
 				},
@@ -347,17 +371,84 @@
 						input=null;
 					}
 					this_.goToPage(val, this.pageInfo.pageSize, this_.value, input);
-				},chengjiao(val){
+				},
+				/*支付宝扫码*/
+				zhifubao(val){
+					let statuc=5;
+					if(this.yfmoney<this.zongjine.service.wsumprice){
+						statuc=4;
+					}
+					sessionStorage.setItem("YUE","no");
+					sessionStorage.setItem("statuc",statuc);
+					sessionStorage.setItem("jiesuandan",JSON.stringify(this.jiesuandan));
+					sessionStorage.setItem("zongjine",JSON.stringify(this.zongjine));
+					sessionStorage.setItem("yfmoney",JSON.stringify(this.yfmoney));
+					sessionStorage.setItem("huiyuanObj",JSON.stringify(this.huiyuanObj));
+					var date=new Date();
+					now=date.getFullYear()+""+(date.getMonth()+1)+""+date.getDate()+""+date.getHours()+""+date.getMinutes()+""+date.getSeconds();
+					this.dh=now+""+this.zongjine.service.wid;
+					sessionStorage.setItem("dh",JSON.stringify(this.dh));
+					this.typeif();
+					this.zfb=true;
+					window.open("../zyh/二维码支付.html");
+					
+				},
+				typeif(){
+					let _this=this;
+					$.getJSON(`http://127.0.0.1:8080/AlipayAction/api/queryStatuc/${this.dh}`, function(data) {
+						/*_this.statuc=data;*/
+						if(data=="FAILED"){
+							setTimeout(()=>{
+									_this.i++;
+									if(_this.i==61){
+										return
+									}
+											_this.typeif();
+									},"2000")
+						
+						}
+						if(data=="SUCCESS"){
+							_this.closetypey();
+						}
+					});
+					
+					
+					
+				},
+				closetypey(){
+					let _this=this;
+					 this.$notify({
+          title: '支付提示',
+          message: '支付成功',
+          type: 'success'
+        });
+         setTimeout(()=>{
+        	_this.goToPage(1,_this.pageInfo.pageSize, 0, null);
+        },"1000")
+        
+        		//_this.goToPage(1,_this.pageInfo.pageSize, 0, null);
+									_this.isshow2=false;
+									_this.isshow1=false;
+									_this.isshow3=true;
+									_this.isshow5=false;
+										_this.zfb=false;
+					sessionStorage.setItem("type",false);
+				}
+				,
+				chengjiao(val){
 					var _this=this;
 					_this.jiesuandan.service.wstatic=4;
-					_this.jiesuandan.service.wpayment=val;
-					if(val>1){
-						//alert(_this.huiyuanObj.cdoublerk-(_this.huiyuanObj.cdoublerk-(_this.zongjine*0.9)))
-						//_this.jiesuandan.deductionmoney=_this.huiyuanObj.cdoublerk-(_this.huiyuanObj.cdoublerk-(_this.zongjine*0.9));
+					if(val==6){
+						_this.jiesuandan.service.wpayment=6;
+						_this.jiesuandan.service.deductionmoney=parseFloat(_this.jiesuandan.service.wsumprice-_this.yfmoney).toFixed(2);
+					}else if(val==3){
+						_this.jiesuandan.service.wpayment=3;
+						_this.jiesuandan.service.deductionmoney=parseFloat(_this.yfmoney).toFixed(2);
+					}else{
+						_this.jiesuandan.service.wpayment=this.yfmoney<_this.jiesuandan.service.wsumprice?2:1;
+						_this.jiesuandan.service.deductionmoney=parseFloat(_this.jiesuandan.service.wsumprice-_this.yfmoney).toFixed(2);
 					}
-					if(_this.isshow3==false){
-						_this.jiesuandan.service.wpayment=2;
-					}
+					
 					$.ajax(`http://127.0.0.1:8080/CqqServiceAction/api/update/${_this.huiyuanObj.ckahaok}`, {
 							type: "post",
 							contentType: "application/json",
@@ -365,11 +456,18 @@
 							dataType: "json",
 							success(date) {
 								if(date > 0) {
-									_this.$message('成功');
+									  _this.$message({
+									  	duration:"1000",
+          showClose: true,
+          message: '操作成功！',
+          type: 'success'
+        });
+        /*_this.huiyuanObj={};*/
+       _this.isshow3=true;
 									_this.goToPage(1,_this.pageInfo.pageSize, 0, null);
 									_this.isshow2=false;
 									_this.isshow1=false;
-									_this.isshow3=false;
+									
 									_this.isshow5=false;
 								} else {
 									_this.$message('不成功');
@@ -378,15 +476,19 @@
 					});
 				},
 				shouyin(row){
+						this.zongjine='';
+					this.jiesuandan={};
 					this.huiyuankahao='';
 					this.huiyuanObj={
-					cdoublerk:0
+					cdoublerk:0,
+					ckahaok:0
 				};
-				this.zhekou=1;
+					this.zhekou=1;
 					this.isshow1 = true;
 					this.zongjine=row;
 					this.jiesuandan=row;
-					
+					this.yfmoney=this.jiesuandan.service.wsumprice;
+					sessionStorage.setItem("erweima",JSON.stringify(row));
 				},
 				queryClick(input, value) {
 					if(input == '') {
@@ -401,7 +503,6 @@
 				handleClose3(done) {
 					this.$confirm('确认关闭？')
 						.then(_ => {
-							this.radio = "";
 							done();
 						})
 						.catch(_ => {});
@@ -413,8 +514,8 @@
 							this.radio = "";
 							done();
 							_this.zhekou=1;
-							//_this.huiyuanObj =null;
 							_this.isshow3=true;
+								_this.zfb=false;
 						})
 						.catch(_ => {});
 				},
@@ -429,7 +530,15 @@
 				goToPage(n, s, wid, name) {
 					let _this = this;
 					$.getJSON(`http://127.0.0.1:8080/CqqServiceAction/api/${n}/${s}/${wid}/${name}`, function(date) {
-						_this.pageInfo = date;
+					//alert(JSON.stringify(date))
+						date.list.forEach(row=>{
+							if(row.service.paymenttirm!=null){
+								row.service.paymenttirm=row.service.paymenttirm.substring(0,10);
+							}
+							
+							
+						})
+							_this.pageInfo = date;
 						_this.currentPage5=date.pageNum;
 					});
 				}
@@ -446,8 +555,10 @@
 						return "未结算";
 					}else if(val==1){
 					return "现金";
-					}else{
+					}else if(val==2){
 					return "会员";
+					}else if(val==3){
+						return "会员积分";
 					}
 				}
 			},

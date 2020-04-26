@@ -40,13 +40,14 @@
 					</el-table-column>
 					<el-table-column label="号码" width="" prop="cphonek">
 					</el-table-column>
-					<el-table-column label="积分" width="" prop="cdoublerk">
+					<el-table-column label="积分" width="100px"  prop="cdoublerk">
 					</el-table-column>
-					<el-table-column label="余额" width="" prop="cmoneyk">
+					<el-table-column label="余额" prop="cmoneyk" width="100px" >
 					</el-table-column>
-					<el-table-column label="操作">
+					<el-table-column label="操作" align="center">
 						<template slot-scope="temp">
 							<el-button size="mini" type="primary" @click="chongzhi(temp.row)">充值</el-button>
+							<el-button size="mini" type="primary" @click="queryJilu(temp.row)"><span >余额消/存记录</span></el-button>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -62,17 +63,63 @@
 								:total="pageInfo.total">
 							</el-pagination>
 						</div>
-			<el-dialog  style="text-align: center;" align="center"  title="充值" :visible.sync="isshow1" width="33%" :before-close="handleClose">
+			<el-dialog  style="text-align: center;height: 300px;" align="center"  title="充值" :visible.sync="isshow1"  width="33%" :before-close="handleClose">
 				<span style="display: block;margin-bottom: 3ex;margin-left: 5ex;">充值余额：
     <el-input
-    	style="width: 200px;"
+    	style="width: 150px;"
     	size="mini"
   placeholder="请输入充值余额"
   v-model="chonzhiyve"
   clearable>
-</el-input>     <el-button type="primary"  size="mini" @click="querenchongzhi">充值</el-button>
+</el-input>     
+<div style="text-align: center;margin-top: 5ex;">
+	<el-button style="margin-right: 3ex;" type="primary"  size="mini" :disabled="zfb" @click="querenchongzhi">现金充值</el-button>
+<el-button type="primary" size="mini" @click="zhifu" :loading="zfb">支付宝扫码</el-button>
+	
+</div>
+
 
 			</el-dialog>
+			<el-dialog
+  title="充值记录"
+  align="center"
+  :visible.sync="dialog"
+  width="600px"
+  :before-close="handleClose">
+				<template>
+		<p style="margin-top: -3ex;font-size: 15px;float:left;margin-left: 2ex;">会员卡号：{{name}}</p>			
+    <el-table
+      :data="tableData"
+      max-height="380px"
+      style="width: 100%;">
+      
+       <el-table-column
+        label="序号"
+        width="180">
+        <template slot-scope="temp">{{temp.$index+1}}</template>
+      </el-table-column>
+      <el-table-column
+        prop="time"
+        label="日期"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="money"
+        label="余额状态"
+        align="center"
+        width="180">
+        <template slot-scope="temp">
+        	<span style="color: red;" v-if="temp.row.money.substring(0,1)=='+'">{{temp.row.money}}</span>
+        	<span style="color: #00FF00;" v-if="temp.row.money.substring(0,1)=='-'">{{temp.row.money}}</span>
+        </template>
+      </el-table-column>
+   
+    </el-table>
+  </template>
+
+
+			</el-dialog>
+			
 		</div>
 	</body>
 	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
@@ -83,14 +130,26 @@
 		var gangwei = new Vue({
 			el: "#kehuziliao",
 			data: {
+				dialog:false,
+				zfb:false,
 				currentPage5:1,
 				input:'',
 				pageInfo: {},
 				isshow1: false,
 				chonzhiyve:'',
-				objects:''
+				objects:'',
+				dh:"",
+				i:0,
+				tableData:[],
+				name:""
+				
 			},
 			methods: {
+				queryJilu(row){
+					this.dialog=true;
+					this.name=row.ckahaok;
+					this.tableData=row.list;
+				},
 				handleSizeChange(val) {
 					this.currentPage5= 1;
 					this.goToPage(1, val);
@@ -103,6 +162,67 @@
 				queryClick(){
 					this.goToPage(1,10);
 				},
+				zhifu(){
+					var this_=this;
+					if (this.chonzhiyve=="") {
+						this.$alert("请输入余额");
+					}else{
+					this.zfb=true;
+					sessionStorage.setItem("yfmoney",this.chonzhiyve);
+					sessionStorage.setItem("YUE","yes");
+					var date=new Date();
+					var date=new Date();
+					now=date.getFullYear()+""+(date.getMonth()+1)+""+date.getDate()+""+date.getHours()+""+date.getMinutes()+""+date.getSeconds();
+					this.dh=now;
+					sessionStorage.setItem("dh",this.dh);
+					sessionStorage.setItem("objects",JSON.stringify(this.objects));
+					this.zfb=true;
+					this.typeif();
+					window.open("../zyh/二维码支付.html");
+					
+					}
+				},
+				typeif(){
+					let _this=this;
+					$.getJSON(`http://127.0.0.1:8080/AlipayAction/api/queryStatuc/${this.dh}`, function(data) {
+						/*_this.statuc=data;*/
+						console.log(data)
+						if(data=="FAILED"){
+							setTimeout(()=>{
+								_this.i++;
+								if(_this.i==61){
+									return
+								}
+								_this.typeif();
+									},"2000")
+						
+						}
+						if(data=="SUCCESS"){
+							
+										_this.zfb=false;
+										_this.isshow1 = false;
+										_this.chonzhiyve="";
+								 setTimeout(()=>{
+        	_this.goToPage(1, 10);
+        },"1000")
+        
+							_this.closetypey();
+						}
+					});
+					
+					
+					
+				},
+							closetypey(){
+					 this.$notify({
+          title: '支付提示',
+          message: '支付成功',
+          type: 'success'
+        });
+       
+        
+				}
+				,
 				querenchongzhi(){
 			
 					var this_=this;
@@ -111,16 +231,22 @@
 					}else{
 						var suns=parseInt(JSON.stringify(this_.objects.cmoneyk))+parseInt(this_.chonzhiyve);
 						this.objects.cmoneyk=suns;
-						$.ajax(`http://127.0.0.1:8080/CqqCustomerAction/api/update`, {
-						type: "post",
+						$.ajax(`http://127.0.0.1:8080/CqqCustomerAction/api/update/${this_.chonzhiyve}`, {
+						type: "put",
 						contentType: "application/json",
 						data: JSON.stringify(this_.objects),
 						dataType: "json",
 						success(date) {
 							if(date > 0) {
-								this_.$alert("充值成功")
-								this.objects='';
+								this_.$message({
+										duration:"1000",
+            type: 'success',
+            message: '充值成功!'
+          });
+          this_.chonzhiyve='';
+								this_.objects='';
 								this_.isshow1=false;
+								this_.goToPage(1, 10);
 							} else {
 								this_.$alert("充值不成功")
 							}
@@ -137,12 +263,15 @@
 					let _this = this;
 					$.getJSON(`http://127.0.0.1:8080/CqqCustomerAction/api/${n}/${s}/${val}`, function(date) {
 						_this.pageInfo = date;
+						console.log(JSON.stringify(date.list))
 						_this.currentPage5 = date.pageNum;
 					});
 				},/*详细信息关闭*/
 				handleClose(done) {
+					let _this=this;
 					this.$confirm('确认关闭？')
 						.then(_ => {
+							_this.zfb=false;
 							done();
 						})
 						.catch(_ => {});

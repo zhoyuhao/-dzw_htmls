@@ -4,12 +4,6 @@
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
-		<link rel="stylesheet" href="../css/bootstrap.min.css" />
-		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
-		<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
-		<script type="text/javascript" src="../js/xadmin.js"></script>
-
-		<link rel="stylesheet" type="text/css" href="../css/index.css" />
 		<style>
 			i {
 				color: #27A9E3;
@@ -32,7 +26,8 @@
 					<el-input v-model="staff.gname" style="width: 250px;"></el-input>
 
 				</el-form-item>
-					<el-form-item label="出产日期" required>
+
+				<el-form-item label="出产日期" required>
 
 					<el-form-item prop="gtime" style="width: 242px;">
 						<el-date-picker type="date" placeholder="请输入" v-model="staff.gtime" style="width: 250px;"></el-date-picker>
@@ -63,17 +58,30 @@
 				</el-form-item>
 				<el-form-item label="商品品牌" class="gbrand">
 
-					<el-select v-if="bool" v-model="staff.gbrand" placeholder="请选择" style="width: 250px;">
-						<el-option v-for="item in pp" :label="item.ename" :value="item.eid" style="width: 250px;">
+					<el-select v-if="staff.gtype!='其他'"  @change="typechange" v-model="staff.gbrand" placeholder="请选择" style="width: 250px;">
+						<el-option v-for="item in pp" :label="item.ename" :value="item.ename" style="width: 250px;">
 						</el-option>
 					</el-select>
-					<el-input v-if="bool==true?false:true" v-model="staff.ename" style="width: 250px;"></el-input>
+					<el-input v-if="staff.gtype=='其他'" v-model="staff.gbrand" style="width: 250px;"></el-input>
 				</el-form-item>
 
-				<el-form-item label="适用车辆" class="gsuitable">
+				<el-form-item label="适用车辆"  class="gsuitable">
 					<el-select v-model="staff.gsuitable" placeholder="请选择" style="width: 250px;">
-						<el-option label="上海大众" value="上海大众"></el-option>
-						<el-option label="红旗" value="红旗"></el-option>
+												
+											<el-option key="宝马" label="宝马" value="宝马">
+									</el-option>
+									<el-option key="大众" label="大众" value="大众">
+									</el-option>
+									<el-option key="奔驰" label="奔驰" value="奔驰">
+									</el-option>
+									<el-option key="本田" label="本田" value="本田">
+									</el-option>
+									<el-option key="奥迪" label="奥迪" value="奥迪">
+									</el-option>
+									<el-option key="比亚迪" label="比亚迪" value="比亚迪">
+									</el-option>
+									<el-option key="通用车型" label="通用车型" value="通用车型">
+									</el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item label="商品数量" prop="gnumber">
@@ -87,25 +95,20 @@
 				</el-form-item>
 				<el-form-item style="margin: 0px auto;width: 700px; text-align: right;">
 					<el-button style="width: 150px;" type="primary" @click="submitForm()">立即创建</el-button>
-					<el-button style="width: 150px;" @click="qu">取消</el-button>
+					<el-button style="width: 150px;" @click="colse">取消</el-button>
 				</el-form-item>
 			</el-form>
 		</div>
 
 	</body>
-	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
-	<script type="text/javascript" src="../js/vue.js"></script>
-	<script type="text/javascript" src="../js/index.js"></script>
-	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
 	<script>
-		var yggl = new Vue({
+		var  goodsUpdate= new Vue({
 			el: "#sss",
 			data: {
 				bool: true,
 				dialogVisible: false,
 				gid: null,
 				ssh: [],
-				pp:[],
 				staff: {
 					gid: '',
 					ghsid: '',
@@ -118,24 +121,35 @@
 					gdescribe: '',
 					gnumber: '',
 				},
-				rules: {
+				rules:{
+					
 					gid: [{
 						required: true,
 						message: '请输入商品编号',
 						trigger: 'blur'
+					}],
+					ghsid: [{
+						required: true,
+						message: '请选择',
+						trigger: 'change'
+					}],
+					gbrand:[{
+						required: true,
+						message: '请选择',
+						trigger: 'change'
 					}],
 					gname: [{
 						required: true,
 						message: '请输入商品名称',
 						trigger: 'blur'
 					}],
-					/*gtype: [{
+					gtype: [{
 						required: true,
 						message: '请选择',
 						trigger: 'change'
-					}],*/
+					}],
 					gtime: [{
-						type: 'date',
+						
 						required: true,
 						message: '请选择日期',
 						trigger: 'change'
@@ -156,12 +170,22 @@
 													message: '必须为数字值'
 												}*/
 					]
+				
 				}
 			},
 
 			methods: {
-				qu(){
-					spgl.isshow2 = false;
+				typechange(){
+					if(this.staff.gtype=="其他"){
+						this.staff.gbrand ="";
+					}
+					
+				},
+				change(){
+					
+				},
+				colse(){
+					yggl.isshow2 = false;
 				},
 				goodsByid() {
 					let _this = this;
@@ -177,8 +201,11 @@
 				},
 				submitForm() {
 					let _this = this;
-
-					$.ajax(`http://127.0.0.1:8080/lc/api/Goods/modeil`, {
+					
+						this.$refs['ruleForm'].validate(valid => {
+						if(valid) {
+							_this.$delete(_this.staff,'lcSupplier')
+							$.ajax(`http://127.0.0.1:8080/lc/api/Goods/modeil`, {
 						type: "put",
 						contentType: "application/json",
 						data: JSON.stringify(_this.staff),
@@ -189,39 +216,47 @@
 												type: 'success',
 												message: '操作成功'
 											});
-								spgl.isshow2 = false;
+									yggl.lcgoTopage(1, 8,"");		
+								yggl.isshow2 = false;
 
 							} else {
 								_this.$message(date.msg);
 							}
 						}
+					});	
+							
+							
+						} else {
+							
+						}
 					});
+					
+					
+
+				
 				},
 				resetForm(formName) {
 					this.$refs[formName].resetFields();
 				},
 				gysid() {
 					let _this = this;
+						$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sss`, function(data) {
+						_this.pp = data;
+					});
 					$.getJSON(`http://127.0.0.1:8080/lc/api/Goods/sup`, function(data) {
-						console.info(data);
+						//console.info(data);
 						_this.ssh = data;
-						/*$.each(data, function(i,obj) {
-							var a=$("#sel").html();
-							alert(a);
-							  $("#sel").append('<option value="' + obj.ghsid + '">' + obj.ghsid + '</option>')
-								
-						});*/
 					})
-				}
+				},
+				pp(){}
 			},
 			mounted() {
 				let _this = this; //非常重要
 				_this.gysid();
 				_this.gid = sessionStorage.getItem('iss');
 				sessionStorage.setItem('iss', null);
-				if(_this.gid != null) {
-					this.goodsByid();
-				}
+				_this.staff=JSON.parse(sessionStorage.getItem('goods'));
+				
 
 			}
 		})

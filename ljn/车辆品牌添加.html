@@ -4,9 +4,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title></title>
-		<link href="../css/style.css" rel="stylesheet" type="text/css">
-		<link rel="stylesheet" href="../css/index.css" />
-		<script type="text/javascript" src="../js/xadmin.js"></script>
+	
 	</head>
 
 	<body>
@@ -16,13 +14,28 @@
 					<el-input v-model="bill.platenumber"></el-input>
 				</el-form-item>
 				<el-form-item label="品牌:">
-					<el-input v-model="bill.brand"></el-input>
+					<el-select v-model="bill.brand" placeholder="请选择" style="width: 206px;">
+												
+											<el-option key="宝马" label="宝马" value="宝马">
+									</el-option>
+									<el-option key="大众" label="大众" value="大众">
+									</el-option>
+									<el-option key="奔驰" label="奔驰" value="奔驰">
+									</el-option>
+									<el-option key="本田" label="本田" value="本田">
+									</el-option>
+									<el-option key="奥迪" label="奥迪" value="奥迪">
+									</el-option>
+									<el-option key="比亚迪" label="比亚迪" value="比亚迪">
+									</el-option>
+									</el-option>
+					</el-select>
 				</el-form-item>
 				<!--<el-form-item label="技工:">
 					<el-input v-model="bill.artisan"></el-input>
 				</el-form-item>-->
 				<el-form-item label="车辆状态：">
-					<el-select v-model="bill.state" placeholder="未出车">
+					<el-select v-model="bill.state" placeholder="未出车" style="width: 206px;">
 						<el-option label="未出车" value="未出车" selected="selected"></el-option>
 						<el-option label="已出车" value="已出车"></el-option>
 						<el-option label="维修中" value="维修中"></el-option>
@@ -37,10 +50,7 @@
 				</div>
 		</div>
 
-		<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
-		<script type="text/javascript" src="../js/vue.js"></script>
-		<script type="text/javascript" src="../js/index.js"></script>
-		<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
+		
 		<script>
 			var myDate = new Date();
 			var app = new Vue({
@@ -72,8 +82,14 @@
 							url: `http://127.0.0.1:8080/ljn/api/ljnlegworkAction/insert`,
 							success: function(res) {
 								if(res != 0) {
-									_this.$alert("新增成功");
-									legworkApp.query(1, 9, "未出车");
+									
+								 _this.$message({
+								 	 duration:"1000",
+          showClose: true,
+          message: '操作成功！',
+          type: 'success'
+        });
+									legworkApp.query(1, 8, "未出车");
 									legworkApp.isshow1 = false;
 								}
 							}

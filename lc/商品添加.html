@@ -4,10 +4,6 @@
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
-
-		<link rel="stylesheet" href="../css/bootstrap.min.css" />
-
-		<link rel="stylesheet" type="text/css" href="../css/index.css" />
 		<style>
 			i {
 				color: #27A9E3;
@@ -92,10 +88,6 @@
 
 		</div>
 	</body>
-	<script type="text/javascript" src="../js/jquery-1.12.4.js"></script>
-	<script type="text/javascript" src="../js/vue.js"></script>
-	<script type="text/javascript" src="../js/index.js"></script>
-	<script type="text/javascript" src="../js/jq_ajax_config.js"></script>
 	<script>
 		function show(values) {
 			alert(values);
@@ -216,12 +208,12 @@
 						if(valid) {
 							//验证通过
 							//自定义加载块
-							const loading = this.$loading({
+					/*		const loading = this.$loading({
 								lock: true,
 								text: '努力更新中....',
 								spinner: 'el-icon-loading',
 								background: 'rgba(0, 0, 0, 0.5)'
-							});
+							});*/
 							//延迟2秒，模拟网络延迟
 							setTimeout(() => {
 								$.ajax('http://localhost:8080/lc/api/Goods/addGoods', {
@@ -237,10 +229,11 @@
 												message: '新增成功'
 											});
 											_this.clearData(); //清除数据
+												yggl.lcgoTopage(1, 6, yggl.goods.gname);
 										}
 									}
 								});
-							}, 2000);
+							}, 1);
 						} else {
 							//验证失败
 							//this.$alert('请按格式正确填写信息', '系统提示');

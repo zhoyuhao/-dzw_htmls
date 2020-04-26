@@ -26,37 +26,33 @@
 
     <el-button type="primary"size="mini" @click="queryClick(input)"><span class="el-icon-search"  ></span></el-button>
 			<el-button type="success" size="mini" @click="lizhidj">离职</el-button>
-			<el-button type="success" size="mini" @click="">导出</el-button>
 			</span>
 			<template>
 				<el-table max-height="500" :data="pageInfo.list" border :header-cell-style="{background:'#eef1f6'}" stripe style="width: 100%">
-					<el-table-column type="expand" fixed>
-						详细:
-					</el-table-column>
-
-					<el-table-column width="150" label="部门" prop="bzid">
-					</el-table-column>
-					<el-table-column label="编号" width="" prop="pid">
+					
+					<el-table-column label="员工编号" width="" prop="pid">
 					</el-table-column>
 					<el-table-column label="姓名" width="" prop="pname">
 					</el-table-column>
 					<el-table-column label="性别" width="" prop="psex">
 					</el-table-column>
-					<el-table-column label="职位" width="" prop="ghsuser">
+					<el-table-column label="职位" width="" prop="gangwei">
 					</el-table-column>
 					<el-table-column label="地址" width="" prop="paddress">
 					</el-table-column>
 					<el-table-column label="联系号码" width="" prop="pphone">
 					</el-table-column>
-					<el-table-column label="操作" width="300px">
+					<el-table-column label="操作" >
 						<template slot-scope="temp">
 							<el-button size="mini" type="primary" @click="fuzhi(temp.row)">复职</el-button>
-							<el-button size="mini" type="danger" @click="shanchu(temp.row.pid)">删除</el-button>
-							<el-button size="mini" type="danger" @click="dakai(temp.row.ghsid)">打开</el-button>
-							<el-button size="mini" type="danger" @click="chaxun(temp.row.ghsid)">查询</el-button>
+							
 						</template>
 					</el-table-column>
 				</el-table>
+							<div class="block" style="text-align: center;background-color: white;padding-top: 3ex;padding-bottom: 3ex;">
+					<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage5" :page-sizes="[8,6,3]" :page-size="pageInfo.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
+					</el-pagination>
+				</div>
 			</template>
 			<el-dialog :destroy-on-close="true" @opened="handlerOpen1" title="员工卡片" :visible.sync="isshow1" width="99%" :before-close="handleClose">
 				<div id="cnt1"></div>
@@ -64,6 +60,7 @@
 			<el-dialog :destroy-on-close="true" @opened="handlerOpen2" title="离职登记" :visible.sync="isshow2" width="99%" :before-close="handleClose">
 				<div id="cnt2"></div>
 			</el-dialog>
+			
 		</div>
 
 	</body>
@@ -75,6 +72,7 @@
 		var gangwei = new Vue({
 			el: "#kehuziliao",
 			data: {
+				currentPage5:1,
 				pageInfo: [],
 				isshow1: false,
 				isshow2: false,
@@ -86,27 +84,85 @@
 					this.goToPage(1, 3, input);
 
 				},
+				handleSizeChange(val) {
+					this.currentPage5=1;
+					this.goToPage(1,val, this.input);
+				},
+				handleCurrentChange(val) {
+					this_.goToPage(val, this.pageInfo.pageSize, this.input);
+				},
 				shanchu(id) {
 					let _this = this;
-					if(confirm("是否删除")) {
-						$.ajax(`http://127.0.0.1:8080/CqqPersonnelAction/api/${id}`, {
+					
+					
+        this.$confirm('此操作将永久删除信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          		$.ajax(`http://127.0.0.1:8080/CqqPersonnelAction/api/${id}`, {
 							type: "delete",
 							dataType: "json",
 							success(data) {
 								if(data > 0) {
-									_this.$alert("成功");
-									_this.goToPage(1, 3,null);
+									_this.$message({
+										duration:"1000",
+         							 showClose: true,
+         									 message: '删除成功！',
+         								 type: 'success'
+        									});
+									_this.goToPage(1,  _this.pageInfo.pageSize,null);
 								} else {
-									alert("不成功")
+								_this.$alert("不成功")
 								}
 							}
 						});
-					}
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+					
+					
 				},
 				fuzhi(objctes) {
 					let _this = this;
 					objctes.pstatic = 0;
-					if(confirm("是否复职"))
+					
+					
+        this.$confirm('确定复职, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          $.ajax(`http://127.0.0.1:8080/CqqPersonnelAction/api/update`, {
+							type: "post",
+							contentType: "application/json",
+							data: JSON.stringify(objctes),
+							dataType: "json",
+							success(date) {
+								if(date > 0) {
+											_this.$message({
+										duration:"1000",
+         							 showClose: true,
+         									 message: '复职成功！',
+         								 type: 'success'
+        									});
+									_this.goToPa
+									_this.goToPage(1,  _this.pageInfo.pageSize,null);
+								} else {
+									_this.$alert("不成功")
+								}
+							}
+						});
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+				/*	if(confirm("是否复职"))
 						$.ajax(`http://127.0.0.1:8080/CqqPersonnelAction/api/update`, {
 							type: "post",
 							contentType: "application/json",
@@ -114,13 +170,19 @@
 							dataType: "json",
 							success(date) {
 								if(date > 0) {
-									_this.$alert("成功");
-									_this.goToPage(1, 3,null);
+											_this.$message({
+										duration:"1000",
+         							 showClose: true,
+         									 message: '复职成功！',
+         								 type: 'success'
+        									});
+									_this.goToPa
+									_this.goToPage(1,  _this.pageInfo.pageSize,null);
 								} else {
-									alert("不成功")
+									_this.$alert("不成功")
 								}
 							}
-						});
+						});*/
 				},
 				handlerOpen1() {
 					$("#cnt1").load('员工卡片打开.html'); //ajax读取页面
@@ -155,9 +217,9 @@
 							success(data) {
 								if(data > 0) {
 									_this.$alert("成功");
-									_this.goToPage(1, 3,null);
+									_this.goToPage(1, _this.pageInfo.pageSize,null);
 								} else {
-									alert("不成功")
+									_this.$alert("不成功")
 								}
 							}
 						});
@@ -166,13 +228,15 @@
 				},
 				goToPage(n, s, name) {
 					let _this = this;
+					this.input=name==""?null:name;
 					$.getJSON(`http://127.0.0.1:8080/CqqPersonnelAction/api/${n}/${s}/1/${name}`, function(date) {
 						_this.pageInfo = date;
+						_this.currentPage5=date.pageNum;
 					});
 				}
 			},
 			mounted() {
-				this.goToPage(1, 3, null);
+				this.goToPage(1, 8, null);
 			}
 		})
 	</script>

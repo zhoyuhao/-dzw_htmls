@@ -74,7 +74,7 @@
 									<div class="x-admin-backlog-body" style="box-shadow: 0px 0px 5px #000000;">
 										<h3>今日收入</h3>
 										<p>
-											<cite id="xj"><span style="margin-right: 2ex;">总:￥{{jrsummoney}}</span><span>实:￥{{jrshimoney}}</span></cite></p>
+											<cite id="xj"><span style="margin-right: 2ex;">总:￥{{jrsummoney}}</span><span>抵扣金额:￥{{jrshimoney}}</span></cite></p>
 									</div>
 								</li>
 
@@ -85,12 +85,12 @@
 				<div class="layui-col-sm14 layui-col-md6" style="margin-top: 5ex;">
 					<div class="layui-card">
 						
-						<div id="main" style="min-width:100%;height:400px;"></div>
+						<div id="main" style="min-width:100%;height:450px;"></div>
 					</div>
 				</div>
 				<div class="layui-col-sm14 layui-col-md6" style="margin-top: 5ex;">
 					
-						<div id="main1" style="min-width: 100%;height:400px;"></div>
+						<div id="main1"  style="min-width: 100%;height:450px;"></div>
 					</div>
 				</div>
 
@@ -113,6 +113,8 @@
 		var welcome = new Vue({
 			el: "#welcome",
 			data: {
+				myChart1:null,
+				myChart2:null,
 				jrsummoney:0,
 				jrshimoney:0,
 				kehuhnumber:0,
@@ -184,7 +186,7 @@
                    { name: '周三',max:100000},
                    { name: '周四',max:100000},
                    { name: '周五',max:120000},
-                   { name: '周六',max:10000},   
+                   { name: '周六',max:120000},   
                    { name: '周日',max:120000}
                 ]
             },
@@ -208,12 +210,15 @@
 				
 			},
 			methods: {
-				chushi(){
-
-
- setInterval(()=>{
- 	let _this=this;
-						$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryJieDan',function(data){
+				queryAll(){
+				
+				/*$("#main").html()$("#main1").html()*/
+					this.myChart1 = echarts.init(document.getElementById('main'));
+					this.myChart2= echarts.init(document.getElementById('main1'));
+ 					let _this=this;
+					
+									
+				$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryJieDan',function(data){
 				
 						_this.jrzjiedan=data.jrzjiedan;
 						_this.jrwjiedan=data.jrwjiedan;
@@ -232,10 +237,15 @@
 						_this.jrshimoney=data.jrshimoney;
 					});
 					
+								//开启同步
+/*				$.ajaxSetup({
+				async:false
+				})*/
+					
 					$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryZQMoney',function(data){
 							let val=0;
 						_this.option.series[0].data=[0, 0, 0, 0, 0, 0,0];
-							_this.option2.series[0].data[0].value=[0, 0, 0, 0, 0, 0,0];
+						_this.option2.series[0].data[0].value=[0, 0, 0, 0, 0, 0,0];
 							$.each(data,function(i,obj){
 								val=val<obj.xq?obj.xq:val;
 								let indext=obj.xq==0?6:obj.xq-1;
@@ -249,39 +259,60 @@
 						});
 						
 						//删除还没到的时间线条
-						for(var i=val;i<7;i++){
+						if(val!=0){
+								for(var i=val;i<7;i++){
 								if(_this.option.series[0].data.length==val){
 									return
 								}
 							_this.option.series[0].data.splice(val,1);
 						}
-							var myChart = echarts.init(document.getElementById('main'));
-							myChart.setOption(_this.option);
+						}
+					
+						
+						_this.myChart1.setOption(_this.option);
+						
 						
 				});
 				
+	
 				$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryZQMoneyS',function(data){
 								let val=0;
 								_this.option2.series[0].data[1].value=[0, 0, 0, 0, 0, 0,0];
 						$.each(data,function(i,obj){
 							//雷达图
+							
 								val=val<obj.xq?obj.xq:val;
 								let indext=obj.xq==0?6:obj.xq-1;
 							_this.$set(_this.option2.series[0].data[1].value,indext,obj.jrsummoney);
-							//console.log(JSON.stringify(_this.option2.series[0].data))
+						
 						});
-							var myChart2 = echarts.init(document.getElementById('main1'));
-							myChart2.setOption(_this.option2);
+						_this.myChart2.setOption(_this.option2);	
 				});
+	
+ 
+				},
+				chushi(){
+					
+				let _this=this;
+
+ 				setInterval(()=>{
+ 				_this.queryAll();
  	
- },'1000');
+ 					},'3000');
 					
 					
 						
 				}
 			},
 			mounted() {
-				this.chushi();
+				
+				
+				this.queryAll();
+				let _this=this;
+					setInterval(()=>{
+ 				_this.queryAll();
+ 	
+ 					},'5000');
 			}
 		});
 	</script>
