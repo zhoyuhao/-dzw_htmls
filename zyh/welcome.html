@@ -238,14 +238,14 @@
 					});
 					
 								//开启同步
-				/*$.ajaxSetup({
+/*				$.ajaxSetup({
 				async:false
 				})*/
 					
 					$.getJSON('http://127.0.0.1:8080/shoyeAction/api/queryZQMoney',function(data){
 							let val=0;
 						_this.option.series[0].data=[0, 0, 0, 0, 0, 0,0];
-							_this.option2.series[0].data[0].value=[0, 0, 0, 0, 0, 0,0];
+						_this.option2.series[0].data[0].value=[0, 0, 0, 0, 0, 0,0];
 							$.each(data,function(i,obj){
 								val=val<obj.xq?obj.xq:val;
 								let indext=obj.xq==0?6:obj.xq-1;
@@ -259,14 +259,18 @@
 						});
 						
 						//删除还没到的时间线条
-						for(var i=val;i<7;i++){
+						if(val!=0){
+								for(var i=val;i<7;i++){
 								if(_this.option.series[0].data.length==val){
 									return
 								}
 							_this.option.series[0].data.splice(val,1);
 						}
+						}
+					
 						
-						_this.myChart1.setOption(_this.option,true);
+						_this.myChart1.setOption(_this.option);
+						
 						
 				});
 				
@@ -280,16 +284,11 @@
 								val=val<obj.xq?obj.xq:val;
 								let indext=obj.xq==0?6:obj.xq-1;
 							_this.$set(_this.option2.series[0].data[1].value,indext,obj.jrsummoney);
-							_this.myChart2.setOption(_this.option2);	
-						});
-			
-				});
-				/*渲染数据*/
-							
-							
 						
-					
-			
+						});
+						_this.myChart2.setOption(_this.option2);	
+				});
+	
  
 				},
 				chushi(){
@@ -307,7 +306,7 @@
 			},
 			mounted() {
 				
-					
+				
 				this.queryAll();
 				let _this=this;
 					setInterval(()=>{

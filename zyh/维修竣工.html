@@ -165,7 +165,7 @@
 
 				</el-tabs>
 
-				<el-dialog title="维修详细信息" align="center" :visible.sync="dialogVisible" width="800px" :before-close="handleClose">
+				<el-dialog title="维修详细信息"  v-loading="loading111"  align="center" :visible.sync="dialogVisible" width="800px" :before-close="handleClose">
 					<template>
 						<el-table :data="xiangXiData" style="width: 100%;margin: 0px auto;margin-top: -2ex;">
 							<el-table-column label="编号" align="center" width="180">
@@ -294,6 +294,7 @@
 		var zhnanei = new Vue({
 			el: "#juegong",
 			data: {
+				loading111:false,
 				fixformdatae:'',
 				fixTypeData:[],
 				fixGoodsData:[],
@@ -459,13 +460,13 @@
            			this.shjian=parseFloat(parseInt(ms/1000/60)/60).toFixed(2);//工时
            			
            			this.gf=this.sjObj.hmoney;
-           			let gsf=parseInt((this.gf/60).toFixed(2)*(this.shjian*60).toFixed(2));
+           			let gsf=parseInt(this.gf*this.shjian);;
           
 					//console.log("之前"+this.shjian);
            				if(this.shjian.indexOf('.')>0){
            					this.shjian=parseInt(this.shjian.substring(0,this.shjian.indexOf('.')))+1;
            						//console.log("之后"+this.shjian);
-           						gsf=parseInt((this.gf/60).toFixed(2)*(this.shjian*60).toFixed(2));
+           						gsf=parseInt(this.gf*this.shjian);
            				}
            				
 					$.ajax(`http://127.0.0.1:8080/zyhServiceAction/api/updateByWidToStatuc/${_this.radio2}/${_this.id}/${date}/${this.shjian}/${gsf}` ,{
@@ -567,9 +568,14 @@
 				},
 				/*维修详细*/
 				handleDelete(index, row,obj) {
+				this.dialogVisible = true;
+				this.loading111=true;
+				setTimeout(()=>{
+						
 					var endDate=new Date(obj.wenddate);
 					var startDate=new Date(obj.wstatdate);
 					    var ms = endDate.getTime() - startDate.getTime();
+					    this.loading111=false;
             			if (ms < 0) return 0;
            			this.shjian=parseFloat(ms/1000/60/60).toFixed(2);
            			console.log(this.shjian);
@@ -590,7 +596,10 @@
 					this.hsmoney=((parseInt(this.shjian)*60)*parseFloat(this.gf/60));
 					money=parseInt(money+(parseInt(this.shjian)*60)*parseFloat(this.gf/60))*/
 					this.moneySum =money;
-						this.dialogVisible = true;
+					
+				},"1000")
+				
+						
 					console.log(index, row);
 				},
 				/*详细信息关闭*/

@@ -30,7 +30,7 @@
   v-model="input"
   clearable>
 </el-input></span>
-<el-button type="primary" size="mini" @click="query">查看</el-button>
+<el-button type="primary" size="mini" @click="query2">查看</el-button>
   <el-button type="success" size="mini" @click="cltj">添加车辆</el-button>
   <el-button type="info" size="mini" style="margin-bottom: 2ex;" @click="clshanchu">删除</el-button>
 			<template >
@@ -242,7 +242,7 @@
      	val=this.input==''?null:this.input;
      	$.getJSON(`http://127.0.0.1:8080/zyhCustomerBAction/api/queryAllOrByName/${val}`, function(data) {
 					_this.tabobj=data;
-					
+						_this.list=[];
 					for(var i=0;i<_this.tabobj.length;i++){
 						for(var j=0;j<_this.tabobj[i].list.length;j++){
 						_this.list.push({
@@ -256,6 +256,47 @@
 							obj:_this.tabobj[i]
 						}
 						);
+					}
+					}
+					});
+				
+    },     query2(){
+     	let _this=this;
+     	val=this.input==''?null:this.input;
+     	$.getJSON(`http://127.0.0.1:8080/zyhCustomerBAction/api/queryAllOrByName2/${val}`, function(data) {
+					_this.tabobj=data;
+						_this.list=[];
+					for(var i=0;i<_this.tabobj.length;i++){
+						for(var j=0;j<_this.tabobj[i].list.length;j++){
+							
+							if(val!=null){
+								if(_this.tabobj[i].list[j].carlicenceplate.indexOf(val)!=-1){
+										_this.list.push({
+							carlicenceplate:_this.tabobj[i].list[j].carlicenceplate,
+							carid:_this.tabobj[i].list[j].carid,
+							carbrand:_this.tabobj[i].list[j].carbrand,
+							carcolor:_this.tabobj[i].list[j].carcolor,
+							carconfigure:_this.tabobj[i].list[j].carconfigure,
+							carlocality:_this.tabobj[i].list[j].carlocality,
+							carmodel:_this.tabobj[i].list[j].carmodel,
+							obj:_this.tabobj[i]
+						}
+						);
+								}
+						}else{
+							_this.list.push({
+							carlicenceplate:_this.tabobj[i].list[j].carlicenceplate,
+							carid:_this.tabobj[i].list[j].carid,
+							carbrand:_this.tabobj[i].list[j].carbrand,
+							carcolor:_this.tabobj[i].list[j].carcolor,
+							carconfigure:_this.tabobj[i].list[j].carconfigure,
+							carlocality:_this.tabobj[i].list[j].carlocality,
+							carmodel:_this.tabobj[i].list[j].carmodel,
+							obj:_this.tabobj[i]
+						}
+						);
+						}
+						
 					}
 					}
 					});
